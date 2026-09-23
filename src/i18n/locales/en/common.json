@@ -1,0 +1,11 @@
+{
+  "app": { "name": "Cashifa" },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "save": "Save",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "comingSoon": "{{name}} — coming soon"
+  }
+}

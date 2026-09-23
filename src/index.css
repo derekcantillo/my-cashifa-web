@@ -2,3 +2,9 @@
 
 /* Class-based dark mode: toggling `.dark` on <html> activates `dark:` utilities. */
 @custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  }
+}

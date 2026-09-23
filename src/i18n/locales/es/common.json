@@ -1,0 +1,11 @@
+{
+  "app": { "name": "Cashifa" },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "retry": "Reintentar",
+    "comingSoon": "{{name}} — próximamente"
+  }
+}

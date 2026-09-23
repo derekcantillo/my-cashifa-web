@@ -5,6 +5,20 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cashifa</title>
+    <script>
+      // Apply the persisted theme before first paint to avoid a light flash.
+      // Mirrors src/theme (storage key `cashifa-theme`, zustand persist format).
+      ;(function () {
+        try {
+          var stored = JSON.parse(localStorage.getItem('cashifa-theme') || 'null')
+          var theme = (stored && stored.state && stored.state.theme) || 'auto'
+          var dark =
+            theme === 'dark' ||
+            (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.classList.toggle('dark', dark)
+        } catch (e) {}
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

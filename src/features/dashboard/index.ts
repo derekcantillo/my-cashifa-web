@@ -1,0 +1,1 @@
+export { DashboardPlaceholder } from './DashboardPlaceholder'
