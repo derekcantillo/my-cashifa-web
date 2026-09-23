@@ -1,0 +1,35 @@
+{
+  "nav": {
+    "label": "Navegación principal",
+    "open": "Abrir menú",
+    "close": "Cerrar menú",
+    "dashboard": "Inicio",
+    "transactions": "Gastos",
+    "goals": "Metas",
+    "reports": "Reportes",
+    "loans": "Préstamos",
+    "alerts": "Alertas",
+    "netWorth": "Patrimonio neto",
+    "settings": "Ajustes",
+    "unread_one": "{{count}} sin leer",
+    "unread_other": "{{count}} sin leer"
+  },
+  "header": {
+    "period": "Periodo",
+    "previousPeriod": "Periodo anterior",
+    "nextPeriod": "Periodo siguiente",
+    "newMovement": "Registrar movimiento",
+    "alerts": "Alertas",
+    "alertsUnread_one": "Alertas: {{count}} sin leer",
+    "alertsUnread_other": "Alertas: {{count}} sin leer"
+  },
+  "account": {
+    "menu": "Tu cuenta",
+    "theme": "Tema",
+    "themeLight": "Claro",
+    "themeDark": "Oscuro",
+    "themeAuto": "Automático",
+    "language": "Idioma",
+    "logout": "Cerrar sesión"
+  }
+}

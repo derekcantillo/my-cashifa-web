@@ -1,0 +1,48 @@
+/*
+ * Design tokens — PROVISIONAL palette (see DESIGN_PRINCIPLES.md).
+ * To rebrand, change only the values in this file.
+ *
+ * `@theme` compiles to `:root` (light theme) and registers each token as a Tailwind
+ * color, so `bg-surface`, `text-ink`, `border-border`, `bg-brand/10`… work out of the box,
+ * opacity modifiers included. `.dark` overrides the same variables.
+ */
+
+@theme {
+  --color-surface: #f6f7f5;
+  --color-surface-elevated: #ffffff;
+  --color-border: #e3e6e1;
+
+  --color-ink: #1b201d;
+  --color-ink-muted: #5c6660;
+
+  --color-brand: #15754a;
+  --color-brand-hover: #0f5f3b;
+  /* Text/icons placed on top of `bg-brand`. */
+  --color-on-brand: #ffffff;
+
+  --color-success: #15754a;
+  --color-danger: #bb3f33;
+  --color-warning: #a8660b;
+
+  /* Backdrop behind drawers/modals — use with opacity, e.g. `bg-overlay/40`. */
+  --color-overlay: #0b0e0c;
+}
+
+.dark {
+  --color-surface: #111513;
+  --color-surface-elevated: #181d1a;
+  --color-border: #28302b;
+
+  --color-ink: #e7ebe8;
+  --color-ink-muted: #9aa49e;
+
+  --color-brand: #3cc486;
+  --color-brand-hover: #5ad29a;
+  --color-on-brand: #07261a;
+
+  --color-success: #3cc486;
+  --color-danger: #f07a6c;
+  --color-warning: #eeb04e;
+
+  --color-overlay: #000000;
+}

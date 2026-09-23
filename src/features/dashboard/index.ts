@@ -1,1 +1,1 @@
-export { DashboardPlaceholder } from './DashboardPlaceholder'
+export { DashboardScreen } from './DashboardScreen'

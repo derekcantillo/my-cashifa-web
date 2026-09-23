@@ -38,7 +38,7 @@ export function ApiKeySetupScreen() {
     setApiKey(apiKey)
     try {
       await validateApiKey()
-      navigate(ROUTES.home, { replace: true })
+      navigate(ROUTES.dashboard, { replace: true })
     } catch (error) {
       clearApiKey()
       setSubmitError(isUnauthorizedError(error) ? 'invalidKey' : 'unreachable')
@@ -52,16 +52,12 @@ export function ApiKeySetupScreen() {
       <form
         onSubmit={handleSubmit(onSubmit)}
         noValidate
-        className="w-full max-w-sm space-y-6 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+        className="w-full max-w-sm space-y-6 rounded-2xl border border-border bg-surface-elevated p-8"
       >
         <header className="space-y-2">
-          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-            {t('common:app.name')}
-          </p>
+          <p className="text-sm font-medium text-brand">{t('common:app.name')}</p>
           <h1 className="text-xl font-semibold">{t('auth:setup.title')}</h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            {t('auth:setup.description')}
-          </p>
+          <p className="text-sm text-ink-muted">{t('auth:setup.description')}</p>
         </header>
 
         <div className="space-y-2">
@@ -78,15 +74,13 @@ export function ApiKeySetupScreen() {
             aria-describedby={fieldError ? 'apiKey-error' : undefined}
             className={cn(
               'w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none transition',
-              'focus:ring-2 focus:ring-emerald-500/40',
-              fieldError
-                ? 'border-red-500 focus:border-red-500'
-                : 'border-slate-300 focus:border-emerald-500 dark:border-slate-700',
+              'focus:ring-2 focus:ring-brand/30',
+              fieldError ? 'border-danger focus:border-danger' : 'border-border focus:border-brand',
             )}
             {...register('apiKey')}
           />
           {fieldError && (
-            <p id="apiKey-error" className="text-sm text-red-600 dark:text-red-400">
+            <p id="apiKey-error" className="text-sm text-danger">
               {fieldError}
             </p>
           )}
@@ -95,7 +89,7 @@ export function ApiKeySetupScreen() {
         {submitError && (
           <div
             role="alert"
-            className="space-y-1 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-300"
+            className="space-y-1 rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger"
           >
             <p className="font-medium">{t('common:common.error')}</p>
             <p>{t(`auth:setup.errors.${submitError}`)}</p>
@@ -105,7 +99,7 @@ export function ApiKeySetupScreen() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-lg bg-brand px-4 py-2 text-sm font-medium text-on-brand transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting
             ? t('common:common.loading')

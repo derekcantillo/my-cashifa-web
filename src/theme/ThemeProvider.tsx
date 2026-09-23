@@ -18,6 +18,18 @@ function getSystemPrefersDark(): boolean {
   return window.matchMedia(DARK_SCHEME_QUERY).matches
 }
 
+/** Prevents every `transition-colors` element from animating when the theme flips. */
+function disableTransitionsTemporarily(): () => void {
+  const style = document.createElement('style')
+  style.textContent = '*,*::before,*::after{transition:none!important}'
+  document.head.appendChild(style)
+  return () => {
+    // Force a style recalc with transitions disabled before re-enabling them.
+    window.getComputedStyle(document.body)
+    setTimeout(() => style.remove(), 1)
+  }
+}
+
 const ResolvedThemeContext = createContext<ResolvedTheme | null>(null)
 
 interface ThemeProviderProps {
@@ -39,8 +51,10 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
   useEffect(() => {
     const root = document.documentElement
+    const enableTransitions = disableTransitionsTemporarily()
     root.classList.toggle('dark', resolvedTheme === 'dark')
     root.style.colorScheme = resolvedTheme
+    enableTransitions()
   }, [resolvedTheme])
 
   return (

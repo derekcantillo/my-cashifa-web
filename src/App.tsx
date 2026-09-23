@@ -1,30 +1,96 @@
+import type { ComponentType } from 'react'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 
-import { RequireApiKey } from '@/components/layout'
+import { AppLayout, RequireApiKey } from '@/components/layout'
 import { ROUTES } from '@/lib/routes'
 
-// Screens are lazy-loaded so each route ships in its own chunk.
+/** Lazy route loader: each screen ships in its own chunk. */
+function lazyScreen<TModule>(
+  load: () => Promise<TModule>,
+  pick: (module: TModule) => ComponentType,
+) {
+  return async () => ({ Component: pick(await load()) })
+}
+
 const router = createBrowserRouter([
   {
     // Rendered while the first matched route's chunk loads.
-    hydrateFallbackElement: <div className="min-h-screen" />,
+    hydrateFallbackElement: <div className="min-h-screen bg-surface" />,
     children: [
       {
         path: ROUTES.setup,
-        lazy: async () => ({ Component: (await import('@/features/auth')).ApiKeySetupScreen }),
+        lazy: lazyScreen(
+          () => import('@/features/auth'),
+          m => m.ApiKeySetupScreen,
+        ),
       },
       {
         element: <RequireApiKey />,
         children: [
           {
-            path: ROUTES.home,
-            lazy: async () => ({
-              Component: (await import('@/features/dashboard')).DashboardPlaceholder,
-            }),
+            element: <AppLayout />,
+            children: [
+              {
+                path: ROUTES.dashboard,
+                lazy: lazyScreen(
+                  () => import('@/features/dashboard'),
+                  m => m.DashboardScreen,
+                ),
+              },
+              {
+                path: ROUTES.transactions,
+                lazy: lazyScreen(
+                  () => import('@/features/transactions'),
+                  m => m.TransactionsScreen,
+                ),
+              },
+              {
+                path: ROUTES.goals,
+                lazy: lazyScreen(
+                  () => import('@/features/goals'),
+                  m => m.GoalsScreen,
+                ),
+              },
+              {
+                path: ROUTES.reports,
+                lazy: lazyScreen(
+                  () => import('@/features/reports'),
+                  m => m.ReportsScreen,
+                ),
+              },
+              {
+                path: ROUTES.loans,
+                lazy: lazyScreen(
+                  () => import('@/features/loans'),
+                  m => m.LoansScreen,
+                ),
+              },
+              {
+                path: ROUTES.alerts,
+                lazy: lazyScreen(
+                  () => import('@/features/alerts'),
+                  m => m.AlertsScreen,
+                ),
+              },
+              {
+                path: ROUTES.netWorth,
+                lazy: lazyScreen(
+                  () => import('@/features/net-worth'),
+                  m => m.NetWorthScreen,
+                ),
+              },
+              {
+                path: ROUTES.settings,
+                lazy: lazyScreen(
+                  () => import('@/features/settings'),
+                  m => m.SettingsScreen,
+                ),
+              },
+            ],
           },
         ],
       },
-      { path: '*', element: <Navigate to={ROUTES.home} replace /> },
+      { path: '*', element: <Navigate to={ROUTES.dashboard} replace /> },
     ],
   },
 ])
