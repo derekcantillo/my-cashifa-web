@@ -1,0 +1,26 @@
+{
+  "balance": {
+    "label": "Available to spend",
+    "summary": "Income {{income}} · Expenses {{expenses}}",
+    "noPeriod": "No periods yet. They start when you log your first salary."
+  },
+  "recent": {
+    "title": "Recent activity",
+    "empty": "You haven't logged anything this period yet",
+    "seeAll": "See all"
+  },
+  "goals": {
+    "title": "Your goals",
+    "seeAll": "See all",
+    "progress": "{{percentage}}%"
+  },
+  "loans": {
+    "title": "Owed to you",
+    "owes": "{{name}} owes you",
+    "due": "Due {{date}}",
+    "seeAll": "See loans"
+  },
+  "netWorth": {
+    "label": "Net worth"
+  }
+}

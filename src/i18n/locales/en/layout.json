@@ -21,7 +21,10 @@
     "newMovement": "Add transaction",
     "alerts": "Alerts",
     "alertsUnread_one": "Alerts: {{count}} unread",
-    "alertsUnread_other": "Alerts: {{count}} unread"
+    "alertsUnread_other": "Alerts: {{count}} unread",
+    "periodOngoing": "{{start}} – today",
+    "periodLoading": "Loading period",
+    "noPeriod": "No period"
   },
   "account": {
     "menu": "Your account",

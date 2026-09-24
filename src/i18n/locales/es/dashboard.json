@@ -1,0 +1,26 @@
+{
+  "balance": {
+    "label": "Disponible para gastar",
+    "summary": "Ingresos {{income}} · Gastos {{expenses}}",
+    "noPeriod": "Todavía no hay periodos. Se crean cuando registras tu primer salario."
+  },
+  "recent": {
+    "title": "Movimientos recientes",
+    "empty": "Todavía no registraste movimientos este periodo",
+    "seeAll": "Ver todos"
+  },
+  "goals": {
+    "title": "Tus metas",
+    "seeAll": "Ver todas",
+    "progress": "{{percentage}} %"
+  },
+  "loans": {
+    "title": "Te deben",
+    "owes": "{{name}} te debe",
+    "due": "Vence {{date}}",
+    "seeAll": "Ver préstamos"
+  },
+  "netWorth": {
+    "label": "Patrimonio neto"
+  }
+}

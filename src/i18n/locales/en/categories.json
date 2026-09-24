@@ -1,0 +1,18 @@
+{
+  "FOOD": "Food",
+  "TRANSPORT": "Transport",
+  "ENTERTAINMENT": "Entertainment",
+  "SERVICES": "Bills & utilities",
+  "DEBT": "Debt",
+  "HOUSING": "Housing",
+  "VEHICLE": "Vehicle",
+  "HEALTH": "Health",
+  "SAVING": "Savings",
+  "SALARY": "Salary",
+  "CONTINGENCY": "Unexpected expenses",
+  "LOAN": "Loan",
+  "EDUCATION": "Education",
+  "TAXES": "Taxes",
+  "PERSONAL": "Personal",
+  "OTHER": "Other"
+}

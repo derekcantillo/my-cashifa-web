@@ -1,30 +1,50 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { IconButton } from '@/components/ui'
-
-// TODO(Block 3): replace with the real financial period and wire up the arrows.
-const MOCK_PERIOD = { start: new Date(2026, 8, 15), end: new Date(2026, 9, 14) }
+import { useSelectedPeriod } from '@/hooks'
+import { formatPeriodRange, toLocale } from '@/lib/format'
 
 export function PeriodSelector() {
   const { t, i18n } = useTranslation('layout')
-  const language = i18n.resolvedLanguage
+  const { period, isLoading, goToPrevious, goToNext, canGoPrevious, canGoNext } =
+    useSelectedPeriod()
 
-  const label = useMemo(
-    () =>
-      new Intl.DateTimeFormat(language, { day: 'numeric', month: 'short' }).formatRange(
-        MOCK_PERIOD.start,
-        MOCK_PERIOD.end,
-      ),
-    [language],
-  )
+  let label: string
+  if (isLoading) {
+    label = t('header.periodLoading')
+  } else if (!period) {
+    label = t('header.noPeriod')
+  } else {
+    // The backend `label` is Spanish-only, so the range is formatted per language.
+    const { start, range } = formatPeriodRange(period, toLocale(i18n.resolvedLanguage))
+    label = range ?? t('header.periodOngoing', { start })
+  }
 
   return (
     <div role="group" aria-label={t('header.period')} className="flex items-center gap-1">
-      <IconButton label={t('header.previousPeriod')} icon={ChevronLeft} />
-      <span className="min-w-28 text-center text-sm font-medium tabular-nums">{label}</span>
-      <IconButton label={t('header.nextPeriod')} icon={ChevronRight} />
+      <IconButton
+        label={t('header.previousPeriod')}
+        icon={ChevronLeft}
+        onClick={goToPrevious}
+        disabled={!canGoPrevious}
+      />
+      <span
+        aria-live="polite"
+        className={
+          isLoading
+            ? 'min-w-32 animate-pulse text-center text-sm text-ink-muted'
+            : 'min-w-32 text-center text-sm font-medium tabular-nums'
+        }
+      >
+        {label}
+      </span>
+      <IconButton
+        label={t('header.nextPeriod')}
+        icon={ChevronRight}
+        onClick={goToNext}
+        disabled={!canGoNext}
+      />
     </div>
   )
 }

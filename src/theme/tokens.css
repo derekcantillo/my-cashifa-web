@@ -46,3 +46,27 @@
 
   --color-overlay: #000000;
 }
+
+/*
+ * Category colors — PROVISIONAL, same hues as the mobile app (src/theme/categoryColors.ts)
+ * so a category reads the same on both. One value per category for both themes.
+ * Consumed through src/lib/categoryMeta.ts.
+ */
+:root {
+  --category-food: #f97316;
+  --category-transport: #3b82f6;
+  --category-entertainment: #a855f7;
+  --category-services: #eab308;
+  --category-debt: #ef4444;
+  --category-housing: #0ea5e9;
+  --category-vehicle: #22c55e;
+  --category-health: #14b8a6;
+  --category-saving: #2563eb;
+  --category-salary: #16a34a;
+  --category-contingency: #f59e0b;
+  --category-loan: #0d9488;
+  --category-education: #84cc16;
+  --category-taxes: #7c2d12;
+  --category-personal: #ec4899;
+  --category-other: #64748b;
+}

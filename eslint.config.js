@@ -21,6 +21,23 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // UI talks to the backend only through the React Query hooks in src/hooks.
+    files: ['src/features/**/*.{ts,tsx}', 'src/components/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/api/*', '!@/api/apiKeyStore'],
+              message: 'Use the hooks from @/hooks instead of calling repositories directly.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   // Must stay last: disables every rule that conflicts with Prettier.
   prettier,
 ])

@@ -34,7 +34,7 @@ const router = createBrowserRouter([
                 path: ROUTES.dashboard,
                 lazy: lazyScreen(
                   () => import('@/features/dashboard'),
-                  m => m.DashboardScreen,
+                  m => m.DashboardPage,
                 ),
               },
               {

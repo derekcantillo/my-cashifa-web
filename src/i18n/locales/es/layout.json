@@ -21,7 +21,10 @@
     "newMovement": "Registrar movimiento",
     "alerts": "Alertas",
     "alertsUnread_one": "Alertas: {{count}} sin leer",
-    "alertsUnread_other": "Alertas: {{count}} sin leer"
+    "alertsUnread_other": "Alertas: {{count}} sin leer",
+    "periodOngoing": "{{start}} – hoy",
+    "periodLoading": "Cargando periodo",
+    "noPeriod": "Sin periodo"
   },
   "account": {
     "menu": "Tu cuenta",
