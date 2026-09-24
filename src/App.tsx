@@ -47,8 +47,16 @@ const router = createBrowserRouter([
               {
                 path: ROUTES.goals,
                 lazy: lazyScreen(
-                  () => import('@/features/goals'),
-                  m => m.GoalsScreen,
+                  () => import('@/features/goals/GoalsPage'),
+                  m => m.GoalsPage,
+                ),
+              },
+              {
+                path: ROUTES.goalDetail,
+                // Own chunk: only the detail page needs Recharts.
+                lazy: lazyScreen(
+                  () => import('@/features/goals/GoalDetailPage'),
+                  m => m.GoalDetailPage,
                 ),
               },
               {

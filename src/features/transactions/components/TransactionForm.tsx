@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
+import { DeleteConfirmation, Field, FieldError, inputClassName } from '@/components/ui'
 import {
   useAccounts,
   useCreateTransaction,
@@ -269,48 +270,13 @@ export function TransactionForm({ transaction, onDone }: TransactionFormProps) {
       )}
 
       {confirmingDelete ? (
-        <div
-          role="alertdialog"
-          aria-labelledby="delete-confirm-title"
-          aria-describedby="delete-confirm-hint"
-          className="space-y-3 rounded-xl border border-danger/30 bg-danger/5 p-4"
-        >
-          <div>
-            <p id="delete-confirm-title" className="font-medium">
-              {t('transactions:form.deleteConfirm')}
-            </p>
-            <p id="delete-confirm-hint" className="text-sm text-ink-muted">
-              {t('transactions:form.deleteHint')}
-            </p>
-          </div>
-          {deleteTransaction.isError && (
-            <p role="alert" className="text-sm text-danger">
-              {t('transactions:form.deleteError')}
-            </p>
-          )}
-          <div className="flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => setConfirmingDelete(false)}
-              disabled={deleteTransaction.isPending}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-ink/5 hover:text-ink disabled:opacity-60"
-            >
-              {t('transactions:form.cancel')}
-            </button>
-            <button
-              type="button"
-              onClick={onDelete}
-              disabled={deleteTransaction.isPending}
-              // eslint-disable-next-line jsx-a11y/no-autofocus -- focus the destructive choice's context when the confirmation appears
-              autoFocus
-              className="rounded-lg bg-danger px-3 py-2 text-sm font-medium text-on-brand transition-colors hover:bg-danger/90 disabled:opacity-60"
-            >
-              {deleteTransaction.isPending
-                ? t('transactions:form.deleting')
-                : t('transactions:form.confirm')}
-            </button>
-          </div>
-        </div>
+        <DeleteConfirmation
+          title={t('transactions:form.deleteConfirm')}
+          isPending={deleteTransaction.isPending}
+          error={deleteTransaction.isError ? t('transactions:form.deleteError') : null}
+          onConfirm={onDelete}
+          onCancel={() => setConfirmingDelete(false)}
+        />
       ) : (
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
           {transaction && (
@@ -333,42 +299,5 @@ export function TransactionForm({ transaction, onDone }: TransactionFormProps) {
         </div>
       )}
     </form>
-  )
-}
-
-function inputClassName(error: string | null) {
-  return cn(
-    'w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none transition',
-    'focus:ring-2 focus:ring-brand/30',
-    error ? 'border-danger focus:border-danger' : 'border-border focus:border-brand',
-  )
-}
-
-interface FieldProps {
-  id: string
-  label: string
-  hint?: string
-  error?: string | null
-  children: React.ReactNode
-}
-
-function Field({ id, label, hint, error, children }: FieldProps) {
-  return (
-    <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-medium">
-        {label}
-        {hint && <span className="ml-1 font-normal text-ink-muted">({hint})</span>}
-      </label>
-      {children}
-      {error && <FieldError id={`${id}-error`}>{error}</FieldError>}
-    </div>
-  )
-}
-
-function FieldError({ id, children }: { id: string; children: string }) {
-  return (
-    <p id={id} className="mt-1.5 text-sm text-danger">
-      {children}
-    </p>
   )
 }

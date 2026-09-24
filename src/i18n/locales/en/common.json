@@ -9,6 +9,12 @@
     "cancel": "Cancel",
     "retry": "Retry",
     "underConstruction": "This section is under construction",
-    "close": "Close"
+    "close": "Close",
+    "confirm": "Confirm",
+    "deleting": "Deleting…",
+    "cantUndo": "This can't be undone.",
+    "delete": "Delete",
+    "edit": "Edit",
+    "saving": "Saving…"
   }
 }

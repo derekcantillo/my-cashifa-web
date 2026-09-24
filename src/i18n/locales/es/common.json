@@ -9,6 +9,12 @@
     "cancel": "Cancelar",
     "retry": "Reintentar",
     "underConstruction": "Esta sección está en construcción",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "deleting": "Eliminando…",
+    "cantUndo": "No se puede deshacer.",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "saving": "Guardando…"
   }
 }

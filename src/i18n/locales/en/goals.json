@@ -1,0 +1,76 @@
+{
+  "title": "Goals",
+  "new": "New goal",
+  "empty": "You haven't created any goals yet",
+  "completed": "Completed",
+  "showCompleted": "Show completed ({{count}})",
+  "paused": "Paused",
+  "by": "By {{date}}",
+  "progressLine": "{{current}} of {{target}}",
+  "form": {
+    "createTitle": "New goal",
+    "editTitle": "Edit goal",
+    "name": "Name",
+    "namePlaceholder": "e.g. Emergency fund",
+    "targetAmount": "Target amount",
+    "targetDate": "Target date",
+    "phase": "Plan phase",
+    "loadError": "We couldn't load this goal.",
+    "saveError": "Couldn't save. Check the details and try again.",
+    "deleteConfirm": "Delete this goal?",
+    "deleteError": "Couldn't delete. Try again.",
+    "errors": {
+      "nameRequired": "Enter a name",
+      "nameTooLong": "120 characters max",
+      "amountRequired": "Enter the amount",
+      "amountInvalid": "Enter a valid amount, e.g. 6,000,000",
+      "amountPositive": "The amount must be greater than zero",
+      "dateRequired": "Pick a date"
+    }
+  },
+  "phases": {
+    "PHASE_1_DEBT_CONTROL": "Debt control",
+    "PHASE_2_OPTIMIZATION": "Optimization",
+    "PHASE_3_VEHICLE_PURCHASE": "Vehicle purchase",
+    "PHASE_4_CONSOLIDATION": "Consolidation"
+  },
+  "detail": {
+    "back": "Back",
+    "saved": "Saved",
+    "goal": "Goal",
+    "remaining": "Left",
+    "summary": "Goal: {{target}} · {{remaining}} to go",
+    "reached": "Goal: {{target}} · You made it!",
+    "completed": "Completed",
+    "contribute": "Add contribution",
+    "edit": "Edit goal",
+    "delete": "Delete goal",
+    "notFound": "This goal no longer exists."
+  },
+  "contribution": {
+    "amount": "Amount",
+    "date": "Date",
+    "note": "Note",
+    "optional": "optional",
+    "save": "Save contribution",
+    "cancel": "Cancel",
+    "saveError": "Couldn't save. Try again."
+  },
+  "history": {
+    "title": "Contributions",
+    "empty": "You haven't added any contributions to this goal yet"
+  },
+  "chart": {
+    "title": "Progress",
+    "actual": "Actual",
+    "projected": "Projected",
+    "targetLine": "Goal {{amount}}",
+    "pace": "At your current pace (≈ {{amount}} a month)",
+    "description": "Goal savings accumulated over time"
+  },
+  "toast": {
+    "saved": "Goal saved",
+    "deleted": "Goal deleted",
+    "contributed": "Contribution added"
+  }
+}

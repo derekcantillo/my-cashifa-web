@@ -1,0 +1,76 @@
+{
+  "title": "Metas",
+  "new": "Nueva meta",
+  "empty": "Todavía no creaste ninguna meta",
+  "completed": "Completadas",
+  "showCompleted": "Ver completadas ({{count}})",
+  "paused": "En pausa",
+  "by": "Para el {{date}}",
+  "progressLine": "{{current}} de {{target}}",
+  "form": {
+    "createTitle": "Nueva meta",
+    "editTitle": "Editar meta",
+    "name": "Nombre",
+    "namePlaceholder": "Ej. Fondo de emergencia",
+    "targetAmount": "Monto objetivo",
+    "targetDate": "Fecha objetivo",
+    "phase": "Fase del plan",
+    "loadError": "No pudimos cargar esta meta.",
+    "saveError": "No se pudo guardar. Revisa los datos e inténtalo de nuevo.",
+    "deleteConfirm": "¿Eliminar esta meta?",
+    "deleteError": "No se pudo eliminar. Inténtalo de nuevo.",
+    "errors": {
+      "nameRequired": "Escribe un nombre",
+      "nameTooLong": "Máximo 120 caracteres",
+      "amountRequired": "Escribe el monto",
+      "amountInvalid": "Escribe un monto válido, por ejemplo 6.000.000",
+      "amountPositive": "El monto debe ser mayor que cero",
+      "dateRequired": "Elige una fecha"
+    }
+  },
+  "phases": {
+    "PHASE_1_DEBT_CONTROL": "Control de deudas",
+    "PHASE_2_OPTIMIZATION": "Optimización",
+    "PHASE_3_VEHICLE_PURCHASE": "Compra de vehículo",
+    "PHASE_4_CONSOLIDATION": "Consolidación"
+  },
+  "detail": {
+    "back": "Volver",
+    "saved": "Ahorrado",
+    "goal": "Meta",
+    "remaining": "Faltan",
+    "summary": "Meta: {{target}} · Faltan {{remaining}}",
+    "reached": "Meta: {{target}} · ¡Lo lograste!",
+    "completed": "Completada",
+    "contribute": "Hacer contribución",
+    "edit": "Editar meta",
+    "delete": "Eliminar meta",
+    "notFound": "Esta meta ya no existe."
+  },
+  "contribution": {
+    "amount": "Monto",
+    "date": "Fecha",
+    "note": "Nota",
+    "optional": "opcional",
+    "save": "Guardar contribución",
+    "cancel": "Cancelar",
+    "saveError": "No se pudo registrar. Inténtalo de nuevo."
+  },
+  "history": {
+    "title": "Contribuciones",
+    "empty": "Todavía no registraste contribuciones a esta meta"
+  },
+  "chart": {
+    "title": "Progreso",
+    "actual": "Real",
+    "projected": "Proyectado",
+    "targetLine": "Meta {{amount}}",
+    "pace": "A tu ritmo actual (≈ {{amount}} al mes)",
+    "description": "Ahorro acumulado de la meta en el tiempo"
+  },
+  "toast": {
+    "saved": "Meta guardada",
+    "deleted": "Meta eliminada",
+    "contributed": "Contribución registrada"
+  }
+}

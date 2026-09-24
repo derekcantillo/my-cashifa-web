@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
+import { ProgressBar, progressPercentage } from '@/components/ui'
 import { useGoals } from '@/hooks'
 import { ROUTES } from '@/lib/routes'
 
@@ -22,8 +23,7 @@ export function GoalsSummary() {
       </h2>
       <ul className="space-y-4">
         {goals.map(goal => {
-          const ratio = goal.targetAmount > 0 ? goal.currentAmount / goal.targetAmount : 0
-          const percentage = Math.min(100, Math.round(ratio * 100))
+          const percentage = Math.round(progressPercentage(goal.currentAmount, goal.targetAmount))
           return (
             <li key={goal.id} className="space-y-2">
               <div className="flex items-baseline justify-between gap-3 text-sm">
@@ -32,16 +32,7 @@ export function GoalsSummary() {
                   {t('goals.progress', { percentage })}
                 </span>
               </div>
-              <div
-                role="progressbar"
-                aria-label={goal.name}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={percentage}
-                className="h-2 overflow-hidden rounded-full bg-ink/10"
-              >
-                <div className="h-full rounded-full bg-brand" style={{ width: `${percentage}%` }} />
-              </div>
+              <ProgressBar value={percentage} label={goal.name} />
             </li>
           )
         })}

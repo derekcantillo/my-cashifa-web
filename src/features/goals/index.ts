@@ -1,1 +1,2 @@
-export { GoalsScreen } from './GoalsScreen'
+export { GoalDetailPage } from './GoalDetailPage'
+export { GoalsPage } from './GoalsPage'

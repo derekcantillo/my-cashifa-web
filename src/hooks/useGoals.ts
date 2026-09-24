@@ -52,14 +52,18 @@ export function useUpdateGoal() {
   })
 }
 
-/** Deleting a goal removes its contributions, so the backend recalculates the ledger. */
+/**
+ * Deleting a goal removes its contributions, so the backend recalculates the ledger.
+ * Only the list is invalidated (exact key): the deleted goal's detail query is left
+ * alone so the page still showing it doesn't refetch a 404 before navigating away.
+ */
 export function useDeleteGoal() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => goalsRepository.remove(id),
     onSuccess: () =>
       Promise.all([
-        invalidateQueries(queryClient, queryKeys.goals.all),
+        queryClient.invalidateQueries({ queryKey: queryKeys.goals.all, exact: true }),
         invalidateFinancialState(queryClient),
       ]),
   })

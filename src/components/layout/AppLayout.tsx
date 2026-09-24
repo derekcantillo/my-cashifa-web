@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 
 import { ToastContainer } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { useGoalModalStore } from '@/store/goalModalStore'
 import { useTransactionModalStore } from '@/store/transactionModalStore'
 
 import { Header } from './Header'
@@ -16,10 +17,17 @@ const TransactionFormModal = lazy(() =>
   })),
 )
 
+const GoalFormModal = lazy(() =>
+  import('@/features/goals/components/GoalFormModal').then(module => ({
+    default: module.GoalFormModal,
+  })),
+)
+
 export function AppLayout() {
   const [navOpen, setNavOpen] = useState(false)
   const closeNav = useCallback(() => setNavOpen(false), [])
   const isTransactionModalOpen = useTransactionModalStore(state => state.isOpen)
+  const isGoalModalOpen = useGoalModalStore(state => state.isOpen)
 
   return (
     <div className="min-h-screen bg-surface lg:flex">
@@ -37,6 +45,12 @@ export function AppLayout() {
       {isTransactionModalOpen && (
         <Suspense fallback={null}>
           <TransactionFormModal />
+        </Suspense>
+      )}
+
+      {isGoalModalOpen && (
+        <Suspense fallback={null}>
+          <GoalFormModal />
         </Suspense>
       )}
 

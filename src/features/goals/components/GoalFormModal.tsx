@@ -1,27 +1,22 @@
 import { useTranslation } from 'react-i18next'
 
 import { InlineError, Modal, Skeleton } from '@/components/ui'
-import { useTransaction } from '@/hooks'
-import { useTransactionModalStore } from '@/store/transactionModalStore'
+import { useGoal } from '@/hooks'
+import { useGoalModalStore } from '@/store/goalModalStore'
 
-import { TransactionForm } from './TransactionForm'
+import { GoalForm } from './GoalForm'
 
 /** Mounted once in AppLayout while the store says it's open. */
-export function TransactionFormModal() {
-  const { t } = useTranslation('transactions')
-  const { mode, transactionId, close } = useTransactionModalStore()
+export function GoalFormModal() {
+  const { t } = useTranslation('goals')
+  const { mode, goalId, close } = useGoalModalStore()
   const isEdit = mode === 'edit'
-  const {
-    data: transaction,
-    isPending,
-    isError,
-    refetch,
-  } = useTransaction(isEdit ? transactionId : undefined)
+  const { data: goal, isPending, isError, refetch } = useGoal(isEdit ? goalId : undefined)
 
   return (
     <Modal title={isEdit ? t('form.editTitle') : t('form.createTitle')} onClose={close}>
       {!isEdit ? (
-        <TransactionForm onDone={close} />
+        <GoalForm onDone={close} />
       ) : isError ? (
         <div className="space-y-2">
           <p className="text-ink-muted">{t('form.loadError')}</p>
@@ -30,11 +25,11 @@ export function TransactionFormModal() {
       ) : isPending ? (
         <div className="space-y-5" aria-busy="true">
           <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-40 w-full" />
+          <Skeleton className="h-10 w-full" />
           <Skeleton className="h-10 w-full" />
         </div>
       ) : (
-        <TransactionForm transaction={transaction} onDone={close} />
+        <GoalForm goal={goal} onDone={close} />
       )}
     </Modal>
   )
