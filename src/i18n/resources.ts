@@ -1,3 +1,4 @@
+import enAlerts from './locales/en/alerts.json'
 import enAuth from './locales/en/auth.json'
 import enCategories from './locales/en/categories.json'
 import enCommon from './locales/en/common.json'
@@ -7,6 +8,7 @@ import enLayout from './locales/en/layout.json'
 import enLoans from './locales/en/loans.json'
 import enReports from './locales/en/reports.json'
 import enTransactions from './locales/en/transactions.json'
+import esAlerts from './locales/es/alerts.json'
 import esAuth from './locales/es/auth.json'
 import esCategories from './locales/es/categories.json'
 import esCommon from './locales/es/common.json'
@@ -34,6 +36,7 @@ export const resources = {
     goals: esGoals,
     reports: esReports,
     loans: esLoans,
+    alerts: esAlerts,
   },
   en: {
     common: enCommon,
@@ -45,5 +48,6 @@ export const resources = {
     goals: enGoals,
     reports: enReports,
     loans: enLoans,
+    alerts: enAlerts,
   },
 } as const

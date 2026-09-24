@@ -1,1 +1,1 @@
-export { AlertsScreen } from './AlertsScreen'
+export { AlertsPage } from './AlertsPage'

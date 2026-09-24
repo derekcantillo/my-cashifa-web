@@ -1,0 +1,12 @@
+{
+  "title": "Alertas",
+  "filter": "Mostrar",
+  "all": "Todas",
+  "unread": "No leídas",
+  "markAll": "Marcar todas como leídas",
+  "empty": "No tienes alertas",
+  "emptyUnread": "No tienes alertas sin leer",
+  "unreadLabel": "No leída",
+  "markedAll": "Alertas marcadas como leídas",
+  "markError": "No se pudo marcar. Inténtalo de nuevo."
+}

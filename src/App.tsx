@@ -84,7 +84,7 @@ const router = createBrowserRouter([
                 path: ROUTES.alerts,
                 lazy: lazyScreen(
                   () => import('@/features/alerts'),
-                  m => m.AlertsScreen,
+                  m => m.AlertsPage,
                 ),
               },
               {

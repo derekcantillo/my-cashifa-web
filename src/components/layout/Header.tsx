@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { IconButton, iconButtonClassName } from '@/components/ui'
+import { useUnreadAlertsCount } from '@/hooks'
 import { ROUTES } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 import { useTransactionModalStore } from '@/store/transactionModalStore'
 
 import { AccountMenu } from './AccountMenu'
 import { CONTENT_GUTTER } from './layoutStyles'
-import { MOCK_UNREAD_ALERTS } from './navigation'
 import { PeriodSelector } from './PeriodSelector'
 import { SIDEBAR_ID } from './Sidebar'
 
@@ -20,7 +20,9 @@ interface HeaderProps {
 
 export function Header({ navOpen, onOpenNav }: HeaderProps) {
   const { t } = useTranslation('layout')
-  const hasUnreadAlerts = MOCK_UNREAD_ALERTS > 0
+  // `undefined` while loading: no dot until the real count arrives.
+  const { data: unreadAlerts = 0 } = useUnreadAlertsCount()
+  const hasUnreadAlerts = unreadAlerts > 0
   const openTransactionModal = useTransactionModalStore(state => state.open)
 
   return (
@@ -54,9 +56,7 @@ export function Header({ navOpen, onOpenNav }: HeaderProps) {
         <Link
           to={ROUTES.alerts}
           aria-label={
-            hasUnreadAlerts
-              ? t('header.alertsUnread', { count: MOCK_UNREAD_ALERTS })
-              : t('header.alerts')
+            hasUnreadAlerts ? t('header.alertsUnread', { count: unreadAlerts }) : t('header.alerts')
           }
           className={iconButtonClassName}
         >

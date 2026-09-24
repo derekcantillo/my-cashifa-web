@@ -1,0 +1,12 @@
+{
+  "title": "Alerts",
+  "filter": "Show",
+  "all": "All",
+  "unread": "Unread",
+  "markAll": "Mark all as read",
+  "empty": "You don't have any alerts",
+  "emptyUnread": "You don't have unread alerts",
+  "unreadLabel": "Unread",
+  "markedAll": "Alerts marked as read",
+  "markError": "Couldn't mark them. Try again."
+}

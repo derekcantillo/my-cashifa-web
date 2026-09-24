@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 
 import { IconButton } from '@/components/ui'
+import { useUnreadAlertsCount } from '@/hooks'
 import { ROUTES } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 
@@ -19,6 +20,8 @@ interface SidebarProps {
 
 export function Sidebar({ open, onClose }: SidebarProps) {
   const { t } = useTranslation(['layout', 'common'])
+  // `undefined` until the first response: no badge flashes a "0" while loading.
+  const { data: unreadAlerts } = useUnreadAlertsCount()
 
   useEffect(() => {
     if (!open) return
@@ -70,32 +73,35 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 
         <nav aria-label={t('layout:nav.label')} className="flex-1 overflow-y-auto px-3 py-4">
           <ul className="space-y-1">
-            {NAV_ITEMS.map(({ id, to, icon: Icon, count }) => (
-              <li key={id}>
-                <NavLink
-                  to={to}
-                  end
-                  onClick={onClose}
-                  className={({ isActive }) =>
-                    cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                      isActive
-                        ? 'bg-brand/10 text-brand'
-                        : 'text-ink-muted hover:bg-ink/5 hover:text-ink',
-                    )
-                  }
-                >
-                  <Icon className="size-[18px] shrink-0" aria-hidden />
-                  <span className="flex-1">{t(`layout:nav.${id}`)}</span>
-                  {count ? (
-                    <span className="min-w-5 rounded-full bg-brand px-1.5 text-center text-xs leading-5 font-medium text-on-brand tabular-nums">
-                      <span aria-hidden>{count}</span>
-                      <span className="sr-only">{t('layout:nav.unread', { count })}</span>
-                    </span>
-                  ) : null}
-                </NavLink>
-              </li>
-            ))}
+            {NAV_ITEMS.map(({ id, to, icon: Icon, showsUnreadAlerts }) => {
+              const count = showsUnreadAlerts ? unreadAlerts : undefined
+              return (
+                <li key={id}>
+                  <NavLink
+                    to={to}
+                    end
+                    onClick={onClose}
+                    className={({ isActive }) =>
+                      cn(
+                        'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                        isActive
+                          ? 'bg-brand/10 text-brand'
+                          : 'text-ink-muted hover:bg-ink/5 hover:text-ink',
+                      )
+                    }
+                  >
+                    <Icon className="size-[18px] shrink-0" aria-hidden />
+                    <span className="flex-1">{t(`layout:nav.${id}`)}</span>
+                    {count ? (
+                      <span className="min-w-5 rounded-full bg-brand px-1.5 text-center text-xs leading-5 font-medium text-on-brand tabular-nums">
+                        <span aria-hidden>{count}</span>
+                        <span className="sr-only">{t('layout:nav.unread', { count })}</span>
+                      </span>
+                    ) : null}
+                  </NavLink>
+                </li>
+              )
+            })}
           </ul>
         </nav>
       </aside>
