@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom'
 import { ToastContainer } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { useGoalModalStore } from '@/store/goalModalStore'
+import { useLoanModalStore } from '@/store/loanModalStore'
 import { useTransactionModalStore } from '@/store/transactionModalStore'
 
 import { Header } from './Header'
@@ -23,11 +24,18 @@ const GoalFormModal = lazy(() =>
   })),
 )
 
+const LoanFormModal = lazy(() =>
+  import('@/features/loans/components/LoanFormModal').then(module => ({
+    default: module.LoanFormModal,
+  })),
+)
+
 export function AppLayout() {
   const [navOpen, setNavOpen] = useState(false)
   const closeNav = useCallback(() => setNavOpen(false), [])
   const isTransactionModalOpen = useTransactionModalStore(state => state.isOpen)
   const isGoalModalOpen = useGoalModalStore(state => state.isOpen)
+  const isLoanModalOpen = useLoanModalStore(state => state.isOpen)
 
   return (
     <div className="min-h-screen bg-surface lg:flex">
@@ -51,6 +59,12 @@ export function AppLayout() {
       {isGoalModalOpen && (
         <Suspense fallback={null}>
           <GoalFormModal />
+        </Suspense>
+      )}
+
+      {isLoanModalOpen && (
+        <Suspense fallback={null}>
+          <LoanFormModal />
         </Suspense>
       )}
 

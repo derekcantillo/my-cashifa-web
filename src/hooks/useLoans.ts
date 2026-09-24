@@ -59,14 +59,18 @@ export function useUpdateLoan() {
   })
 }
 
-/** Deleting a loan cascades to its transactions on the backend. */
+/**
+ * Deleting a loan cascades to its transactions on the backend. Only the list is
+ * invalidated (exact key): the deleted loan's detail query is left alone so the page
+ * still showing it doesn't refetch a 404 before navigating away.
+ */
 export function useDeleteLoan() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => loansRepository.remove(id),
     onSuccess: () =>
       Promise.all([
-        invalidateQueries(queryClient, queryKeys.loans.all),
+        queryClient.invalidateQueries({ queryKey: queryKeys.loans.all, exact: true }),
         invalidateFinancialState(queryClient),
       ]),
   })

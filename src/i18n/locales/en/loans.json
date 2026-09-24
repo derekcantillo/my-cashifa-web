@@ -1,0 +1,62 @@
+{
+  "title": "Loans",
+  "new": "New loan",
+  "empty": "You haven't recorded any loans yet",
+  "completed": "Completed",
+  "showCompleted": "Show completed ({{count}})",
+  "progressLine": "{{pending}} left of {{total}}",
+  "due": "Due {{date}}",
+  "overdue": "Was due {{date}}",
+  "form": {
+    "createTitle": "New loan",
+    "editTitle": "Edit loan",
+    "borrower": "Borrower",
+    "borrowerPlaceholder": "Who did you lend to?",
+    "amount": "Original amount",
+    "amountFixed": "Can't be changed after creation",
+    "loanDate": "Loan date",
+    "dueDate": "Due date",
+    "note": "Note or reason",
+    "optional": "optional",
+    "account": "Paid from account",
+    "noAccount": "No account",
+    "loadError": "We couldn't load this loan.",
+    "saveError": "Couldn't save. Check the details and try again.",
+    "deleteConfirm": "Delete this loan?",
+    "deleteError": "Couldn't delete. Try again.",
+    "cantDelete": "Can't be deleted: it already has repayments.",
+    "errors": {
+      "borrowerRequired": "Enter a name",
+      "borrowerTooLong": "120 characters max",
+      "amountRequired": "Enter the amount",
+      "amountInvalid": "Enter a valid amount, e.g. 500,000",
+      "amountPositive": "The amount must be greater than zero",
+      "dateRequired": "Pick a date",
+      "noteTooLong": "255 characters max"
+    }
+  },
+  "detail": {
+    "back": "Back",
+    "pending": "Pending",
+    "summary": "Original: {{total}} · Recovered: {{recovered}}",
+    "lent": "Lent on {{date}}",
+    "paid": "Paid",
+    "repay": "Add repayment",
+    "edit": "Edit loan",
+    "delete": "Delete loan",
+    "notFound": "This loan no longer exists."
+  },
+  "repayment": {
+    "save": "Save repayment",
+    "saveError": "Couldn't save the repayment. Try again."
+  },
+  "history": {
+    "title": "Repayments",
+    "empty": "No repayments yet"
+  },
+  "toast": {
+    "saved": "Loan saved",
+    "deleted": "Loan deleted",
+    "repaid": "Repayment added"
+  }
+}

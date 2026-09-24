@@ -1,1 +1,2 @@
-export { LoansScreen } from './LoansScreen'
+export { LoanDetailPage } from './LoanDetailPage'
+export { LoansPage } from './LoansPage'

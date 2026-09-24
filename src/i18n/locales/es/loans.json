@@ -1,0 +1,62 @@
+{
+  "title": "Préstamos",
+  "new": "Nuevo préstamo",
+  "empty": "Todavía no registraste ningún préstamo",
+  "completed": "Completados",
+  "showCompleted": "Ver completados ({{count}})",
+  "progressLine": "{{pending}} pendiente de {{total}}",
+  "due": "Vence el {{date}}",
+  "overdue": "Venció el {{date}}",
+  "form": {
+    "createTitle": "Nuevo préstamo",
+    "editTitle": "Editar préstamo",
+    "borrower": "Nombre del deudor",
+    "borrowerPlaceholder": "¿A quién le prestaste?",
+    "amount": "Monto original",
+    "amountFixed": "No se puede cambiar después de creado",
+    "loanDate": "Fecha del préstamo",
+    "dueDate": "Fecha de vencimiento",
+    "note": "Nota o motivo",
+    "optional": "opcional",
+    "account": "Cuenta de la que salió",
+    "noAccount": "Sin cuenta asignada",
+    "loadError": "No pudimos cargar este préstamo.",
+    "saveError": "No se pudo guardar. Revisa los datos e inténtalo de nuevo.",
+    "deleteConfirm": "¿Eliminar este préstamo?",
+    "deleteError": "No se pudo eliminar. Inténtalo de nuevo.",
+    "cantDelete": "No se puede eliminar porque ya tiene abonos registrados.",
+    "errors": {
+      "borrowerRequired": "Escribe el nombre",
+      "borrowerTooLong": "Máximo 120 caracteres",
+      "amountRequired": "Escribe el monto",
+      "amountInvalid": "Escribe un monto válido, por ejemplo 500.000",
+      "amountPositive": "El monto debe ser mayor que cero",
+      "dateRequired": "Elige una fecha",
+      "noteTooLong": "Máximo 255 caracteres"
+    }
+  },
+  "detail": {
+    "back": "Volver",
+    "pending": "Pendiente",
+    "summary": "Original: {{total}} · Recuperado: {{recovered}}",
+    "lent": "Prestado el {{date}}",
+    "paid": "Pagado",
+    "repay": "Registrar abono",
+    "edit": "Editar préstamo",
+    "delete": "Eliminar préstamo",
+    "notFound": "Este préstamo ya no existe."
+  },
+  "repayment": {
+    "save": "Guardar abono",
+    "saveError": "No se pudo registrar el abono. Inténtalo de nuevo."
+  },
+  "history": {
+    "title": "Abonos",
+    "empty": "Todavía no hay abonos registrados"
+  },
+  "toast": {
+    "saved": "Préstamo guardado",
+    "deleted": "Préstamo eliminado",
+    "repaid": "Abono registrado"
+  }
+}

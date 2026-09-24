@@ -9,8 +9,21 @@ import {
   YAxis,
 } from 'recharts'
 
+import {
+  ACTIVE_DOT,
+  AXIS_LINE,
+  AXIS_TICK,
+  ChartTooltip,
+  compactMoneyFormat,
+  CURSOR,
+  LegendSwatch,
+  LINE_WIDTH,
+  niceCeil,
+  PROJECTION_DASH,
+  timeTickFormat,
+  tooltipDateFormat,
+} from '@/components/charts'
 import { useFormatters } from '@/hooks'
-import { APP_TIME_ZONE } from '@/lib/format'
 import type { GoalProjection } from '@/lib/goalProjection'
 
 interface ChartPoint {
@@ -22,20 +35,6 @@ interface ChartPoint {
 interface GoalProjectionChartProps {
   projection: GoalProjection
   targetAmount: number
-}
-
-// Chart styling reads the design tokens, so it follows light/dark automatically.
-// Sets the tone for later charts: no grid, hairline axis, 2px lines, no animation,
-// hover shows only date + amount (DESIGN_PRINCIPLES #5).
-const AXIS_TICK = { fill: 'var(--color-ink-muted)', fontSize: 12 }
-const LONG_RANGE_MS = 300 * 24 * 60 * 60 * 1000
-
-/** Rounds up to a "nice" axis maximum (1, 1.5, 2, 3, 4.5, 6, 9 × 10ⁿ) so ticks land on round values. */
-function niceCeil(value: number): number {
-  if (value <= 0) return 1
-  const magnitude = 10 ** Math.floor(Math.log10(value))
-  const step = [1, 1.5, 2, 3, 4.5, 6, 9, 10].find(factor => factor * magnitude >= value) ?? 10
-  return step * magnitude
 }
 
 export function GoalProjectionChart({ projection, targetAmount }: GoalProjectionChartProps) {
@@ -51,27 +50,10 @@ export function GoalProjectionChart({ projection, targetAmount }: GoalProjection
   }
   const lastActualIndex = actual.length - 1
 
-  const dayFormat = new Intl.DateTimeFormat(locale, {
-    timeZone: APP_TIME_ZONE,
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-  // Long ranges cross years: label ticks by month + year instead of day + month.
   const span = data[data.length - 1].time - data[0].time
-  const tickFormat = new Intl.DateTimeFormat(
-    locale,
-    span > LONG_RANGE_MS
-      ? { timeZone: APP_TIME_ZONE, month: 'short', year: '2-digit' }
-      : { timeZone: APP_TIME_ZONE, day: 'numeric', month: 'short' },
-  )
-  const compactMoney = new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: 'COP',
-    currencyDisplay: 'narrowSymbol',
-    notation: 'compact',
-    maximumFractionDigits: 1,
-  })
+  const tickFormat = timeTickFormat(locale, span)
+  const dateFormat = tooltipDateFormat(locale)
+  const compactMoney = compactMoneyFormat(locale)
   const maxValue = Math.max(
     targetAmount,
     ...data.map(p => Math.max(p.actual ?? 0, p.projected ?? 0)),
@@ -81,8 +63,8 @@ export function GoalProjectionChart({ projection, targetAmount }: GoalProjection
     <figure className="space-y-3">
       {projected && (
         <figcaption className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-ink-muted">
-          <LegendSwatch label={t('chart.actual')} />
-          <LegendSwatch label={t('chart.projected')} dashed />
+          <LegendSwatch label={t('chart.actual')} color="var(--color-brand)" />
+          <LegendSwatch label={t('chart.projected')} color="var(--color-ink-muted)" dashed />
           {projection.monthlyRate !== null && (
             <span>{t('chart.pace', { amount: money(projection.monthlyRate) })}</span>
           )}
@@ -99,7 +81,7 @@ export function GoalProjectionChart({ projection, targetAmount }: GoalProjection
               tickFormatter={(time: number) => tickFormat.format(time)}
               tick={AXIS_TICK}
               tickLine={false}
-              axisLine={{ stroke: 'var(--color-border)' }}
+              axisLine={AXIS_LINE}
               minTickGap={40}
             />
             <YAxis
@@ -123,24 +105,27 @@ export function GoalProjectionChart({ projection, targetAmount }: GoalProjection
               }}
             />
             <Tooltip
-              content={({ active, payload }) => (
-                <ChartTooltip
-                  active={active}
-                  point={payload?.[0]?.payload as ChartPoint | undefined}
-                  dayFormat={dayFormat}
-                  money={money}
-                />
-              )}
-              cursor={{ stroke: 'var(--color-border)', strokeWidth: 1 }}
+              content={({ active, payload }) => {
+                const point = payload?.[0]?.payload as ChartPoint | undefined
+                const amount = point?.actual ?? point?.projected
+                return (
+                  <ChartTooltip
+                    active={active}
+                    label={point && dateFormat.format(point.time)}
+                    value={amount === undefined ? undefined : money(amount)}
+                  />
+                )
+              }}
+              cursor={CURSOR}
               isAnimationActive={false}
             />
             <Line
               dataKey="actual"
               name={t('chart.actual')}
               stroke="var(--color-brand)"
-              strokeWidth={2}
+              strokeWidth={LINE_WIDTH}
               dot={false}
-              activeDot={{ r: 4, strokeWidth: 2, stroke: 'var(--color-surface-elevated)' }}
+              activeDot={ACTIVE_DOT}
               isAnimationActive={false}
               label={endLabel(lastActualIndex, projected ? '' : t('chart.actual'))}
             />
@@ -149,10 +134,10 @@ export function GoalProjectionChart({ projection, targetAmount }: GoalProjection
                 dataKey="projected"
                 name={t('chart.projected')}
                 stroke="var(--color-ink-muted)"
-                strokeWidth={2}
-                strokeDasharray="6 5"
+                strokeWidth={LINE_WIDTH}
+                strokeDasharray={PROJECTION_DASH}
                 dot={false}
-                activeDot={{ r: 4, strokeWidth: 2, stroke: 'var(--color-surface-elevated)' }}
+                activeDot={ACTIVE_DOT}
                 isAnimationActive={false}
                 connectNulls
                 label={endLabel(data.length - 1, t('chart.projected'))}
@@ -182,43 +167,4 @@ function endLabel(index: number, text: string) {
     )
   }
   return EndLabel
-}
-
-function LegendSwatch({ label, dashed = false }: { label: string; dashed?: boolean }) {
-  return (
-    <span className="inline-flex items-center gap-2">
-      <svg width="20" height="4" aria-hidden>
-        <line
-          x1="0"
-          y1="2"
-          x2="20"
-          y2="2"
-          strokeWidth="2"
-          stroke={dashed ? 'var(--color-ink-muted)' : 'var(--color-brand)'}
-          strokeDasharray={dashed ? '6 5' : undefined}
-        />
-      </svg>
-      {label}
-    </span>
-  )
-}
-
-interface ChartTooltipProps {
-  active: boolean | undefined
-  point: ChartPoint | undefined
-  dayFormat: Intl.DateTimeFormat
-  money: (amount: number) => string
-}
-
-/** Hover shows only date + amount. */
-function ChartTooltip({ active, point, dayFormat, money }: ChartTooltipProps) {
-  if (!active || !point) return null
-  const amount = point.actual ?? point.projected
-  if (amount === undefined) return null
-  return (
-    <div className="rounded-lg border border-border bg-surface-elevated px-3 py-2 text-sm shadow-sm">
-      <p className="text-ink-muted">{dayFormat.format(point.time)}</p>
-      <p className="font-medium tabular-nums">{money(amount)}</p>
-    </div>
-  )
 }

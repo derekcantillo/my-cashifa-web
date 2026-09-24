@@ -16,5 +16,19 @@
     "delete": "Eliminar",
     "edit": "Editar",
     "saving": "Guardando…"
+  },
+  "amountForm": {
+    "amount": "Monto",
+    "date": "Fecha",
+    "note": "Nota",
+    "optional": "opcional",
+    "cancel": "Cancelar",
+    "errors": {
+      "amountRequired": "Escribe el monto",
+      "amountInvalid": "Escribe un monto válido, por ejemplo 200.000",
+      "amountPositive": "El monto debe ser mayor que cero",
+      "amountTooHigh": "No puede ser más de {{max}}",
+      "dateRequired": "Elige una fecha"
+    }
   }
 }

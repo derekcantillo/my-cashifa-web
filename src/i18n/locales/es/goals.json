@@ -48,12 +48,7 @@
     "notFound": "Esta meta ya no existe."
   },
   "contribution": {
-    "amount": "Monto",
-    "date": "Fecha",
-    "note": "Nota",
-    "optional": "opcional",
     "save": "Guardar contribución",
-    "cancel": "Cancelar",
     "saveError": "No se pudo registrar. Inténtalo de nuevo."
   },
   "history": {

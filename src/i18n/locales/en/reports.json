@@ -1,0 +1,25 @@
+{
+  "title": "Reports",
+  "income": "Income",
+  "expenses": "Expenses",
+  "hero": {
+    "label": "Savings capacity",
+    "summary": "Income {{income}} · Expenses {{expenses}}",
+    "rate": "You keep {{percentage}}% of what you earned"
+  },
+  "distribution": {
+    "title": "Spending breakdown",
+    "empty": "No spending this period",
+    "total": "Spent",
+    "other": "Other categories",
+    "description": "Donut chart of the period's spending by category"
+  },
+  "projection": {
+    "title": "Savings projection",
+    "subtitle": "What you've saved in your active goals",
+    "empty": "No projection data yet",
+    "single": "You've saved {{amount}} in your goals",
+    "targets": "Target dates",
+    "description": "Savings in active goals accumulated over time"
+  }
+}

@@ -63,14 +63,21 @@ const router = createBrowserRouter([
                 path: ROUTES.reports,
                 lazy: lazyScreen(
                   () => import('@/features/reports'),
-                  m => m.ReportsScreen,
+                  m => m.ReportsPage,
                 ),
               },
               {
                 path: ROUTES.loans,
                 lazy: lazyScreen(
-                  () => import('@/features/loans'),
-                  m => m.LoansScreen,
+                  () => import('@/features/loans/LoansPage'),
+                  m => m.LoansPage,
+                ),
+              },
+              {
+                path: ROUTES.loanDetail,
+                lazy: lazyScreen(
+                  () => import('@/features/loans/LoanDetailPage'),
+                  m => m.LoanDetailPage,
                 ),
               },
               {

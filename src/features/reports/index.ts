@@ -1,1 +1,1 @@
-export { ReportsScreen } from './ReportsScreen'
+export { ReportsPage } from './ReportsPage'

@@ -48,12 +48,7 @@
     "notFound": "This goal no longer exists."
   },
   "contribution": {
-    "amount": "Amount",
-    "date": "Date",
-    "note": "Note",
-    "optional": "optional",
     "save": "Save contribution",
-    "cancel": "Cancel",
     "saveError": "Couldn't save. Try again."
   },
   "history": {

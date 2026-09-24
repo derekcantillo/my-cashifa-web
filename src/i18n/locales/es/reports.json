@@ -1,0 +1,25 @@
+{
+  "title": "Reportes",
+  "income": "Ingresos",
+  "expenses": "Gastos",
+  "hero": {
+    "label": "Capacidad de ahorro",
+    "summary": "Ingresos {{income}} · Gastos {{expenses}}",
+    "rate": "Te queda el {{percentage}} % de lo que ganaste"
+  },
+  "distribution": {
+    "title": "Distribución de gastos",
+    "empty": "Sin gastos registrados este periodo",
+    "total": "Gastado",
+    "other": "Otras categorías",
+    "description": "Gráfico de dona con el gasto del periodo por categoría"
+  },
+  "projection": {
+    "title": "Proyección de ahorro",
+    "subtitle": "Lo que llevas ahorrado en tus metas activas",
+    "empty": "Sin datos de proyección todavía",
+    "single": "Llevas {{amount}} ahorrado en tus metas",
+    "targets": "Fechas objetivo",
+    "description": "Ahorro acumulado en metas activas a lo largo del tiempo"
+  }
+}
