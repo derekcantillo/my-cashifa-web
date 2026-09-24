@@ -1,1 +1,1 @@
-export { NetWorthScreen } from './NetWorthScreen'
+export { NetWorthPage } from './NetWorthPage'

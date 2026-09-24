@@ -91,7 +91,7 @@ const router = createBrowserRouter([
                 path: ROUTES.netWorth,
                 lazy: lazyScreen(
                   () => import('@/features/net-worth'),
-                  m => m.NetWorthScreen,
+                  m => m.NetWorthPage,
                 ),
               },
               {

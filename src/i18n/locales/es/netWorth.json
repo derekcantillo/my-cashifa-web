@@ -1,0 +1,12 @@
+{
+  "title": "Patrimonio neto",
+  "assets": "Activos",
+  "liabilities": "Pasivos",
+  "accounts": "Cuentas",
+  "receivables": "Por cobrar",
+  "goalsSavings": "Ahorro en metas",
+  "debts": "Deudas",
+  "creditCards": "Tarjetas de crédito",
+  "comingSoon": "Próximamente",
+  "liabilitiesPending": "Todavía no incluye deudas ni tarjetas de crédito."
+}

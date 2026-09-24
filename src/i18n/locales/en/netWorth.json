@@ -1,0 +1,12 @@
+{
+  "title": "Net worth",
+  "assets": "Assets",
+  "liabilities": "Liabilities",
+  "accounts": "Accounts",
+  "receivables": "Owed to you",
+  "goalsSavings": "Saved in goals",
+  "debts": "Debts",
+  "creditCards": "Credit cards",
+  "comingSoon": "Coming soon",
+  "liabilitiesPending": "Doesn't include debts or credit cards yet."
+}

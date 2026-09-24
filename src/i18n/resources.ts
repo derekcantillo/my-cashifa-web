@@ -6,6 +6,7 @@ import enDashboard from './locales/en/dashboard.json'
 import enGoals from './locales/en/goals.json'
 import enLayout from './locales/en/layout.json'
 import enLoans from './locales/en/loans.json'
+import enNetWorth from './locales/en/netWorth.json'
 import enReports from './locales/en/reports.json'
 import enTransactions from './locales/en/transactions.json'
 import esAlerts from './locales/es/alerts.json'
@@ -16,6 +17,7 @@ import esDashboard from './locales/es/dashboard.json'
 import esGoals from './locales/es/goals.json'
 import esLayout from './locales/es/layout.json'
 import esLoans from './locales/es/loans.json'
+import esNetWorth from './locales/es/netWorth.json'
 import esReports from './locales/es/reports.json'
 import esTransactions from './locales/es/transactions.json'
 
@@ -37,6 +39,7 @@ export const resources = {
     reports: esReports,
     loans: esLoans,
     alerts: esAlerts,
+    netWorth: esNetWorth,
   },
   en: {
     common: enCommon,
@@ -49,5 +52,6 @@ export const resources = {
     reports: enReports,
     loans: enLoans,
     alerts: enAlerts,
+    netWorth: enNetWorth,
   },
 } as const
