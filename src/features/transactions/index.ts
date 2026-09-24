@@ -1,1 +1,1 @@
-export { TransactionsScreen } from './TransactionsScreen'
+export { TransactionsPage } from './TransactionsPage'

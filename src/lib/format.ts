@@ -77,3 +77,64 @@ export function formatPeriodRange(
     range: formatter.formatRange(start, lastDay),
   }
 }
+
+const DATE_KEY = new Intl.DateTimeFormat('en-CA', {
+  timeZone: APP_TIME_ZONE,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+})
+
+/** `YYYY-MM-DD` of an instant in Bogotá — the value an `<input type="date">` expects. */
+export function toDateInputValue(date: Date | string = new Date()): string {
+  return DATE_KEY.format(typeof date === 'string' ? new Date(date) : date)
+}
+
+/**
+ * Turns a date-input value into the ISO instant sent as `transactionDate`.
+ * The backend does `new Date(value)`, so a bare `YYYY-MM-DD` would be UTC midnight —
+ * 7 pm of the previous day in Bogotá, landing in the wrong day (or period).
+ * Today keeps the current time (so it sorts after earlier movements); any other day
+ * is pinned to noon Bogotá.
+ */
+export function fromDateInputValue(value: string, now = new Date()): string {
+  if (value === toDateInputValue(now)) return now.toISOString()
+  return new Date(`${value}T12:00:00-05:00`).toISOString()
+}
+
+/**
+ * Parses an amount typed by the user. In Spanish (Colombia) `.` groups thousands and
+ * `,` is the decimal mark ("48.000" is forty-eight thousand); in English it's the
+ * other way round. Returns `NaN` when it isn't a valid amount with ≤ 2 decimals.
+ */
+export function parseAmountInput(value: string, locale: string): number {
+  const [group, decimal] = locale.startsWith('es') ? ['.', ','] : [',', '.']
+  const cleaned = value.replace(/[\s$]/g, '').split(group).join('').replace(decimal, '.')
+  return /^\d+(\.\d{1,2})?$/.test(cleaned) ? Number(cleaned) : NaN
+}
+
+/** Inverse of `parseAmountInput`, for pre-filling the edit form. */
+export function formatAmountInput(amount: number, locale: string): string {
+  return new Intl.NumberFormat(locale, { maximumFractionDigits: 2, useGrouping: true }).format(
+    amount,
+  )
+}
+
+/** Day heading for grouped lists, e.g. "domingo, 21 de septiembre". */
+export function formatDayHeading(dateKey: string, locale: string, now = new Date()): string {
+  const date = new Date(`${dateKey}T12:00:00-05:00`)
+  const year = new Intl.DateTimeFormat('en', { timeZone: APP_TIME_ZONE, year: 'numeric' })
+  const text = new Intl.DateTimeFormat(locale, {
+    timeZone: APP_TIME_ZONE,
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    ...(year.format(date) === year.format(now) ? {} : { year: 'numeric' }),
+  }).format(date)
+  return text.charAt(0).toLocaleUpperCase(locale) + text.slice(1)
+}
+
+/** `YYYY-MM-DD` (Bogotá) of the day before `dateKey`. */
+export function previousDateKey(dateKey: string): string {
+  return toDateInputValue(new Date(Date.parse(`${dateKey}T12:00:00-05:00`) - DAY_MS))
+}

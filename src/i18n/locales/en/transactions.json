@@ -1,0 +1,62 @@
+{
+  "form": {
+    "createTitle": "Add transaction",
+    "editTitle": "Edit transaction",
+    "close": "Close",
+    "type": "Type",
+    "expense": "Expense",
+    "income": "Income",
+    "otherType": "Type: {{type}} (can't be changed here)",
+    "category": "Category",
+    "amount": "Amount",
+    "amountPlaceholder": "0",
+    "date": "Date",
+    "account": "Account",
+    "noAccount": "No account",
+    "optional": "optional",
+    "note": "Note",
+    "notePlaceholder": "What was it for?",
+    "save": "Save",
+    "saving": "Saving…",
+    "loadError": "We couldn't load this transaction.",
+    "saveError": "Couldn't save. Check the details and try again.",
+    "errors": {
+      "categoryRequired": "Pick a category",
+      "amountRequired": "Enter the amount",
+      "amountInvalid": "Enter a valid amount, e.g. 48,000",
+      "amountPositive": "The amount must be greater than zero",
+      "dateRequired": "Pick a date",
+      "noteTooLong": "255 characters max"
+    },
+    "delete": "Delete",
+    "deleteConfirm": "Delete this transaction?",
+    "deleteHint": "This can't be undone.",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "deleting": "Deleting…",
+    "deleteError": "Couldn't delete. Try again."
+  },
+  "types": {
+    "EXPENSE": "Expense",
+    "INCOME": "Income",
+    "SAVING": "Savings",
+    "DEBT_PAYMENT": "Debt payment",
+    "LOAN_GIVEN": "Loan",
+    "LOAN_REPAYMENT": "Loan repayment"
+  },
+  "toast": {
+    "saved": "Transaction saved",
+    "deleted": "Transaction deleted"
+  },
+  "page": {
+    "add": "Add transaction",
+    "filter": "Show",
+    "all": "All",
+    "income": "Income",
+    "expense": "Expenses",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "dayExpenses": "Spent {{amount}}",
+    "emptyFiltered": "No transactions of this type this period"
+  }
+}

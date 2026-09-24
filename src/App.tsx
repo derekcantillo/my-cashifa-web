@@ -41,7 +41,7 @@ const router = createBrowserRouter([
                 path: ROUTES.transactions,
                 lazy: lazyScreen(
                   () => import('@/features/transactions'),
-                  m => m.TransactionsScreen,
+                  m => m.TransactionsPage,
                 ),
               },
               {

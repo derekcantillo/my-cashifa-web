@@ -8,6 +8,7 @@
     "save": "Guardar",
     "cancel": "Cancelar",
     "retry": "Reintentar",
-    "underConstruction": "Esta sección está en construcción"
+    "underConstruction": "Esta sección está en construcción",
+    "close": "Cerrar"
   }
 }

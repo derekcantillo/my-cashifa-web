@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { IconButton, iconButtonClassName } from '@/components/ui'
 import { ROUTES } from '@/lib/routes'
 import { cn } from '@/lib/utils'
+import { useTransactionModalStore } from '@/store/transactionModalStore'
 
 import { AccountMenu } from './AccountMenu'
 import { CONTENT_GUTTER } from './layoutStyles'
@@ -20,6 +21,7 @@ interface HeaderProps {
 export function Header({ navOpen, onOpenNav }: HeaderProps) {
   const { t } = useTranslation('layout')
   const hasUnreadAlerts = MOCK_UNREAD_ALERTS > 0
+  const openTransactionModal = useTransactionModalStore(state => state.open)
 
   return (
     <header
@@ -40,9 +42,9 @@ export function Header({ navOpen, onOpenNav }: HeaderProps) {
       <PeriodSelector />
 
       <div className="ml-auto flex items-center gap-1 sm:gap-2">
-        {/* TODO(Block 4+): open the new transaction form. */}
         <button
           type="button"
+          onClick={() => openTransactionModal('create')}
           className="inline-flex items-center gap-2 rounded-lg bg-brand px-2.5 py-2 text-sm font-medium text-on-brand transition-colors hover:bg-brand-hover sm:px-3.5"
         >
           <Plus className="size-4" aria-hidden />

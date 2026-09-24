@@ -1,0 +1,62 @@
+{
+  "form": {
+    "createTitle": "Registrar movimiento",
+    "editTitle": "Editar movimiento",
+    "close": "Cerrar",
+    "type": "Tipo",
+    "expense": "Gasto",
+    "income": "Ingreso",
+    "otherType": "Tipo: {{type}} (no se puede cambiar aquí)",
+    "category": "Categoría",
+    "amount": "Monto",
+    "amountPlaceholder": "0",
+    "date": "Fecha",
+    "account": "Cuenta",
+    "noAccount": "Sin cuenta asignada",
+    "optional": "opcional",
+    "note": "Nota",
+    "notePlaceholder": "¿En qué fue?",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "loadError": "No pudimos cargar este movimiento.",
+    "saveError": "No se pudo guardar. Revisa los datos e inténtalo de nuevo.",
+    "errors": {
+      "categoryRequired": "Elige una categoría",
+      "amountRequired": "Escribe el monto",
+      "amountInvalid": "Escribe un monto válido, por ejemplo 48.000",
+      "amountPositive": "El monto debe ser mayor que cero",
+      "dateRequired": "Elige una fecha",
+      "noteTooLong": "Máximo 255 caracteres"
+    },
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar este movimiento?",
+    "deleteHint": "No se puede deshacer.",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "deleting": "Eliminando…",
+    "deleteError": "No se pudo eliminar. Inténtalo de nuevo."
+  },
+  "types": {
+    "EXPENSE": "Gasto",
+    "INCOME": "Ingreso",
+    "SAVING": "Ahorro",
+    "DEBT_PAYMENT": "Pago de deuda",
+    "LOAN_GIVEN": "Préstamo",
+    "LOAN_REPAYMENT": "Abono de préstamo"
+  },
+  "toast": {
+    "saved": "Movimiento guardado",
+    "deleted": "Movimiento eliminado"
+  },
+  "page": {
+    "add": "Registrar movimiento",
+    "filter": "Mostrar",
+    "all": "Todos",
+    "income": "Ingresos",
+    "expense": "Gastos",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "dayExpenses": "Gastos {{amount}}",
+    "emptyFiltered": "No hay movimientos de este tipo en el periodo"
+  }
+}
