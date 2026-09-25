@@ -1,0 +1,84 @@
+{
+  "title": "Ajustes",
+  "accounts": {
+    "title": "Cuentas",
+    "add": "Agregar cuenta",
+    "empty": "Todavía no agregaste ninguna cuenta",
+    "createTitle": "Agregar cuenta",
+    "name": "Nombre",
+    "namePlaceholder": "Ej. Nu, Efectivo",
+    "type": "Tipo",
+    "types": {
+      "DEBIT_CARD": "Tarjeta débito",
+      "CREDIT_CARD": "Tarjeta de crédito",
+      "CASH": "Efectivo",
+      "SAVINGS_ACCOUNT": "Cuenta de ahorros"
+    },
+    "initialBalance": "Saldo inicial",
+    "newInitialBalance": "Nuevo saldo inicial",
+    "since": "Desde",
+    "balanceHint": "El saldo actual se calcula a partir de esta fecha, sumando los movimientos registrados desde entonces.",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "saved": "Cuenta guardada",
+    "balanceUpdated": "Saldo actualizado",
+    "saveError": "No se pudo guardar. Inténtalo de nuevo.",
+    "balanceError": "La cuenta se creó, pero no se pudo guardar el saldo inicial.",
+    "updateError": "No se pudo actualizar el saldo. Inténtalo de nuevo.",
+    "errors": {
+      "nameRequired": "Escribe un nombre",
+      "nameTooLong": "Máximo 80 caracteres",
+      "amountRequired": "Escribe el saldo",
+      "amountInvalid": "Escribe un monto válido, por ejemplo 1.500.000",
+      "dateRequired": "Elige una fecha"
+    }
+  },
+  "recurring": {
+    "title": "Gastos fijos",
+    "add": "Nuevo gasto fijo",
+    "empty": "Todavía no configuraste gastos fijos",
+    "createTitle": "Nuevo gasto fijo",
+    "editTitle": "Editar gasto fijo",
+    "name": "Nombre",
+    "namePlaceholder": "Ej. Arriendo, Internet",
+    "category": "Categoría",
+    "estimatedAmount": "Monto estimado",
+    "dayOfMonth": "Día del mes",
+    "dayLabel": "Día {{day}}",
+    "activeLabel": "{{name}} activo",
+    "saved": "Gasto fijo guardado",
+    "deleted": "Gasto fijo eliminado",
+    "deleteConfirm": "¿Eliminar este gasto fijo?",
+    "saveError": "No se pudo guardar. Revisa los datos e inténtalo de nuevo.",
+    "deleteError": "No se pudo eliminar. Inténtalo de nuevo.",
+    "toggleError": "No se pudo actualizar el gasto fijo.",
+    "loadError": "No pudimos cargar este gasto fijo.",
+    "errors": {
+      "nameRequired": "Escribe un nombre",
+      "nameTooLong": "Máximo 120 caracteres",
+      "categoryRequired": "Elige una categoría",
+      "amountRequired": "Escribe el monto",
+      "amountInvalid": "Escribe un monto válido, por ejemplo 1.200.000",
+      "amountPositive": "El monto debe ser mayor que cero",
+      "dayInvalid": "Un día entre 1 y 31"
+    }
+  },
+  "rules": {
+    "title": "Reglas de presupuesto",
+    "description": "Qué porcentaje de tu base del periodo va a cada categoría. Se aplican la próxima vez que se recalcule el presupuesto.",
+    "save": "Guardar reglas",
+    "total": "Total: {{total}}",
+    "over": "La suma supera el 100%",
+    "invalid": "Entre 0 y 100",
+    "saved": "Reglas guardadas",
+    "saveError": "No se pudieron guardar las reglas. Inténtalo de nuevo."
+  },
+  "savings": {
+    "title": "Ahorro objetivo",
+    "description": "Qué parte de tu ingreso disponible quieres destinar a ahorro y metas.",
+    "label": "Porcentaje de ahorro objetivo",
+    "save": "Guardar",
+    "saved": "Ahorro objetivo actualizado",
+    "saveError": "No se pudo guardar. Inténtalo de nuevo."
+  }
+}

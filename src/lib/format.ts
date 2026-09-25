@@ -138,3 +138,11 @@ export function formatDayHeading(dateKey: string, locale: string, now = new Date
 export function previousDateKey(dateKey: string): string {
   return toDateInputValue(new Date(Date.parse(`${dateKey}T12:00:00-05:00`) - DAY_MS))
 }
+
+/** Like `parseAmountInput` but accepts a leading "-" (a balance can be negative, e.g. a credit card). */
+export function parseSignedAmountInput(value: string, locale: string): number {
+  const trimmed = value.trim()
+  const negative = trimmed.startsWith('-') || trimmed.startsWith('−')
+  const amount = parseAmountInput(negative ? trimmed.slice(1) : trimmed, locale)
+  return negative ? -amount : amount
+}

@@ -8,6 +8,7 @@ import enLayout from './locales/en/layout.json'
 import enLoans from './locales/en/loans.json'
 import enNetWorth from './locales/en/netWorth.json'
 import enReports from './locales/en/reports.json'
+import enSettings from './locales/en/settings.json'
 import enTransactions from './locales/en/transactions.json'
 import esAlerts from './locales/es/alerts.json'
 import esAuth from './locales/es/auth.json'
@@ -19,6 +20,7 @@ import esLayout from './locales/es/layout.json'
 import esLoans from './locales/es/loans.json'
 import esNetWorth from './locales/es/netWorth.json'
 import esReports from './locales/es/reports.json'
+import esSettings from './locales/es/settings.json'
 import esTransactions from './locales/es/transactions.json'
 
 export const SUPPORTED_LANGUAGES = ['es', 'en'] as const
@@ -40,6 +42,7 @@ export const resources = {
     loans: esLoans,
     alerts: esAlerts,
     netWorth: esNetWorth,
+    settings: esSettings,
   },
   en: {
     common: enCommon,
@@ -53,5 +56,6 @@ export const resources = {
     loans: enLoans,
     alerts: enAlerts,
     netWorth: enNetWorth,
+    settings: enSettings,
   },
 } as const

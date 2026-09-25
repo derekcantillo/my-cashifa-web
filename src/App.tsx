@@ -98,7 +98,7 @@ const router = createBrowserRouter([
                 path: ROUTES.settings,
                 lazy: lazyScreen(
                   () => import('@/features/settings'),
-                  m => m.SettingsScreen,
+                  m => m.SettingsPage,
                 ),
               },
             ],

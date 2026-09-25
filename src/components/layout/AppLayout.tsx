@@ -1,41 +1,17 @@
-import { lazy, Suspense, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import { ToastContainer } from '@/components/ui'
 import { cn } from '@/lib/utils'
-import { useGoalModalStore } from '@/store/goalModalStore'
-import { useLoanModalStore } from '@/store/loanModalStore'
-import { useTransactionModalStore } from '@/store/transactionModalStore'
 
 import { Header } from './Header'
+import { GlobalModals } from './GlobalModals'
 import { CONTENT_GUTTER } from './layoutStyles'
 import { Sidebar } from './Sidebar'
-
-// Loaded on first open, so the form stack (react-hook-form, zod) stays out of the main bundle.
-const TransactionFormModal = lazy(() =>
-  import('@/features/transactions/components/TransactionFormModal').then(module => ({
-    default: module.TransactionFormModal,
-  })),
-)
-
-const GoalFormModal = lazy(() =>
-  import('@/features/goals/components/GoalFormModal').then(module => ({
-    default: module.GoalFormModal,
-  })),
-)
-
-const LoanFormModal = lazy(() =>
-  import('@/features/loans/components/LoanFormModal').then(module => ({
-    default: module.LoanFormModal,
-  })),
-)
 
 export function AppLayout() {
   const [navOpen, setNavOpen] = useState(false)
   const closeNav = useCallback(() => setNavOpen(false), [])
-  const isTransactionModalOpen = useTransactionModalStore(state => state.isOpen)
-  const isGoalModalOpen = useGoalModalStore(state => state.isOpen)
-  const isLoanModalOpen = useLoanModalStore(state => state.isOpen)
 
   return (
     <div className="min-h-screen bg-surface lg:flex">
@@ -49,24 +25,7 @@ export function AppLayout() {
         </main>
       </div>
 
-      {/* Remounts on every open, so each open starts from a fresh form. */}
-      {isTransactionModalOpen && (
-        <Suspense fallback={null}>
-          <TransactionFormModal />
-        </Suspense>
-      )}
-
-      {isGoalModalOpen && (
-        <Suspense fallback={null}>
-          <GoalFormModal />
-        </Suspense>
-      )}
-
-      {isLoanModalOpen && (
-        <Suspense fallback={null}>
-          <LoanFormModal />
-        </Suspense>
-      )}
+      <GlobalModals />
 
       <ToastContainer />
     </div>

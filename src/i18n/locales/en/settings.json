@@ -1,0 +1,84 @@
+{
+  "title": "Settings",
+  "accounts": {
+    "title": "Accounts",
+    "add": "Add account",
+    "empty": "You haven't added any accounts yet",
+    "createTitle": "Add account",
+    "name": "Name",
+    "namePlaceholder": "e.g. Nu, Cash",
+    "type": "Type",
+    "types": {
+      "DEBIT_CARD": "Debit card",
+      "CREDIT_CARD": "Credit card",
+      "CASH": "Cash",
+      "SAVINGS_ACCOUNT": "Savings account"
+    },
+    "initialBalance": "Starting balance",
+    "newInitialBalance": "New starting balance",
+    "since": "As of",
+    "balanceHint": "The current balance is computed from this date, adding the transactions recorded since then.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saved": "Account saved",
+    "balanceUpdated": "Balance updated",
+    "saveError": "Couldn't save. Try again.",
+    "balanceError": "The account was created, but its starting balance couldn't be saved.",
+    "updateError": "Couldn't update the balance. Try again.",
+    "errors": {
+      "nameRequired": "Enter a name",
+      "nameTooLong": "80 characters max",
+      "amountRequired": "Enter the balance",
+      "amountInvalid": "Enter a valid amount, e.g. 1,500,000",
+      "dateRequired": "Pick a date"
+    }
+  },
+  "recurring": {
+    "title": "Fixed expenses",
+    "add": "New fixed expense",
+    "empty": "You haven't set up any fixed expenses yet",
+    "createTitle": "New fixed expense",
+    "editTitle": "Edit fixed expense",
+    "name": "Name",
+    "namePlaceholder": "e.g. Rent, Internet",
+    "category": "Category",
+    "estimatedAmount": "Estimated amount",
+    "dayOfMonth": "Day of the month",
+    "dayLabel": "Day {{day}}",
+    "activeLabel": "{{name}} active",
+    "saved": "Fixed expense saved",
+    "deleted": "Fixed expense deleted",
+    "deleteConfirm": "Delete this fixed expense?",
+    "saveError": "Couldn't save. Check the details and try again.",
+    "deleteError": "Couldn't delete. Try again.",
+    "toggleError": "Couldn't update the fixed expense.",
+    "loadError": "We couldn't load this fixed expense.",
+    "errors": {
+      "nameRequired": "Enter a name",
+      "nameTooLong": "120 characters max",
+      "categoryRequired": "Pick a category",
+      "amountRequired": "Enter the amount",
+      "amountInvalid": "Enter a valid amount, e.g. 1,200,000",
+      "amountPositive": "The amount must be greater than zero",
+      "dayInvalid": "A day between 1 and 31"
+    }
+  },
+  "rules": {
+    "title": "Budget rules",
+    "description": "What share of the period's base goes to each category. They apply the next time the budget is recalculated.",
+    "save": "Save rules",
+    "total": "Total: {{total}}",
+    "over": "The total is over 100%",
+    "invalid": "Between 0 and 100",
+    "saved": "Rules saved",
+    "saveError": "Couldn't save the rules. Try again."
+  },
+  "savings": {
+    "title": "Savings target",
+    "description": "How much of your available income you want to put toward savings and goals.",
+    "label": "Savings target percentage",
+    "save": "Save",
+    "saved": "Savings target updated",
+    "saveError": "Couldn't save. Try again."
+  }
+}

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { DeleteConfirmation, Field, FieldError, inputClassName } from '@/components/ui'
+import { CategoryPicker, DeleteConfirmation, Field, inputClassName } from '@/components/ui'
 import {
   useAccounts,
   useCreateTransaction,
@@ -12,7 +12,6 @@ import {
   useFormatters,
   useUpdateTransaction,
 } from '@/hooks'
-import { CATEGORY_META } from '@/lib/categoryMeta'
 import {
   formatAmountInput,
   fromDateInputValue,
@@ -179,31 +178,12 @@ export function TransactionForm({ transaction, onDone }: TransactionFormProps) {
         </p>
       )}
 
-      <fieldset aria-describedby={categoryError ? 'category-error' : undefined}>
-        <legend className="mb-2 text-sm font-medium">{t('transactions:form.category')}</legend>
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-          {CATEGORIES.map(category => {
-            const meta = CATEGORY_META[category]
-            const Icon = meta.icon
-            return (
-              <label
-                key={category}
-                className="flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border border-border px-1 py-2.5 text-center text-xs text-ink-muted transition-colors hover:text-ink has-checked:border-brand has-checked:bg-brand/10 has-checked:text-brand has-focus-visible:ring-2 has-focus-visible:ring-brand"
-              >
-                <input
-                  type="radio"
-                  value={category}
-                  className="sr-only"
-                  {...register('category')}
-                />
-                <Icon className="size-5" aria-hidden />
-                <span className="leading-tight">{t(meta.translationKey)}</span>
-              </label>
-            )
-          })}
-        </div>
-        {categoryError && <FieldError id="category-error">{categoryError}</FieldError>}
-      </fieldset>
+      <CategoryPicker
+        id="transaction-category"
+        legend={t('transactions:form.category')}
+        registration={register('category')}
+        error={categoryError}
+      />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field id="amount" label={t('transactions:form.amount')} error={amountError}>
