@@ -58,7 +58,8 @@
     "cantUndo": "This can't be undone.",
     "delete": "Delete",
     "edit": "Edit",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "loadError": "We couldn't load this section."
   },
   "amountForm": {
     "amount": "Amount",

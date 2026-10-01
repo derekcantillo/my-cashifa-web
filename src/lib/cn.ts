@@ -9,7 +9,17 @@ import { extendTailwindMerge } from 'tailwind-merge'
 const twMerge = extendTailwindMerge({
   extend: {
     theme: {
-      text: ['display-xl', 'display-lg', 'display-md', 'title', 'body', 'body-sm', 'eyebrow'],
+      text: [
+        'display-xl',
+        'display-lg',
+        'display-md',
+        'display-sm',
+        'figure',
+        'title',
+        'body',
+        'body-sm',
+        'eyebrow',
+      ],
       shadow: ['raised', 'floating', 'pressed'],
       radius: ['card'],
     },

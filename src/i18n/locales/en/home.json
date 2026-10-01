@@ -1,0 +1,58 @@
+{
+  "title": "Home",
+  "hero": {
+    "label": "Available to spend",
+    "day": "Day {{day}}",
+    "length_one": "{{count}} day",
+    "length_other": "{{count}} days",
+    "deficit": "Budget in deficit",
+    "spentOfBudget": "Spent {{spent}} of {{budget}}",
+    "budgetProgress": "Share of the period budget spent",
+    "noPeriodTitle": "No periods yet",
+    "noPeriodBody": "They start when you add your first salary."
+  },
+  "stats": {
+    "income": "Income this period",
+    "expenses": "Expenses this period",
+    "pending": "Recurring to log",
+    "pendingCount_one": "{{count}} recurring expense pending",
+    "pendingCount_other": "{{count}} recurring expenses pending",
+    "upToDate": "All caught up"
+  },
+  "pace": {
+    "title": "Spending pace",
+    "chartLabel": "Daily spending over the last 7 days",
+    "today": "Today",
+    "dayAmount": "{{day}}: {{amount}}",
+    "outsidePeriod": "{{day}}: outside the period",
+    "dailyAverage": "Daily average",
+    "peakDay": "Biggest spending day",
+    "empty": "No spending this period yet."
+  },
+  "goals": {
+    "title": "Goals",
+    "seeAll": "See all",
+    "saved": "{{saved}} of {{target}}",
+    "targetDate": "By {{date}}",
+    "emptyTitle": "No active goals",
+    "emptyBody": "Give what you want to achieve a name and a date, and follow your progress from here.",
+    "create": "Create goal"
+  },
+  "recent": {
+    "title": "Recent activity",
+    "seeAll": "See all",
+    "emptyTitle": "No transactions",
+    "emptyBody": "You haven't added any transactions this period yet.",
+    "register": "Add expense"
+  },
+  "netWorth": {
+    "title": "Net worth",
+    "seeDetail": "See details"
+  },
+  "receivables": {
+    "title": "Owed to you",
+    "count_one": "{{count}} active loan",
+    "count_other": "{{count}} active loans",
+    "seeLoans": "See loans"
+  }
+}

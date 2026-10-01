@@ -30,8 +30,7 @@ export interface MoneyFormatOptions {
   locale?: string
 }
 
-/** Money in `APP_CURRENCY`, no cents (COP), narrow symbol. */
-export function formatMoney(value: number, options: MoneyFormatOptions = {}): string {
+function moneyFormatter(options: MoneyFormatOptions): Intl.NumberFormat {
   const { currency = APP_CURRENCY, signDisplay, compact = false, locale = activeLocale() } = options
   return new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -39,7 +38,20 @@ export function formatMoney(value: number, options: MoneyFormatOptions = {}): st
     currencyDisplay: 'narrowSymbol',
     signDisplay,
     ...(compact ? { notation: 'compact', maximumFractionDigits: 1 } : { maximumFractionDigits: 0 }),
-  }).format(value)
+  })
+}
+
+/** Money in `APP_CURRENCY`, no cents (COP), narrow symbol. */
+export function formatMoney(value: number, options: MoneyFormatOptions = {}): string {
+  return moneyFormatter(options).format(value)
+}
+
+/** Same as `formatMoney`, split into parts (e.g. to style the currency symbol on its own). */
+export function formatMoneyParts(
+  value: number,
+  options: MoneyFormatOptions = {},
+): Intl.NumberFormatPart[] {
+  return moneyFormatter(options).formatToParts(value)
 }
 
 export interface PercentFormatOptions {
@@ -187,7 +199,7 @@ export function formatDayHeading(dateKey: string, locale: string, now = new Date
 
 /** `YYYY-MM-DD` (Bogotá) of the day before `dateKey`. */
 export function previousDateKey(dateKey: string): string {
-  return toDateInputValue(new Date(Date.parse(`${dateKey}T12:00:00-05:00`) - DAY_MS))
+  return addDaysToDateKey(dateKey, -1)
 }
 
 /** Like `parseAmountInput` but accepts a leading "-" (a balance can be negative, e.g. a credit card). */
@@ -196,4 +208,19 @@ export function parseSignedAmountInput(value: string, locale: string): number {
   const negative = trimmed.startsWith('-') || trimmed.startsWith('−')
   const amount = parseAmountInput(negative ? trimmed.slice(1) : trimmed, locale)
   return negative ? -amount : amount
+}
+
+/** Noon Bogotá of a `YYYY-MM-DD` day — safe to format in Bogotá without day drift. */
+export function dateKeyToDate(dateKey: string): Date {
+  return new Date(`${dateKey}T12:00:00-05:00`)
+}
+
+/** `YYYY-MM-DD` (Bogotá) `days` after `dateKey` (negative goes back). */
+export function addDaysToDateKey(dateKey: string, days: number): string {
+  return toDateInputValue(new Date(dateKeyToDate(dateKey).getTime() + days * DAY_MS))
+}
+
+/** Whole calendar days from `from` to `to` (both `YYYY-MM-DD`); 0 when equal. */
+export function daysBetweenDateKeys(from: string, to: string): number {
+  return Math.round((dateKeyToDate(to).getTime() - dateKeyToDate(from).getTime()) / DAY_MS)
 }

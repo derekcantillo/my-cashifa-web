@@ -1,0 +1,58 @@
+{
+  "title": "Inicio",
+  "hero": {
+    "label": "Disponible para gastar",
+    "day": "Día {{day}}",
+    "length_one": "{{count}} día",
+    "length_other": "{{count}} días",
+    "deficit": "Presupuesto en déficit",
+    "spentOfBudget": "Gastado {{spent}} de {{budget}}",
+    "budgetProgress": "Gastado del presupuesto del periodo",
+    "noPeriodTitle": "Todavía no hay periodos",
+    "noPeriodBody": "Se crean cuando registras tu primer salario."
+  },
+  "stats": {
+    "income": "Ingresos del periodo",
+    "expenses": "Gastos del periodo",
+    "pending": "Fijos por registrar",
+    "pendingCount_one": "{{count}} gasto fijo pendiente",
+    "pendingCount_other": "{{count}} gastos fijos pendientes",
+    "upToDate": "Al día"
+  },
+  "pace": {
+    "title": "Ritmo de gasto",
+    "chartLabel": "Gasto diario de los últimos 7 días",
+    "today": "Hoy",
+    "dayAmount": "{{day}}: {{amount}}",
+    "outsidePeriod": "{{day}}: fuera del periodo",
+    "dailyAverage": "Promedio diario",
+    "peakDay": "Día de mayor gasto",
+    "empty": "Sin gastos en este periodo todavía."
+  },
+  "goals": {
+    "title": "Metas",
+    "seeAll": "Ver todas",
+    "saved": "{{saved}} de {{target}}",
+    "targetDate": "Para el {{date}}",
+    "emptyTitle": "Sin metas activas",
+    "emptyBody": "Ponle nombre y fecha a lo que quieres lograr, y sigue tu avance desde aquí.",
+    "create": "Crear meta"
+  },
+  "recent": {
+    "title": "Movimientos recientes",
+    "seeAll": "Ver todos",
+    "emptyTitle": "Sin movimientos",
+    "emptyBody": "Todavía no registraste movimientos en este periodo.",
+    "register": "Registrar gasto"
+  },
+  "netWorth": {
+    "title": "Patrimonio neto",
+    "seeDetail": "Ver detalle"
+  },
+  "receivables": {
+    "title": "Por cobrar",
+    "count_one": "{{count}} préstamo activo",
+    "count_other": "{{count}} préstamos activos",
+    "seeLoans": "Ver préstamos"
+  }
+}

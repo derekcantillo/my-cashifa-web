@@ -48,7 +48,7 @@ function groupByDay(transactions: Transaction[]): DayGroup[] {
 }
 
 export function TransactionsPage() {
-  const { t } = useTranslation(['transactions', 'common', 'dashboard'])
+  const { t } = useTranslation(['transactions', 'common'])
   const { locale, money } = useFormatters()
   const { periodId } = useSelectedPeriod()
   const { data, isPending, isError, refetch } = useTransactions(periodId)
@@ -102,7 +102,7 @@ export function TransactionsPage() {
       ) : isPending ? (
         <TransactionRowsSkeleton rows={6} />
       ) : !hasAny ? (
-        <p className="py-6 text-ink-muted">{t('dashboard:recent.empty')}</p>
+        <p className="py-6 text-ink-muted">{t('transactions:page.empty')}</p>
       ) : groups.length === 0 ? (
         <p className="py-6 text-ink-muted">{t('transactions:page.emptyFiltered')}</p>
       ) : (

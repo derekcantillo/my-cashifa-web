@@ -2,7 +2,7 @@ import enAlerts from './locales/en/alerts.json'
 import enAuth from './locales/en/auth.json'
 import enCategories from './locales/en/categories.json'
 import enCommon from './locales/en/common.json'
-import enDashboard from './locales/en/dashboard.json'
+import enHome from './locales/en/home.json'
 import enGoals from './locales/en/goals.json'
 import enLoans from './locales/en/loans.json'
 import enNetWorth from './locales/en/netWorth.json'
@@ -13,7 +13,7 @@ import esAlerts from './locales/es/alerts.json'
 import esAuth from './locales/es/auth.json'
 import esCategories from './locales/es/categories.json'
 import esCommon from './locales/es/common.json'
-import esDashboard from './locales/es/dashboard.json'
+import esHome from './locales/es/home.json'
 import esGoals from './locales/es/goals.json'
 import esLoans from './locales/es/loans.json'
 import esNetWorth from './locales/es/netWorth.json'
@@ -32,7 +32,7 @@ export const resources = {
     common: esCommon,
     auth: esAuth,
     categories: esCategories,
-    dashboard: esDashboard,
+    home: esHome,
     transactions: esTransactions,
     goals: esGoals,
     reports: esReports,
@@ -45,7 +45,7 @@ export const resources = {
     common: enCommon,
     auth: enAuth,
     categories: enCategories,
-    dashboard: enDashboard,
+    home: enHome,
     transactions: enTransactions,
     goals: enGoals,
     reports: enReports,

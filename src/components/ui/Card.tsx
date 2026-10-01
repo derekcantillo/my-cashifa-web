@@ -23,6 +23,15 @@ const PADDINGS: Record<CardPadding, string> = {
   lg: 'p-8',
 }
 
+/**
+ * For a whole card that is a link or button (`<Link className={interactiveCardClassName}>`):
+ * lifts to `floating` on hover, sinks on press. Pair with `raised` styles.
+ */
+export const interactiveCardClassName = cn(
+  'block rounded-card bg-surface-raised text-ink shadow-raised',
+  'transition-tactile press-tactile hover:-translate-y-px hover:shadow-floating',
+)
+
 interface CardProps extends HTMLAttributes<HTMLElement> {
   variant?: CardVariant
   padding?: CardPadding

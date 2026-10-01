@@ -6,14 +6,15 @@ interface SectionLinkProps {
   children: string
 }
 
+/** "Ver todos →" at the edge of a card. */
 export function SectionLink({ to, children }: SectionLinkProps) {
   return (
     <Link
       to={to}
-      className="inline-flex items-center gap-1 text-sm font-medium text-brand underline-offset-4 hover:underline"
+      className="inline-flex items-center gap-1 rounded-sm text-body-sm font-medium text-accent underline-offset-4 transition-tactile hover:underline"
     >
       {children}
-      <ArrowRight className="size-4" aria-hidden />
+      <ArrowRight className="size-3.5" aria-hidden />
     </Link>
   )
 }

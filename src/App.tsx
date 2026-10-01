@@ -33,8 +33,8 @@ const router = createBrowserRouter([
               {
                 path: ROUTES.dashboard,
                 lazy: lazyScreen(
-                  () => import('@/features/dashboard'),
-                  m => m.DashboardPage,
+                  () => import('@/features/home'),
+                  m => m.HomePage,
                 ),
               },
               {

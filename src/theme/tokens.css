@@ -79,7 +79,16 @@
   --text-display-md: 32px;
   --text-display-md--line-height: 1.1;
   --text-display-md--letter-spacing: -0.01em;
+  /* Empty-state headings inside cards. */
+  --text-display-sm: 24px;
+  --text-display-sm--line-height: 1.15;
+  --text-display-sm--letter-spacing: -0.005em;
   /* Sans */
+  /* Secondary figure of a compact card (net worth on Home). Sans, never serif. */
+  --text-figure: 28px;
+  --text-figure--line-height: 1.15;
+  --text-figure--letter-spacing: -0.01em;
+  --text-figure--font-weight: 600;
   --text-title: 20px;
   --text-title--line-height: 1.3;
   --text-title--font-weight: 600;
@@ -109,6 +118,19 @@
 
   /* ---- Motion ---- */
   --ease-tactile: cubic-bezier(0, 0, 0.2, 1);
+  /*
+   * Entrance of a page block: fade + 6px rise. `backwards` (not `both`) so the animation
+   * stops owning `transform` once it ends. Use as `motion-safe:animate-enter` and stagger
+   * with `animation-delay` (≤ 40ms between blocks).
+   */
+  --animate-enter: enter 360ms var(--ease-tactile) backwards;
+
+  @keyframes enter {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
 }
 
 :root {

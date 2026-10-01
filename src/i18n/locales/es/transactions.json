@@ -53,6 +53,7 @@
     "today": "Hoy",
     "yesterday": "Ayer",
     "dayExpenses": "Gastos {{amount}}",
-    "emptyFiltered": "No hay movimientos de este tipo en el periodo"
+    "emptyFiltered": "No hay movimientos de este tipo en el periodo",
+    "empty": "Todavía no registraste movimientos este periodo"
   }
 }

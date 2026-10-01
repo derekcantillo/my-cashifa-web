@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next'
 
 import { useFormatters } from '@/hooks'
+import { cn } from '@/lib/cn'
 import { CATEGORY_META } from '@/lib/categoryMeta'
 import { getTransactionDirection } from '@/lib/transactionDirection'
-import { cn } from '@/lib/cn'
 import type { Transaction } from '@/types'
 
 import { Skeleton } from './Skeleton'
@@ -16,7 +16,14 @@ interface TransactionRowProps {
   showDate?: boolean
 }
 
-/** Renders the contents of an `<li>`: category icon, name, date and signed amount. */
+/** Shared geometry: 56px tall, the icon column and the gaps line up with the skeleton. */
+const ROW = 'flex min-h-14 items-center gap-3.5 py-2'
+
+/**
+ * Renders the contents of an `<li>`: plain category icon (no colored chip), title,
+ * "Category · relative date" and the signed amount. Separators come from the list
+ * (`divide-y divide-line`), so there's none after the last row.
+ */
 export function TransactionRow({ transaction, onSelect, showDate = true }: TransactionRowProps) {
   const { t } = useTranslation(['categories'])
   const { money, relativeDay } = useFormatters()
@@ -33,25 +40,21 @@ export function TransactionRow({ transaction, onSelect, showDate = true }: Trans
 
   const content = (
     <>
-      <span
-        aria-hidden
-        className="flex size-10 shrink-0 items-center justify-center rounded-full"
-        style={{
-          color: meta.color,
-          backgroundColor: `color-mix(in srgb, ${meta.color} 14%, transparent)`,
-        }}
-      >
-        <Icon className="size-5" />
-      </span>
+      <Icon aria-hidden className="size-[18px] shrink-0 text-ink-muted" />
       <span className="min-w-0 flex-1">
-        <span className="block truncate font-medium">{transaction.description || category}</span>
-        {secondary && <span className="block truncate text-sm text-ink-muted">{secondary}</span>}
+        <span className="block truncate text-body font-medium text-ink">
+          {transaction.description || category}
+        </span>
+        {secondary && (
+          <span className="block truncate text-body-sm text-ink-muted">{secondary}</span>
+        )}
       </span>
       <span
         className={cn(
-          'shrink-0 font-medium tabular-nums',
-          direction === 'in' && 'text-success',
-          direction === 'out' && 'text-danger',
+          'shrink-0 text-body font-medium tabular-nums',
+          direction === 'in' && 'text-positive',
+          direction === 'out' && 'text-negative',
+          direction === 'moved' && 'text-ink',
         )}
       >
         {direction === 'in' ? '+' : '−'}
@@ -61,14 +64,19 @@ export function TransactionRow({ transaction, onSelect, showDate = true }: Trans
   )
 
   if (!onSelect) {
-    return <div className="flex items-center gap-4 py-3">{content}</div>
+    return <div className={ROW}>{content}</div>
   }
 
+  // Bleeds 12px past the list edges so the hover surface frames the content.
   return (
     <button
       type="button"
       onClick={() => onSelect(transaction)}
-      className="-mx-3 flex w-[calc(100%+1.5rem)] items-center gap-4 rounded-lg px-3 py-3 text-left transition-colors hover:bg-ink/5 focus-visible:bg-ink/5"
+      className={cn(
+        ROW,
+        '-mx-3 w-[calc(100%+1.5rem)] rounded-md px-3 text-left transition-tactile',
+        'hover:bg-surface-sunken/70 active:bg-surface-sunken',
+      )}
     >
       {content}
     </button>
@@ -78,15 +86,15 @@ export function TransactionRow({ transaction, onSelect, showDate = true }: Trans
 /** Loading placeholder with the shape of `rows` transaction rows. */
 export function TransactionRowsSkeleton({ rows = 4 }: { rows?: number }) {
   return (
-    <ul className="divide-y divide-border" aria-busy="true">
+    <ul className="divide-y divide-line" aria-busy="true">
       {Array.from({ length: rows }, (_, index) => (
-        <li key={index} className="flex items-center gap-4 py-3">
-          <Skeleton className="size-10 rounded-full" />
+        <li key={index} className={ROW}>
+          <Skeleton className="size-[18px] rounded-full" />
           <div className="flex-1 space-y-2">
-            <Skeleton className="h-4 w-40 max-w-full" />
+            <Skeleton className="h-3.5 w-40 max-w-full" />
             <Skeleton className="h-3 w-24" />
           </div>
-          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-3.5 w-20" />
         </li>
       ))}
     </ul>

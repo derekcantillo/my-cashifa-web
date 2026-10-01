@@ -53,6 +53,7 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "dayExpenses": "Spent {{amount}}",
-    "emptyFiltered": "No transactions of this type this period"
+    "emptyFiltered": "No transactions of this type this period",
+    "empty": "You haven't logged anything this period yet"
   }
 }

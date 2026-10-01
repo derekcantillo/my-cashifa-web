@@ -9,18 +9,49 @@ interface EmptyStateProps {
   /** Plain line icon — no colored chip behind it. */
   icon?: LucideIcon
   action?: ReactNode
+  /** `sm` for empty states inside a card. */
+  size?: 'sm' | 'md'
   className?: string
 }
 
-export function EmptyState({ title, description, icon: Icon, action, className }: EmptyStateProps) {
+export function EmptyState({
+  title,
+  description,
+  icon: Icon,
+  action,
+  size = 'md',
+  className,
+}: EmptyStateProps) {
+  const small = size === 'sm'
   return (
-    <div className={cn('flex flex-col items-center px-6 py-14 text-center', className)}>
-      {Icon && <Icon aria-hidden strokeWidth={1.25} className="mb-5 size-8 text-ink-subtle" />}
-      <h2 className="font-serif text-display-md text-ink">{title}</h2>
-      {description && (
-        <p className="mt-3 max-w-sm text-body text-ink-muted text-pretty">{description}</p>
+    <div
+      className={cn(
+        'flex flex-col items-center text-center',
+        small ? 'px-4 py-8' : 'px-6 py-14',
+        className,
       )}
-      {action && <div className="mt-6">{action}</div>}
+    >
+      {Icon && (
+        <Icon
+          aria-hidden
+          strokeWidth={1.25}
+          className={cn('text-ink-subtle', small ? 'mb-3 size-6' : 'mb-5 size-8')}
+        />
+      )}
+      <h3 className={cn('font-serif text-ink', small ? 'text-display-sm' : 'text-display-md')}>
+        {title}
+      </h3>
+      {description && (
+        <p
+          className={cn(
+            'max-w-sm text-ink-muted text-pretty',
+            small ? 'mt-2 text-body-sm' : 'mt-3 text-body',
+          )}
+        >
+          {description}
+        </p>
+      )}
+      {action && <div className={small ? 'mt-5' : 'mt-6'}>{action}</div>}
     </div>
   )
 }
