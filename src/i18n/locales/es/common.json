@@ -1,6 +1,49 @@
 {
   "app": {
-    "name": "Cashifa"
+    "name": "Cashifa",
+    "tagline": "Finanzas claras"
+  },
+  "nav": {
+    "label": "Navegación principal",
+    "open": "Abrir menú",
+    "close": "Cerrar menú",
+    "dashboard": "Inicio",
+    "transactions": "Gastos",
+    "goals": "Metas",
+    "reports": "Reportes",
+    "loans": "Préstamos",
+    "alerts": "Alertas",
+    "netWorth": "Patrimonio neto",
+    "settings": "Ajustes",
+    "unread_one": "{{count}} sin leer",
+    "unread_other": "{{count}} sin leer"
+  },
+  "actions": {
+    "registerExpense": "Registrar gasto",
+    "alerts": "Alertas",
+    "alertsUnread_one": "Alertas: {{count}} sin leer",
+    "alertsUnread_other": "Alertas: {{count}} sin leer",
+    "logout": "Cerrar sesión",
+    "clearSearch": "Borrar búsqueda"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Automático"
+  },
+  "language": {
+    "label": "Idioma",
+    "es": "Español",
+    "en": "English"
+  },
+  "period": {
+    "label": "Periodo",
+    "previous": "Periodo anterior",
+    "next": "Periodo siguiente",
+    "loading": "Cargando periodo",
+    "none": "Sin periodo",
+    "ongoing": "{{start}} – en curso"
   },
   "common": {
     "loading": "Cargando...",

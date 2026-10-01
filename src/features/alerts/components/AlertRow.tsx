@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useFormatters } from '@/hooks'
 import { AlertTypeIcon } from '@/lib/alertMeta'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 import type { Alert } from '@/types'
 
 interface AlertRowProps {

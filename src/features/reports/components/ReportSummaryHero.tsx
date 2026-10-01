@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { InlineError, Skeleton } from '@/components/ui'
 import { useFormatters, usePeriodLedger } from '@/hooks'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 
 /**
  * Savings capacity = the period's income minus its spending. Source: GET /period-ledger

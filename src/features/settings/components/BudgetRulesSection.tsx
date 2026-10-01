@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { InlineError, Skeleton } from '@/components/ui'
 import { useBudgetRules, useFormatters, useUpdateBudgetRules } from '@/hooks'
 import { CATEGORY_META } from '@/lib/categoryMeta'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 import { useToastStore } from '@/store/toastStore'
 import { CATEGORIES, type BudgetRule, type Category } from '@/types'
 

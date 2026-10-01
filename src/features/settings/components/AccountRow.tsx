@@ -2,7 +2,7 @@ import { ChevronDown, Wallet } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { useFormatters } from '@/hooks'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 import type { Account } from '@/types'
 
 import { InitialBalanceForm } from './InitialBalanceForm'

@@ -11,7 +11,7 @@ export function useFormatters() {
   return useMemo(
     () => ({
       locale,
-      money: (amount: number) => formatMoney(amount, locale),
+      money: (amount: number) => formatMoney(amount, { locale }),
       relativeDay: (iso: string) => formatRelativeDay(iso, locale),
       shortDate: (iso: string) => formatShortDate(iso, locale),
     }),

@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 
-import { AppLayout, RequireApiKey } from '@/components/layout'
+import { AppShell, RequireApiKey } from '@/components/layout'
 import { ROUTES } from '@/lib/routes'
 
 /** Lazy route loader: each screen ships in its own chunk. */
@@ -15,7 +15,7 @@ function lazyScreen<TModule>(
 const router = createBrowserRouter([
   {
     // Rendered while the first matched route's chunk loads.
-    hydrateFallbackElement: <div className="min-h-screen bg-surface" />,
+    hydrateFallbackElement: <div className="min-h-screen bg-canvas" />,
     children: [
       {
         path: ROUTES.setup,
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
         element: <RequireApiKey />,
         children: [
           {
-            element: <AppLayout />,
+            element: <AppShell />,
             children: [
               {
                 path: ROUTES.dashboard,
@@ -105,6 +105,18 @@ const router = createBrowserRouter([
           },
         ],
       },
+      // Design-system QA page; the branch is dropped from production builds.
+      ...(import.meta.env.DEV
+        ? [
+            {
+              path: ROUTES.designShowcase,
+              lazy: lazyScreen(
+                () => import('@/features/design-showcase'),
+                m => m.DesignShowcasePage,
+              ),
+            },
+          ]
+        : []),
       { path: '*', element: <Navigate to={ROUTES.dashboard} replace /> },
     ],
   },

@@ -38,7 +38,7 @@ function LazyModal({ Modal }: { Modal: LazyExoticComponent<ComponentType> }) {
   )
 }
 
-/** Every app-wide modal, mounted once in AppLayout and driven by its store. */
+/** Every app-wide modal, mounted once in AppShell and driven by its store. */
 export function GlobalModals() {
   const transactionOpen = useTransactionModalStore(state => state.isOpen)
   const goalOpen = useGoalModalStore(state => state.isOpen)

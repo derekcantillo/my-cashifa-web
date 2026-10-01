@@ -23,7 +23,7 @@ export interface NavItem {
   showsUnreadAlerts?: boolean
 }
 
-export const NAV_ITEMS: readonly NavItem[] = [
+export const MAIN_NAV_ITEMS: readonly NavItem[] = [
   { id: 'dashboard', to: ROUTES.dashboard, icon: House },
   { id: 'transactions', to: ROUTES.transactions, icon: Receipt },
   { id: 'goals', to: ROUTES.goals, icon: Target },
@@ -31,5 +31,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { id: 'loans', to: ROUTES.loans, icon: HandCoins },
   { id: 'alerts', to: ROUTES.alerts, icon: Bell, showsUnreadAlerts: true },
   { id: 'netWorth', to: ROUTES.netWorth, icon: TrendingUp },
-  { id: 'settings', to: ROUTES.settings, icon: Settings },
 ]
+
+/** Pinned to the bottom of the sidebar. */
+export const SETTINGS_NAV_ITEM: NavItem = { id: 'settings', to: ROUTES.settings, icon: Settings }

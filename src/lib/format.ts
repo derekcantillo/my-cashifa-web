@@ -1,8 +1,9 @@
+import { APP_CURRENCY, APP_TIME_ZONE } from '@/config/app'
+import i18n from '@/i18n'
 import type { FinancialPeriod } from '@/types'
 
-/** All amounts are COP; dates are shown in Bogotá time, like the backend computes them. */
-const CURRENCY = 'COP'
-export const APP_TIME_ZONE = 'America/Bogota'
+/** Dates are shown in Bogotá time, like the backend computes them. */
+export { APP_TIME_ZONE }
 
 const LOCALES: Record<string, string> = { es: 'es-CO', en: 'en-US' }
 const DAY_MS = 24 * 60 * 60 * 1000
@@ -11,13 +12,63 @@ export function toLocale(language: string | undefined): string {
   return LOCALES[language ?? 'es'] ?? 'es-CO'
 }
 
-export function formatMoney(amount: number, locale: string): string {
+/**
+ * Intl locale of the active UI language. Components that format should still
+ * subscribe to language changes (`useTranslation`/`useFormatters`) so they re-render.
+ */
+export function activeLocale(): string {
+  return toLocale(i18n.resolvedLanguage)
+}
+
+export interface MoneyFormatOptions {
+  currency?: string
+  /** `'exceptZero'` → "+$ 1.200" / "−$ 300"; `'never'` drops the sign (show it elsewhere). */
+  signDisplay?: Intl.NumberFormatOptions['signDisplay']
+  /** "$ 1,2 M" instead of "$ 1.200.000" — for tight spots and chart axes. */
+  compact?: boolean
+  /** Defaults to the active UI language. */
+  locale?: string
+}
+
+/** Money in `APP_CURRENCY`, no cents (COP), narrow symbol. */
+export function formatMoney(value: number, options: MoneyFormatOptions = {}): string {
+  const { currency = APP_CURRENCY, signDisplay, compact = false, locale = activeLocale() } = options
   return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: CURRENCY,
+    currency,
     currencyDisplay: 'narrowSymbol',
-    maximumFractionDigits: 0,
-  }).format(amount)
+    signDisplay,
+    ...(compact ? { notation: 'compact', maximumFractionDigits: 1 } : { maximumFractionDigits: 0 }),
+  }).format(value)
+}
+
+export interface PercentFormatOptions {
+  maximumFractionDigits?: number
+  signDisplay?: Intl.NumberFormatOptions['signDisplay']
+  locale?: string
+}
+
+/** `value` is a ratio: 0.42 → "42 %" / "42%". */
+export function formatPercent(value: number, options: PercentFormatOptions = {}): string {
+  const { maximumFractionDigits = 0, signDisplay, locale = activeLocale() } = options
+  return new Intl.NumberFormat(locale, {
+    style: 'percent',
+    maximumFractionDigits,
+    signDisplay,
+  }).format(value)
+}
+
+export type DateFormatOptions = Intl.DateTimeFormatOptions & { locale?: string }
+
+/** Any instant formatted in Bogotá time (override with `timeZone`). Default: "21 sept 2026". */
+export function formatDate(value: Date | string, options: DateFormatOptions = {}): string {
+  const { locale = activeLocale(), timeZone = APP_TIME_ZONE, ...format } = options
+  const date = typeof value === 'string' ? new Date(value) : value
+  const hasFields = Object.keys(format).length > 0
+  return new Intl.DateTimeFormat(locale, {
+    timeZone,
+    ...(hasFields ? format : { day: 'numeric', month: 'short', year: 'numeric' }),
+  }).format(date)
 }
 
 /** Calendar day in Bogotá as a UTC-midnight timestamp, so day differences are exact. */
@@ -59,8 +110,8 @@ export function formatShortDate(iso: string, locale: string, now = new Date()): 
  * Returns `end: null` for the open period.
  */
 export function formatPeriodRange(
-  period: FinancialPeriod,
-  locale: string,
+  period: Pick<FinancialPeriod, 'startDate' | 'endDate'>,
+  locale: string = activeLocale(),
 ): { start: string; end: string | null; range: string | null } {
   const options: Intl.DateTimeFormatOptions = {
     timeZone: APP_TIME_ZONE,

@@ -7,7 +7,7 @@ import { useRecurringExpenseModalStore } from '@/store/recurringExpenseModalStor
 import { RecurringExpenseForm } from './RecurringExpenseForm'
 
 /**
- * Mounted once in AppLayout while open. There's no GET /recurring-expenses/:id, so
+ * Mounted once in AppShell while open. There's no GET /recurring-expenses/:id, so
  * edit mode picks the expense from the (usually cached) list.
  */
 export function RecurringExpenseFormModal() {

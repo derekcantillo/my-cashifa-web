@@ -10,6 +10,8 @@ export const ROUTES = {
   alerts: '/alertas',
   netWorth: '/patrimonio-neto',
   settings: '/ajustes',
+  /** Development only. */
+  designShowcase: '/__design',
 } as const
 
 export function goalPath(id: string): string {

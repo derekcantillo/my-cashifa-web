@@ -4,7 +4,6 @@ import enCategories from './locales/en/categories.json'
 import enCommon from './locales/en/common.json'
 import enDashboard from './locales/en/dashboard.json'
 import enGoals from './locales/en/goals.json'
-import enLayout from './locales/en/layout.json'
 import enLoans from './locales/en/loans.json'
 import enNetWorth from './locales/en/netWorth.json'
 import enReports from './locales/en/reports.json'
@@ -16,7 +15,6 @@ import esCategories from './locales/es/categories.json'
 import esCommon from './locales/es/common.json'
 import esDashboard from './locales/es/dashboard.json'
 import esGoals from './locales/es/goals.json'
-import esLayout from './locales/es/layout.json'
 import esLoans from './locales/es/loans.json'
 import esNetWorth from './locales/es/netWorth.json'
 import esReports from './locales/es/reports.json'
@@ -33,7 +31,6 @@ export const resources = {
   es: {
     common: esCommon,
     auth: esAuth,
-    layout: esLayout,
     categories: esCategories,
     dashboard: esDashboard,
     transactions: esTransactions,
@@ -47,7 +44,6 @@ export const resources = {
   en: {
     common: enCommon,
     auth: enAuth,
-    layout: enLayout,
     categories: enCategories,
     dashboard: enDashboard,
     transactions: enTransactions,

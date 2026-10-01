@@ -1,10 +1,10 @@
 import { X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 import { useToastStore } from '@/store/toastStore'
 
-/** Mounted once in AppLayout. Announces toasts politely to screen readers. */
+/** Mounted once in AppShell. Announces toasts politely to screen readers. */
 export function ToastContainer() {
   const { t } = useTranslation()
   const toasts = useToastStore(state => state.toasts)

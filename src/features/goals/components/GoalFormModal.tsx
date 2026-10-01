@@ -6,7 +6,7 @@ import { useGoalModalStore } from '@/store/goalModalStore'
 
 import { GoalForm } from './GoalForm'
 
-/** Mounted once in AppLayout while the store says it's open. */
+/** Mounted once in AppShell while the store says it's open. */
 export function GoalFormModal() {
   const { t } = useTranslation('goals')
   const { mode, goalId, close } = useGoalModalStore()

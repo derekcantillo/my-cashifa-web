@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { InlineError, Skeleton } from '@/components/ui'
 import { useFormatters, useNetWorth } from '@/hooks'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 
 import { BreakdownLine } from './components/BreakdownLine'
 import { BreakdownSection } from './components/BreakdownSection'

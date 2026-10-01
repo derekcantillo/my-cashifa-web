@@ -1,55 +1,172 @@
 /*
- * Design tokens — PROVISIONAL palette (see DESIGN_PRINCIPLES.md).
- * To rebrand, change only the values in this file.
+ * Design tokens — "Tactile Neo-Minimalism".
  *
- * `@theme` compiles to `:root` (light theme) and registers each token as a Tailwind
- * color, so `bg-surface`, `text-ink`, `border-border`, `bg-brand/10`… work out of the box,
- * opacity modifiers included. `.dark` overrides the same variables.
+ * `@theme` compiles to `:root` (light theme) and registers each token with Tailwind,
+ * so `bg-canvas`, `text-ink-muted`, `border-line`, `bg-accent/10`, `rounded-card`,
+ * `shadow-raised`, `font-serif`, `text-display-lg`… work out of the box, opacity
+ * modifiers included. `[data-theme='dark']` (set on <html> by ThemeProvider and the
+ * pre-paint script in index.html) overrides the same variables: components never use
+ * `dark:` variants nor hex values.
+ *
+ * Contrast (WCAG AA, 4.5:1) is verified for ink / ink-muted / ink-subtle / positive /
+ * negative / warning on canvas, surface and surface-raised in both themes, and for
+ * each tone on its `-soft` background (badges). Values marked "AA" were nudged from
+ * the original spec to pass.
  */
 
-@theme {
-  --color-surface: #f6f7f5;
-  --color-surface-elevated: #ffffff;
-  --color-border: #e3e6e1;
+@theme static {
+  /* ---- Surfaces & ink (light: warm paper) ---- */
+  --color-canvas: #f5f2ea;
+  --color-surface: #fbfaf6;
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #ede9df;
+  --color-line: rgba(26, 33, 28, 0.09);
 
-  --color-ink: #1b201d;
-  --color-ink-muted: #5c6660;
+  --color-ink: #1a211c;
+  --color-ink-muted: #525b54;
+  --color-ink-subtle: #697068; /* AA: was #6A7169 (4.49:1 on canvas) */
 
-  --color-brand: #15754a;
-  --color-brand-hover: #0f5f3b;
-  /* Text/icons placed on top of `bg-brand`. */
-  --color-on-brand: #ffffff;
+  /* ---- The one accent ---- */
+  --color-accent: #1f4d3a;
+  --color-accent-hover: #183e2e;
+  --color-accent-ink: #f6f4ec;
+  --color-accent-soft: #e3ece5;
 
-  --color-success: #15754a;
-  --color-danger: #bb3f33;
-  --color-warning: #a8660b;
+  /* ---- Meaning ---- */
+  --color-positive: #2e7650; /* AA: was #2F7A52 (4.36:1 on positive-soft) */
+  --color-positive-soft: #e1eee5;
+  --color-negative: #a94b2c; /* AA: was #B4502F (4.09:1 on negative-soft) */
+  --color-negative-soft: #f5e3db;
+  --color-warning: #925f0f; /* AA: was #9A6410 (4.46:1 on canvas) */
+  --color-warning-soft: #f6ead0;
 
-  /* Backdrop behind drawers/modals — use with opacity, e.g. `bg-overlay/40`. */
+  /* ---- Data visualization ---- */
+  --color-chart-1: #1f4d3a;
+  --color-chart-2: #c58a2e;
+  --color-chart-3: #b4502f;
+  --color-chart-4: #5f8f7c;
+  --color-chart-5: #8c8068;
+  --color-chart-6: #6d7fa0;
+
+  /* Backdrop behind modals/drawers — always used with opacity (`bg-overlay/40`). */
   --color-overlay: #0b0e0c;
+
+  /*
+   * ---- Legacy aliases (pre-redesign names) ----
+   * Kept so the screens built before the redesign keep rendering with the new palette.
+   * Do not use in new code; remove once every screen is migrated.
+   * Note: the old `surface` meant the page background — that is `canvas` now.
+   */
+  --color-surface-elevated: var(--color-surface-raised);
+  --color-border: var(--color-line);
+  --color-brand: var(--color-accent);
+  --color-brand-hover: var(--color-accent-hover);
+  --color-on-brand: var(--color-accent-ink);
+  --color-success: var(--color-positive);
+  --color-danger: var(--color-negative);
+
+  /* ---- Typography ---- */
+  --font-sans: 'Instrument Sans Variable', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+
+  /* Serif — only page titles (h1), the hero figure of a screen, empty-state headings. */
+  --text-display-xl: 56px;
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-lg: 44px;
+  --text-display-lg--line-height: 1.05;
+  --text-display-lg--letter-spacing: -0.015em;
+  --text-display-md: 32px;
+  --text-display-md--line-height: 1.1;
+  --text-display-md--letter-spacing: -0.01em;
+  /* Sans */
+  --text-title: 20px;
+  --text-title--line-height: 1.3;
+  --text-title--font-weight: 600;
+  --text-body: 14px;
+  --text-body--line-height: 1.5;
+  --text-body-sm: 13px;
+  --text-body-sm--line-height: 1.45;
+  --text-eyebrow: 11.5px;
+  --text-eyebrow--line-height: 1.3;
+  --text-eyebrow--letter-spacing: 0.08em;
+  --text-eyebrow--font-weight: 500;
+
+  /* ---- Shape ---- */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-card: 24px;
+
+  /*
+   * ---- Elevation ----
+   * Indirection through `--elevation-*` so the dark theme can swap them at runtime
+   * (Tailwind inlines `--shadow-*` values into the utilities).
+   */
+  --shadow-raised: var(--elevation-raised);
+  --shadow-floating: var(--elevation-floating);
+  --shadow-pressed: var(--elevation-pressed);
+
+  /* ---- Motion ---- */
+  --ease-tactile: cubic-bezier(0, 0, 0.2, 1);
 }
 
-.dark {
-  --color-surface: #111513;
-  --color-surface-elevated: #181d1a;
-  --color-border: #28302b;
+:root {
+  --elevation-raised:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 1px 2px rgba(26, 33, 28, 0.06),
+    0 4px 12px rgba(26, 33, 28, 0.05);
+  --elevation-floating:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 2px 4px rgba(26, 33, 28, 0.06),
+    0 12px 32px rgba(26, 33, 28, 0.1);
+  --elevation-pressed: inset 0 1px 2px rgba(26, 33, 28, 0.12);
+}
 
-  --color-ink: #e7ebe8;
-  --color-ink-muted: #9aa49e;
+/* Warm charcoal with a green tint — never pure black. */
+[data-theme='dark'] {
+  --color-canvas: #111512;
+  --color-surface: #181d19;
+  --color-surface-raised: #1f2521;
+  --color-surface-sunken: #0d100e;
+  --color-line: rgba(236, 239, 232, 0.1);
 
-  --color-brand: #3cc486;
-  --color-brand-hover: #5ad29a;
-  --color-on-brand: #07261a;
+  --color-ink: #ecefe8;
+  --color-ink-muted: #a5ada4;
+  --color-ink-subtle: #848c83; /* AA: was #7F877E (4.22:1 on surface-raised) */
 
-  --color-success: #3cc486;
-  --color-danger: #f07a6c;
-  --color-warning: #eeb04e;
+  --color-accent: #7dbe97;
+  --color-accent-hover: #93cba9;
+  --color-accent-ink: #0e1a12;
+  --color-accent-soft: #1f2e25;
+
+  --color-positive: #7dbe97;
+  --color-positive-soft: #1d2c22;
+  --color-negative: #e39070;
+  --color-negative-soft: #34211b;
+  --color-warning: #dba84a;
+  --color-warning-soft: #2e2612;
+
+  --color-chart-1: #7dbe97;
+  --color-chart-2: #e0b060;
+  --color-chart-3: #e39070;
+  --color-chart-4: #8fbfaa;
+  --color-chart-5: #b3a68c;
+  --color-chart-6: #8fa3c4;
 
   --color-overlay: #000000;
+
+  --elevation-raised:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.25);
+  --elevation-floating:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 2px 4px rgba(0, 0, 0, 0.35),
+    0 12px 32px rgba(0, 0, 0, 0.45);
+  --elevation-pressed: inset 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
 /*
- * Category colors — PROVISIONAL, same hues as the mobile app (src/theme/categoryColors.ts)
- * so a category reads the same on both. One value per category for both themes.
+ * Category colors — PROVISIONAL, still the mobile app's hues (categoryColors.ts).
+ * The new design system must not reuse them: they are pending replacement when the
+ * screens that show categories (transactions, reports) are migrated.
  * Consumed through src/lib/categoryMeta.ts.
  */
 :root {

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useFormatters } from '@/hooks'
 import { CATEGORY_META } from '@/lib/categoryMeta'
 import { getTransactionDirection } from '@/lib/transactionDirection'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 import type { Transaction } from '@/types'
 
 import { Skeleton } from './Skeleton'

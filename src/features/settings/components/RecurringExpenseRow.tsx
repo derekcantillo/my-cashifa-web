@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useFormatters, useUpdateRecurringExpense } from '@/hooks'
 import { CATEGORY_META } from '@/lib/categoryMeta'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 import { useRecurringExpenseModalStore } from '@/store/recurringExpenseModalStore'
 import { useToastStore } from '@/store/toastStore'
 import type { RecurringExpense } from '@/types'

@@ -40,7 +40,11 @@ export function useSelectedPeriod(): SelectedPeriod {
 
   const period = periods[index]
   const previous = index > 0 ? periods[index - 1] : undefined
-  const next = index !== -1 && index < periods.length - 1 ? periods[index + 1] : undefined
+  // The open (current) period is the newest one: nothing to move forward to from it.
+  const next =
+    index !== -1 && index < periods.length - 1 && !period?.isCurrent
+      ? periods[index + 1]
+      : undefined
 
   return {
     period,

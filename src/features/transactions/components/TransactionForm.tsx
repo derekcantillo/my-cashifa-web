@@ -18,7 +18,7 @@ import {
   parseAmountInput,
   toDateInputValue,
 } from '@/lib/format'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 import { useToastStore } from '@/store/toastStore'
 import {
   CATEGORIES,

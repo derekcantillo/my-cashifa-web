@@ -7,7 +7,7 @@ import { z } from 'zod'
 
 import { isUnauthorizedError, useApiKeyStore, validateApiKey } from '@/api'
 import { ROUTES } from '@/lib/routes'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 
 const apiKeySchema = z.object({
   apiKey: z.string().trim().min(1),

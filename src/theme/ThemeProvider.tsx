@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useSyncExternalStore, type ReactNode } from 'react'
 
-import { useThemeStore, type ResolvedTheme, type Theme } from './themeStore'
+import { themeStore, type ResolvedTheme, type Theme } from './themeStore'
 
 const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)'
 
@@ -37,22 +37,22 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  const theme = useThemeStore(state => state.theme)
+  const theme = useSyncExternalStore(themeStore.subscribe, themeStore.get)
 
-  // Only listen to OS changes while in 'auto'; the snapshot is always read fresh,
-  // so switching back to 'auto' picks up the current OS preference.
+  // Only listen to OS changes while in 'system'; the snapshot is always read fresh,
+  // so switching back to 'system' picks up the current OS preference.
   const systemPrefersDark = useSyncExternalStore(
-    theme === 'auto' ? subscribeToSystemScheme : subscribeNoop,
+    theme === 'system' ? subscribeToSystemScheme : subscribeNoop,
     getSystemPrefersDark,
   )
 
   const resolvedTheme: ResolvedTheme =
-    theme === 'auto' ? (systemPrefersDark ? 'dark' : 'light') : theme
+    theme === 'system' ? (systemPrefersDark ? 'dark' : 'light') : theme
 
   useEffect(() => {
     const root = document.documentElement
     const enableTransitions = disableTransitionsTemporarily()
-    root.classList.toggle('dark', resolvedTheme === 'dark')
+    root.dataset.theme = resolvedTheme
     root.style.colorScheme = resolvedTheme
     enableTransitions()
   }, [resolvedTheme])
@@ -70,12 +70,11 @@ interface UseThemeResult {
 
 export function useTheme(): UseThemeResult {
   const resolvedTheme = useContext(ResolvedThemeContext)
-  const theme = useThemeStore(state => state.theme)
-  const setTheme = useThemeStore(state => state.setTheme)
+  const theme = useSyncExternalStore(themeStore.subscribe, themeStore.get)
 
   if (resolvedTheme === null) {
     throw new Error('useTheme must be used within a ThemeProvider')
   }
 
-  return { theme, resolvedTheme, setTheme }
+  return { theme, resolvedTheme, setTheme: themeStore.set }
 }

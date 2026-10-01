@@ -6,7 +6,7 @@ import { useLoanModalStore } from '@/store/loanModalStore'
 
 import { LoanForm } from './LoanForm'
 
-/** Mounted once in AppLayout while the store says it's open. */
+/** Mounted once in AppShell while the store says it's open. */
 export function LoanFormModal() {
   const { t } = useTranslation('loans')
   const { mode, loanId, close } = useLoanModalStore()

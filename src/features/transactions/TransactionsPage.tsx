@@ -48,7 +48,7 @@ function groupByDay(transactions: Transaction[]): DayGroup[] {
 }
 
 export function TransactionsPage() {
-  const { t } = useTranslation(['transactions', 'layout', 'dashboard'])
+  const { t } = useTranslation(['transactions', 'common', 'dashboard'])
   const { locale, money } = useFormatters()
   const { periodId } = useSelectedPeriod()
   const { data, isPending, isError, refetch } = useTransactions(periodId)
@@ -77,7 +77,7 @@ export function TransactionsPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <header className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">{t('layout:nav.transactions')}</h1>
+        <h1 className="text-2xl font-semibold">{t('common:nav.transactions')}</h1>
         <button
           type="button"
           onClick={() => openModal('create')}

@@ -9,7 +9,7 @@ import { NetWorthTeaser } from './components/NetWorthTeaser'
 import { RecentTransactionsList } from './components/RecentTransactionsList'
 
 export function DashboardPage() {
-  const { t } = useTranslation('layout')
+  const { t } = useTranslation()
   const { periodId, isLoading } = useSelectedPeriod()
 
   return (

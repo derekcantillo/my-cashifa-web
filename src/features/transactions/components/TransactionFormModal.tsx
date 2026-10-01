@@ -6,7 +6,7 @@ import { useTransactionModalStore } from '@/store/transactionModalStore'
 
 import { TransactionForm } from './TransactionForm'
 
-/** Mounted once in AppLayout while the store says it's open. */
+/** Mounted once in AppShell while the store says it's open. */
 export function TransactionFormModal() {
   const { t } = useTranslation('transactions')
   const { mode, transactionId, close } = useTransactionModalStore()
