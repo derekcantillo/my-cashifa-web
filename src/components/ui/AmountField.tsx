@@ -76,7 +76,12 @@ export const AmountField = forwardRef<HTMLInputElement, AmountFieldProps>(functi
         className={cn(
           fieldBaseClassName(invalid),
           'tabular-nums',
-          large ? 'h-16 pr-4 pl-9 text-amount-input' : 'h-10 pr-3 pl-7',
+          // The large "0" placeholder must not read as a typed value: subtle ink, focused or
+          // not. At 36px it's large text, where 3:1 is enough (`ink-subtle` on the
+          // sunken field is 4.2:1). The 14px size keeps the base `ink-muted` (AA for body).
+          large
+            ? 'h-16 pr-4 pl-9 text-amount-input placeholder:text-ink-subtle focus:placeholder:text-ink-subtle'
+            : 'h-10 pr-3 pl-7',
         )}
         {...props}
       />

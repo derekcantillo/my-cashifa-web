@@ -49,7 +49,8 @@ export function CategoryPicker({
       className={className}
     >
       <legend className="mb-2 text-body-sm font-medium text-ink">{legend}</legend>
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+      {/* 5 columns from `sm`: the 13 expense categories fill 5 + 5 + 3, no orphan row. */}
+      <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-5">
         {categories.map(category => {
           const meta = CATEGORY_META[category]
           const Icon = meta.icon
@@ -57,7 +58,7 @@ export function CategoryPicker({
             <label
               key={category}
               className={cn(
-                'group flex min-h-[68px] cursor-pointer flex-col items-center justify-center gap-1.5 rounded-sm border px-1 py-2.5 text-center',
+                'group flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 rounded-sm border px-1 py-1.5 text-center',
                 'border-line bg-surface-raised text-body-sm text-ink-muted transition-tactile',
                 'hover:bg-surface-sunken hover:text-ink',
                 'has-checked:border-accent has-checked:bg-accent-soft has-checked:text-ink',
@@ -67,10 +68,12 @@ export function CategoryPicker({
             >
               <input type="radio" value={category} className="sr-only" {...registration} />
               <Icon
-                className="size-[18px] text-ink-muted transition-tactile group-has-checked:text-accent"
+                className="size-4 shrink-0 text-ink-muted transition-tactile group-has-checked:text-accent"
                 aria-hidden
               />
-              <span className="leading-tight">{t(meta.translationKey)}</span>
+              <span className="text-[12px] leading-[1.15] text-balance">
+                {t(meta.translationKey)}
+              </span>
             </label>
           )
         })}

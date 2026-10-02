@@ -41,7 +41,13 @@ export function PendingRecurringCard({ periodId, className }: PendingRecurringCa
           {data.map(expense => (
             <li key={expense.id} className="flex items-center gap-3 py-3">
               <div className="min-w-0 flex-1">
-                <p className="truncate text-body font-medium text-ink">{expense.name}</p>
+                {/* Up to two lines, then ellipsis; the full name on hover. */}
+                <p
+                  title={expense.name}
+                  className="line-clamp-2 text-body font-medium break-words text-ink"
+                >
+                  {expense.name}
+                </p>
                 <p className="text-body-sm text-ink-muted tabular-nums">
                   {money(expense.estimatedAmount)} · {t('pending.due', { day: expense.dayOfMonth })}
                 </p>

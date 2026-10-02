@@ -214,7 +214,10 @@ export function Modal({
           <IconButton label={t('common.close')} icon={X} onClick={requestClose} className="-mr-2" />
         </header>
 
-        <div ref={bodyRef} className="min-h-0 flex-1 overflow-y-auto px-6 pb-6">
+        <div
+          ref={bodyRef}
+          className="scrollbar-thin min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-6"
+        >
           {children}
         </div>
 

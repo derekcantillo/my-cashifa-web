@@ -101,7 +101,8 @@ export function TransactionsPage() {
           eyebrow={periodLabel ?? t('transactions:page.eyebrowLoading')}
           title={t('common:nav.transactions')}
           actions={
-            <Button icon={Plus} onClick={() => openModal('create')}>
+            // Secondary: the topbar's "Registrar gasto" stays the one primary action.
+            <Button variant="secondary" icon={Plus} onClick={() => openModal('create')}>
               {t('transactions:page.add')}
             </Button>
           }
