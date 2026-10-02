@@ -1,10 +1,25 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { CategoryPicker, DeleteConfirmation, Field, inputClassName } from '@/components/ui'
+import {
+  AmountField,
+  Button,
+  CategoryPicker,
+  ConfirmDeleteDialog,
+  DateInput,
+  errorProps,
+  Field,
+  ModalFooter,
+  SegmentedControl,
+  Select,
+  Textarea,
+  useModalClose,
+  useModalUnsavedChanges,
+} from '@/components/ui'
 import {
   useAccounts,
   useCreateTransaction,
@@ -12,24 +27,49 @@ import {
   useFormatters,
   useUpdateTransaction,
 } from '@/hooks'
+import { CATEGORY_META } from '@/lib/categoryMeta'
 import {
   formatAmountInput,
   fromDateInputValue,
   parseAmountInput,
   toDateInputValue,
 } from '@/lib/format'
-import { cn } from '@/lib/cn'
 import { useToastStore } from '@/store/toastStore'
 import {
   CATEGORIES,
   TRANSACTION_TYPES,
+  type Category,
   type CreateTransactionInput,
+  type RecurringExpense,
   type Transaction,
   type UpdateTransactionInput,
 } from '@/types'
 
-/** This generic form only creates expenses and income; loans have their own flow. */
-const EDITABLE_TYPES = ['EXPENSE', 'INCOME'] as const
+import { categoriesForType, FORM_TYPES, isFormType, type FormType } from '../lib/categoriesByType'
+import { applyRecurringLink, keepsLink } from '../lib/recurringLink'
+import { RecurringLinkField, type LinkNotice } from './RecurringLinkField'
+
+export const TRANSACTION_FORM_ID = 'transaction-form'
+
+/**
+ * Focuses the first invalid control in DOM order (react-hook-form would follow
+ * registration order, which puts the Controller-based amount last). An invalid
+ * category fieldset focuses its first option.
+ */
+function focusFirstError(form: HTMLFormElement): void {
+  // Wait for the error state to render.
+  requestAnimationFrame(() => {
+    const invalid = form.querySelector<HTMLElement>('[aria-invalid="true"]')
+    const target =
+      invalid instanceof HTMLFieldSetElement
+        ? invalid.querySelector<HTMLElement>('input:checked, input')
+        : invalid
+    target?.focus()
+  })
+}
+
+/** Same limit as the backend DTO (`@MaxLength(255)` on `description`). */
+const NOTE_MAX_LENGTH = 255
 
 type ErrorCode =
   | 'categoryRequired'
@@ -42,7 +82,6 @@ type ErrorCode =
 function createSchema(locale: string) {
   return z.object({
     type: z.enum(TRANSACTION_TYPES),
-    category: z.enum(CATEGORIES, { error: 'categoryRequired' }),
     amount: z
       .string()
       .trim()
@@ -51,54 +90,163 @@ function createSchema(locale: string) {
         error: 'amountInvalid',
       })
       .refine(value => parseAmountInput(value, locale) > 0, { error: 'amountPositive' }),
+    category: z
+      .union([z.enum(CATEGORIES), z.literal('')])
+      .refine(value => value !== '', { error: 'categoryRequired' }),
+    recurringExpenseId: z.string(),
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { error: 'dateRequired' }),
     accountId: z.string(),
-    description: z.string().trim().max(255, { error: 'noteTooLong' }),
+    description: z.string().trim().max(NOTE_MAX_LENGTH, { error: 'noteTooLong' }),
   })
 }
 
-type FormValues = z.infer<ReturnType<typeof createSchema>>
+type Schema = ReturnType<typeof createSchema>
+/** What the fields hold (category may be '' while nothing is picked). */
+type FormValues = z.input<Schema>
+/** What reaches `onSubmit` once validated. */
+type SubmitValues = z.output<Schema>
 
 interface TransactionFormProps {
   /** Present in edit mode. */
   transaction?: Transaction
+  /** Create mode: start linked to this recurring expense. */
+  recurringExpense?: RecurringExpense
+  /** Names linked recurring expenses (edit mode, delete warning). */
+  recurringExpenses: readonly RecurringExpense[]
   onDone: () => void
 }
 
-export function TransactionForm({ transaction, onDone }: TransactionFormProps) {
+/**
+ * Create / view-and-edit form of a movement. Lives inside the transaction Modal: its
+ * actions go to the modal's pinned footer (`ModalFooter`) and unsaved changes make
+ * closing ask first.
+ */
+export function TransactionForm({
+  transaction,
+  recurringExpense,
+  recurringExpenses,
+  onDone,
+}: TransactionFormProps) {
   const { t } = useTranslation(['transactions', 'categories'])
-  const { locale } = useFormatters()
+  const { locale, money } = useFormatters()
   const { data: accounts = [] } = useAccounts()
   const createTransaction = useCreateTransaction()
   const updateTransaction = useUpdateTransaction()
   const deleteTransaction = useDeleteTransaction()
   const pushToast = useToastStore(state => state.push)
-  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const requestClose = useModalClose()
   const schema = useMemo(() => createSchema(locale), [locale])
 
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [linkNotice, setLinkNotice] = useState<LinkNotice | null>(null)
+  // What the user changed by hand (autofill never overwrites those).
+  const [editedByUser, setEditedByUser] = useState({ amount: false, category: false })
+  const markEdited = (field: 'amount' | 'category') =>
+    setEditedByUser(current => (current[field] ? current : { ...current, [field]: true }))
+
+  const isEdit = transaction !== undefined
+  const typeIsEditable = !transaction || isFormType(transaction.type)
+
   const {
+    control,
     register,
     handleSubmit,
-    formState: { errors, dirtyFields, isSubmitting },
-  } = useForm<FormValues>({
+    setValue,
+    getValues,
+    formState: { errors, dirtyFields, isDirty, isSubmitting },
+  } = useForm<FormValues, unknown, SubmitValues>({
     resolver: zodResolver(schema),
+    // Focus goes to the first invalid field in visual order (see `focusFirstError`).
+    shouldFocusError: false,
     defaultValues: transaction
       ? {
           type: transaction.type,
-          category: transaction.category,
           amount: formatAmountInput(transaction.amount, locale),
+          category: transaction.category,
+          recurringExpenseId: transaction.recurringExpenseId ?? '',
           date: toDateInputValue(transaction.transactionDate),
           accountId: transaction.accountId ?? '',
           description: transaction.description ?? '',
         }
-      : { type: 'EXPENSE', amount: '', date: toDateInputValue(), accountId: '', description: '' },
+      : {
+          type: 'EXPENSE',
+          amount: recurringExpense
+            ? formatAmountInput(recurringExpense.estimatedAmount, locale)
+            : '',
+          category: recurringExpense?.category ?? '',
+          recurringExpenseId: recurringExpense?.id ?? '',
+          date: toDateInputValue(),
+          accountId: '',
+          description: '',
+        },
   })
 
-  const mutation = transaction ? updateTransaction : createTransaction
-  const typeIsEditable =
-    !transaction || (EDITABLE_TYPES as readonly string[]).includes(transaction.type)
+  useModalUnsavedChanges(isDirty && !isSubmitting)
 
-  const onSubmit = async (values: FormValues) => {
+  const [type, amount, date, recurringExpenseId, description] = useWatch({
+    control,
+    name: ['type', 'amount', 'date', 'recurringExpenseId', 'description'],
+  })
+
+  const categories = categoriesForType(type, transaction?.category)
+  const recurringById = useMemo(() => {
+    const map = new Map(recurringExpenses.map(item => [item.id, item]))
+    if (recurringExpense) map.set(recurringExpense.id, recurringExpense)
+    return map
+  }, [recurringExpenses, recurringExpense])
+  const linked = recurringExpenseId ? recurringById.get(recurringExpenseId) : undefined
+
+  const changeType = (next: FormType) => {
+    setValue('type', next, { shouldDirty: true })
+    const current = getValues('category')
+    if (current && !categoriesForType(next, transaction?.category).includes(current)) {
+      setValue('category', '', { shouldDirty: true })
+    }
+    // Recurring expenses are expenses: switching to income drops the link.
+    if (next !== 'EXPENSE' && getValues('recurringExpenseId') && !isEdit) {
+      setValue('recurringExpenseId', '', { shouldDirty: true })
+      setLinkNotice(null)
+    }
+  }
+
+  const link = (id: string) => {
+    setValue('recurringExpenseId', id, { shouldDirty: true })
+    const recurring = id ? recurringById.get(id) : undefined
+    if (!recurring) {
+      setLinkNotice(null)
+      return
+    }
+    const patch = applyRecurringLink(
+      {
+        amount: getValues('amount'),
+        category: getValues('category'),
+        amountEditedByUser: editedByUser.amount,
+        categoryEditedByUser: editedByUser.category,
+      },
+      recurring,
+      locale,
+    )
+    if (patch.amount !== undefined) setValue('amount', patch.amount, { shouldDirty: true })
+    setValue('category', patch.category, {
+      shouldDirty: true,
+      shouldValidate: Boolean(errors.category),
+    })
+    setLinkNotice(patch.categoryReplaced ? { kind: 'categorySet', category: patch.category } : null)
+  }
+
+  const categoryRegistration = register('category', {
+    onChange: event => {
+      markEdited('category')
+      const next = (event.target as HTMLInputElement).value as Category
+      // A category picked by hand that isn't the recurring expense's drops the link.
+      if (!isEdit && linked && !keepsLink(linked, next)) {
+        setValue('recurringExpenseId', '', { shouldDirty: true })
+        setLinkNotice({ kind: 'unlinkedByCategory', name: linked.name })
+      }
+    },
+  })
+
+  const onSubmit = async (values: SubmitValues) => {
     const amount = parseAmountInput(values.amount, locale)
     if (!transaction) {
       const input: CreateTransactionInput = {
@@ -108,6 +256,10 @@ export function TransactionForm({ transaction, onDone }: TransactionFormProps) {
         transactionDate: fromDateInputValue(values.date),
         ...(values.accountId ? { accountId: values.accountId } : {}),
         ...(values.description ? { description: values.description } : {}),
+        // Only accepted on create (UpdateTransactionDto has no such field).
+        ...(values.type === 'EXPENSE' && values.recurringExpenseId
+          ? { recurringExpenseId: values.recurringExpenseId }
+          : {}),
       }
       await createTransaction.mutateAsync(input)
       pushToast(t('transactions:toast.saved'))
@@ -139,145 +291,205 @@ export function TransactionForm({ transaction, onDone }: TransactionFormProps) {
     })
   }
 
-  const isBusy = isSubmitting || deleteTransaction.isPending
-
   const errorText = (code: string | undefined) =>
     code ? t(`transactions:form.errors.${code as ErrorCode}`) : null
-
   const amountError = errorText(errors.amount?.message)
   const categoryError = errorText(errors.category?.message)
   const dateError = errorText(errors.date?.message)
   const noteError = errorText(errors.description?.message)
+  const saveFailed = createTransaction.isError || updateTransaction.isError
+  const transactionName = transaction
+    ? transaction.description || t(CATEGORY_META[transaction.category].translationKey)
+    : ''
+  const linkedOnServer = transaction?.recurringExpenseId
+    ? recurringById.get(transaction.recurringExpenseId)
+    : undefined
 
   return (
-    <form
-      noValidate
-      onSubmit={event => void handleSubmit(onSubmit)(event).catch(() => undefined)}
-      className="space-y-6"
-    >
-      {typeIsEditable ? (
-        <fieldset>
-          <legend className="sr-only">{t('transactions:form.type')}</legend>
-          <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface p-1">
-            {EDITABLE_TYPES.map(type => (
-              <label
-                key={type}
-                className="cursor-pointer rounded-md py-2 text-center text-sm text-ink-muted transition-colors has-checked:bg-surface-elevated has-checked:font-medium has-checked:text-ink has-checked:shadow-sm has-checked:ring-1 has-checked:ring-border has-focus-visible:ring-2 has-focus-visible:ring-brand"
-              >
-                <input type="radio" value={type} className="sr-only" {...register('type')} />
-                {type === 'EXPENSE'
+    <>
+      <form
+        id={TRANSACTION_FORM_ID}
+        noValidate
+        onSubmit={event => {
+          // Captured now: React clears `currentTarget` once the handler returns.
+          const form = event.currentTarget
+          void handleSubmit(onSubmit, () => focusFirstError(form))(event).catch(() => undefined)
+        }}
+        className="space-y-6"
+      >
+        {typeIsEditable ? (
+          <SegmentedControl
+            label={t('transactions:form.type')}
+            value={isFormType(type) ? type : 'EXPENSE'}
+            onChange={changeType}
+            options={FORM_TYPES.map(value => ({
+              value,
+              label:
+                value === 'EXPENSE'
                   ? t('transactions:form.expense')
-                  : t('transactions:form.income')}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      ) : (
-        <p className="text-sm text-ink-muted">
-          {t('transactions:form.otherType', { type: t(`transactions:types.${transaction.type}`) })}
-        </p>
-      )}
+                  : t('transactions:form.income'),
+            }))}
+          />
+        ) : (
+          <p className="text-body-sm text-ink-muted">
+            {t('transactions:form.otherType', {
+              type: t(`transactions:types.${transaction.type}`),
+            })}
+          </p>
+        )}
 
-      <CategoryPicker
-        id="transaction-category"
-        legend={t('transactions:form.category')}
-        registration={register('category')}
-        error={categoryError}
-      />
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field id="amount" label={t('transactions:form.amount')} error={amountError}>
-          <input
-            id="amount"
-            type="text"
-            inputMode="decimal"
-            autoComplete="off"
-            placeholder={t('transactions:form.amountPlaceholder')}
-            aria-invalid={amountError ? true : undefined}
-            aria-describedby={amountError ? 'amount-error' : undefined}
-            className={inputClassName(amountError)}
-            {...register('amount')}
+        <Field id="transaction-amount" label={t('transactions:form.amount')} error={amountError}>
+          <Controller
+            control={control}
+            name="amount"
+            render={({ field }) => (
+              <AmountField
+                id="transaction-amount"
+                ref={field.ref}
+                name={field.name}
+                size="lg"
+                value={field.value}
+                onChange={value => {
+                  markEdited('amount')
+                  field.onChange(value)
+                }}
+                onBlur={field.onBlur}
+                placeholder="0"
+                invalid={Boolean(amountError)}
+                data-autofocus
+                {...errorProps('transaction-amount', amountError)}
+              />
+            )}
           />
         </Field>
-        <Field id="date" label={t('transactions:form.date')} error={dateError}>
-          <input
-            id="date"
-            type="date"
-            aria-invalid={dateError ? true : undefined}
-            aria-describedby={dateError ? 'date-error' : undefined}
-            className={inputClassName(dateError)}
-            {...register('date')}
-          />
-        </Field>
-      </div>
 
-      <Field
-        id="accountId"
-        label={t('transactions:form.account')}
-        hint={t('transactions:form.optional')}
-      >
-        <select id="accountId" className={inputClassName(null)} {...register('accountId')}>
-          <option value="">{t('transactions:form.noAccount')}</option>
-          {accounts.map(account => (
-            <option key={account.id} value={account.id}>
-              {account.name}
-            </option>
-          ))}
-        </select>
-      </Field>
-
-      <Field
-        id="description"
-        label={t('transactions:form.note')}
-        hint={t('transactions:form.optional')}
-        error={noteError}
-      >
-        <textarea
-          id="description"
-          rows={2}
-          placeholder={t('transactions:form.notePlaceholder')}
-          aria-invalid={noteError ? true : undefined}
-          aria-describedby={noteError ? 'description-error' : undefined}
-          className={cn(inputClassName(noteError), 'resize-none')}
-          {...register('description')}
+        <CategoryPicker
+          id="transaction-category"
+          legend={t('transactions:form.category')}
+          categories={categories}
+          registration={categoryRegistration}
+          error={categoryError}
         />
-      </Field>
 
-      {mutation.isError && (
-        <p role="alert" className="text-sm text-danger">
-          {t('transactions:form.saveError')}
-        </p>
-      )}
+        {type === 'EXPENSE' && !isEdit && (
+          <RecurringLinkField
+            value={recurringExpenseId}
+            amount={amount}
+            date={date}
+            linked={linked}
+            notice={linkNotice}
+            onChange={link}
+          />
+        )}
+        {isEdit && linkedOnServer && (
+          <div className="space-y-1 rounded-sm bg-surface-sunken px-3 py-2.5">
+            <p className="text-body-sm font-medium text-ink">
+              {t('transactions:form.recurring.linked', { name: linkedOnServer.name })}
+            </p>
+            <p className="text-body-sm text-ink-muted">
+              {t('transactions:form.recurring.linkedHelp')}
+            </p>
+          </div>
+        )}
 
-      {confirmingDelete ? (
-        <DeleteConfirmation
-          title={t('transactions:form.deleteConfirm')}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field id="transaction-date" label={t('transactions:form.date')} error={dateError}>
+            <DateInput
+              id="transaction-date"
+              invalid={Boolean(dateError)}
+              {...errorProps('transaction-date', dateError)}
+              {...register('date')}
+            />
+          </Field>
+          <Field
+            id="transaction-account"
+            label={t('transactions:form.account')}
+            hint={t('transactions:form.optional')}
+          >
+            <Select id="transaction-account" {...register('accountId')}>
+              <option value="">{t('transactions:form.noAccount')}</option>
+              {accounts.map(account => (
+                <option key={account.id} value={account.id}>
+                  {account.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
+        </div>
+
+        <Field
+          id="transaction-note"
+          label={t('transactions:form.note')}
+          hint={t('transactions:form.optional')}
+          error={noteError}
+        >
+          <Textarea
+            id="transaction-note"
+            rows={2}
+            maxLength={NOTE_MAX_LENGTH}
+            placeholder={t('transactions:form.notePlaceholder')}
+            invalid={Boolean(noteError)}
+            {...errorProps('transaction-note', noteError)}
+            {...register('description')}
+          />
+          <p aria-hidden className="text-right text-body-sm text-ink-subtle tabular-nums">
+            {t('transactions:form.noteCount', {
+              count: description.length,
+              max: NOTE_MAX_LENGTH,
+            })}
+          </p>
+        </Field>
+
+        {saveFailed && (
+          <p
+            role="alert"
+            className="rounded-sm bg-negative-soft px-3 py-2.5 text-body-sm text-negative"
+          >
+            {t('transactions:form.saveError')}
+          </p>
+        )}
+      </form>
+
+      <ModalFooter>
+        {transaction && (
+          <Button
+            variant="danger-ghost"
+            icon={Trash2}
+            onClick={() => setConfirmingDelete(true)}
+            disabled={isSubmitting}
+            className="-ml-2"
+          >
+            {t('transactions:form.delete')}
+          </Button>
+        )}
+        <Button variant="ghost" className="ml-auto" onClick={requestClose} disabled={isSubmitting}>
+          {t('transactions:form.cancel')}
+        </Button>
+        <Button type="submit" form={TRANSACTION_FORM_ID} loading={isSubmitting}>
+          {t('transactions:form.save')}
+        </Button>
+      </ModalFooter>
+
+      {confirmingDelete && transaction && (
+        <ConfirmDeleteDialog
+          title={t('transactions:form.deleteTitle')}
+          confirmLabel={t('transactions:form.confirmDelete')}
           isPending={deleteTransaction.isPending}
           error={deleteTransaction.isError ? t('transactions:form.deleteError') : null}
           onConfirm={onDelete}
           onCancel={() => setConfirmingDelete(false)}
-        />
-      ) : (
-        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
-          {transaction && (
-            <button
-              type="button"
-              onClick={() => setConfirmingDelete(true)}
-              disabled={isBusy}
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-danger transition-colors hover:bg-danger/10 disabled:opacity-60 sm:-ml-3"
-            >
-              {t('transactions:form.delete')}
-            </button>
+        >
+          <p>
+            {t('transactions:form.deleteBody', {
+              name: transactionName,
+              amount: money(transaction.amount),
+            })}
+          </p>
+          {linkedOnServer?.active && (
+            <p>{t('transactions:form.deleteRecurring', { name: linkedOnServer.name })}</p>
           )}
-          <button
-            type="submit"
-            disabled={isBusy}
-            className="rounded-lg bg-brand px-6 py-2.5 text-sm font-medium text-on-brand transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60 sm:ml-auto"
-          >
-            {isSubmitting ? t('transactions:form.saving') : t('transactions:form.save')}
-          </button>
-        </div>
+        </ConfirmDeleteDialog>
       )}
-    </form>
+    </>
   )
 }

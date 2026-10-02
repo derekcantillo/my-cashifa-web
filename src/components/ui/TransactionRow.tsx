@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useFormatters } from '@/hooks'
 import { cn } from '@/lib/cn'
 import { CATEGORY_META } from '@/lib/categoryMeta'
+import { formatTime, hasClockTime } from '@/lib/format'
 import { getTransactionDirection } from '@/lib/transactionDirection'
 import type { Transaction } from '@/types'
 
@@ -14,6 +15,10 @@ interface TransactionRowProps {
   onSelect?: (transaction: Transaction) => void
   /** Hide the relative date when rows are already grouped by day. */
   showDate?: boolean
+  /** In day-grouped lists: show the time instead, when the movement has a real one. */
+  showTime?: boolean
+  /** Name of the linked recurring expense: appends "· Fijo: <name>" to the subtitle. */
+  recurringName?: string
 }
 
 /** Shared geometry: 56px tall, the icon column and the gaps line up with the skeleton. */
@@ -24,9 +29,15 @@ const ROW = 'flex min-h-14 items-center gap-3.5 py-2'
  * "Category · relative date" and the signed amount. Separators come from the list
  * (`divide-y divide-line`), so there's none after the last row.
  */
-export function TransactionRow({ transaction, onSelect, showDate = true }: TransactionRowProps) {
-  const { t } = useTranslation(['categories'])
-  const { money, relativeDay } = useFormatters()
+export function TransactionRow({
+  transaction,
+  onSelect,
+  showDate = true,
+  showTime = false,
+  recurringName,
+}: TransactionRowProps) {
+  const { t } = useTranslation(['categories', 'transactions'])
+  const { locale, money, relativeDay } = useFormatters()
   const meta = CATEGORY_META[transaction.category]
   const Icon = meta.icon
   const category = t(meta.translationKey)
@@ -34,6 +45,10 @@ export function TransactionRow({ transaction, onSelect, showDate = true }: Trans
   const secondary = [
     transaction.description ? category : null,
     showDate ? relativeDay(transaction.transactionDate) : null,
+    showTime && hasClockTime(transaction.transactionDate)
+      ? formatTime(transaction.transactionDate, locale)
+      : null,
+    recurringName ? t('transactions:row.recurring', { name: recurringName }) : null,
   ]
     .filter(Boolean)
     .join(' · ')

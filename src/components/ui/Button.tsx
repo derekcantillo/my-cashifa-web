@@ -5,13 +5,17 @@ import { cn } from '@/lib/cn'
 
 import { Spinner } from './Spinner'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost'
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'danger-ghost'
 export type ButtonSize = 'sm' | 'md'
 
 const VARIANTS: Record<ButtonVariant, string> = {
   primary: 'bg-accent text-accent-ink shadow-raised hover:bg-accent-hover',
   secondary: 'bg-surface-raised text-ink shadow-raised hover:bg-surface',
   ghost: 'text-ink-muted hover:bg-surface-sunken hover:text-ink',
+  /** Confirms a destructive action (the last step of a delete). */
+  danger: 'bg-negative text-negative-ink shadow-raised hover:bg-negative-hover',
+  /** Starts a destructive action ("Eliminar" in a form footer). */
+  'danger-ghost': 'text-negative hover:bg-negative-soft',
 }
 
 const SIZES: Record<ButtonSize, string> = {

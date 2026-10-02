@@ -30,7 +30,31 @@
     },
     "delete": "Delete",
     "deleteConfirm": "Delete this transaction?",
-    "deleteError": "Couldn't delete. Try again."
+    "deleteError": "Couldn't delete. Try again.",
+    "cancel": "Cancel",
+    "noteCount": "{{count}}/{{max}}",
+    "deleteTitle": "Delete transaction",
+    "deleteBody": "“{{name}}” for {{amount}} will be deleted.",
+    "deleteRecurring": "The recurring expense “{{name}}” will show up again under Recurring to log.",
+    "confirmDelete": "Delete",
+    "recurring": {
+      "label": "Match with a recurring expense",
+      "none": "No recurring expense",
+      "groupPending": "Pending this period",
+      "groupRegistered": "Already logged this period",
+      "option": "{{name}} · {{amount}} · due day {{day}}",
+      "registered": "{{name}} · Already logged",
+      "estimate": "Estimate: {{amount}}",
+      "over": "{{amount}} more than the estimate",
+      "under": "{{amount}} less than the estimate",
+      "unlink": "Remove link",
+      "linked": "Matched with {{name}}",
+      "linkedHelp": "The link is chosen when the transaction is added; it can’t be changed afterwards.",
+      "categorySet": "Category changed to {{category}} to match the recurring expense.",
+      "unlinkedByCategory": "Unlinked from {{name}}: the category no longer matches.",
+      "noActive": "You have no active recurring expenses.",
+      "loading": "Loading recurring expenses…"
+    }
   },
   "types": {
     "EXPENSE": "Expense",
@@ -54,6 +78,40 @@
     "yesterday": "Yesterday",
     "dayExpenses": "Spent {{amount}}",
     "emptyFiltered": "No transactions of this type this period",
-    "empty": "You haven't logged anything this period yet"
+    "empty": "You haven't logged anything this period yet",
+    "eyebrowLoading": "Period",
+    "stats": {
+      "expenses": "Expenses this period",
+      "income": "Income this period",
+      "count": "Transactions"
+    },
+    "search": "Search by note or category",
+    "clearSearch": "Clear search",
+    "categoryFilter": "Filter by category",
+    "categoryAll": "Category: All",
+    "listLabel": "Transactions this period",
+    "dayIncome": "Income {{amount}}",
+    "emptyTitle": "No transactions",
+    "emptyBody": "You haven't added any transactions this period yet.",
+    "noResultsTitle": "No results",
+    "noResultsBody": "No transaction matches the search or filters.",
+    "clearFilters": "Clear filters",
+    "searchPlaceholder": "Search…"
+  },
+  "row": {
+    "recurring": "Recurring: {{name}}"
+  },
+  "pending": {
+    "title": "Recurring to log",
+    "due": "due on day {{day}}",
+    "register": "Log",
+    "registerLabel": "Log {{name}}",
+    "upToDate": "All caught up"
+  },
+  "breakdown": {
+    "title": "By category",
+    "others": "Others",
+    "empty": "No spending this period.",
+    "share": "{{percentage}} of spending"
   }
 }

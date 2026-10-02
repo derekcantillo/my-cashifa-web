@@ -1,0 +1,86 @@
+import { toDateInputValue } from '@/lib/format'
+import { getTransactionDirection } from '@/lib/transactionDirection'
+import type { Category, Transaction } from '@/types'
+
+export type DirectionFilter = 'all' | 'income' | 'expense'
+
+export interface ListFilters {
+  direction: DirectionFilter
+  /** Free text, matched against the note and the category name. */
+  query: string
+  /** '' = every category. */
+  category: Category | ''
+}
+
+export const NO_FILTERS: ListFilters = { direction: 'all', query: '', category: '' }
+
+/** Lowercase without accents, so "credito" finds "Crédito". */
+export function normalizeForSearch(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .trim()
+}
+
+const MATCHES_DIRECTION: Record<DirectionFilter, (transaction: Transaction) => boolean> = {
+  all: () => true,
+  income: transaction => getTransactionDirection(transaction.type) === 'in',
+  expense: transaction => getTransactionDirection(transaction.type) === 'out',
+}
+
+/** Search + category, i.e. everything but the direction (the segmented control counts by it). */
+export function matchesSearchAndCategory(
+  transaction: Transaction,
+  filters: Pick<ListFilters, 'query' | 'category'>,
+  categoryLabel: (category: Category) => string,
+): boolean {
+  if (filters.category && transaction.category !== filters.category) return false
+  const query = normalizeForSearch(filters.query)
+  if (!query) return true
+  return [transaction.description ?? '', categoryLabel(transaction.category)].some(text =>
+    normalizeForSearch(text).includes(query),
+  )
+}
+
+export function countByDirection(
+  transactions: readonly Transaction[],
+): Record<DirectionFilter, number> {
+  return {
+    all: transactions.length,
+    income: transactions.filter(MATCHES_DIRECTION.income).length,
+    expense: transactions.filter(MATCHES_DIRECTION.expense).length,
+  }
+}
+
+export function matchesDirection(transaction: Transaction, direction: DirectionFilter): boolean {
+  return MATCHES_DIRECTION[direction](transaction)
+}
+
+export interface DayGroup {
+  /** `YYYY-MM-DD`, Bogotá. */
+  dateKey: string
+  transactions: Transaction[]
+  /** Money out that day (EXPENSE + DEBT_PAYMENT). */
+  spent: number
+  /** Money in that day (INCOME + LOAN_REPAYMENT). */
+  earned: number
+}
+
+/** Newest day first, newest movement first within a day. */
+export function groupByDay(transactions: readonly Transaction[]): DayGroup[] {
+  const sorted = [...transactions].sort((a, b) =>
+    b.transactionDate.localeCompare(a.transactionDate),
+  )
+  const groups = new Map<string, DayGroup>()
+  for (const transaction of sorted) {
+    const dateKey = toDateInputValue(transaction.transactionDate)
+    const group = groups.get(dateKey) ?? { dateKey, transactions: [], spent: 0, earned: 0 }
+    group.transactions.push(transaction)
+    const direction = getTransactionDirection(transaction.type)
+    if (direction === 'out') group.spent += transaction.amount
+    if (direction === 'in') group.earned += transaction.amount
+    groups.set(dateKey, group)
+  }
+  return [...groups.values()]
+}

@@ -22,13 +22,17 @@ export function useTransaction(id: string | undefined) {
 }
 
 // Every transaction write cascades on the backend (periods, ledger, budgets, alerts,
-// balances, reports, net worth) — see invalidateFinancialState.
+// balances, reports, net worth, pending recurring expenses) — see invalidateFinancialState.
+// The refetch isn't awaited: the mutation resolves as soon as the write succeeds, so
+// the modal closes right away and the screens refresh in the background.
 
 export function useCreateTransaction() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (input: CreateTransactionInput) => transactionsRepository.create(input),
-    onSuccess: () => invalidateFinancialState(queryClient),
+    onSuccess: () => {
+      void invalidateFinancialState(queryClient)
+    },
   })
 }
 
@@ -37,7 +41,9 @@ export function useUpdateTransaction() {
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateTransactionInput }) =>
       transactionsRepository.update(id, input),
-    onSuccess: () => invalidateFinancialState(queryClient),
+    onSuccess: () => {
+      void invalidateFinancialState(queryClient)
+    },
   })
 }
 
@@ -45,6 +51,8 @@ export function useDeleteTransaction() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => transactionsRepository.remove(id),
-    onSuccess: () => invalidateFinancialState(queryClient),
+    onSuccess: () => {
+      void invalidateFinancialState(queryClient)
+    },
   })
 }

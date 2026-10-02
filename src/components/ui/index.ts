@@ -4,9 +4,9 @@ export { InlineError } from './InlineError'
 export { Skeleton } from './Skeleton'
 export { ToastContainer } from './ToastContainer'
 export { TransactionRow, TransactionRowsSkeleton } from './TransactionRow'
-export { DeleteConfirmation } from './DeleteConfirmation'
+export { ConfirmDeleteDialog, DeleteConfirmation } from './DeleteConfirmation'
 export { errorProps, Field, FieldError, inputClassName } from './FormField'
-export { Modal } from './Modal'
+export { Modal, ModalFooter, useModalClose, useModalUnsavedChanges } from './Modal'
 export { ProgressBar, progressPercentage } from './ProgressBar'
 export { type AmountEntry, AmountEntryForm } from './AmountEntryForm'
 export { ConfirmDeletePopover } from './ConfirmDeletePopover'
@@ -20,7 +20,17 @@ export { Divider } from './Divider'
 export { EmptyState } from './EmptyState'
 export { Eyebrow } from './Eyebrow'
 export { IconButton, iconButtonClassName } from './IconButton'
-export { fieldClassName, Input, SearchInput } from './Input'
+export {
+  DateInput,
+  fieldBaseClassName,
+  fieldClassName,
+  Input,
+  SearchInput,
+  Select,
+  Textarea,
+} from './Input'
+export { AmountField } from './AmountField'
+export { Enter } from './Enter'
 export { PageHeader } from './PageHeader'
 export { SectionError } from './SectionError'
 export { Spinner } from './Spinner'

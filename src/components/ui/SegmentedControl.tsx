@@ -8,6 +8,8 @@ export interface SegmentedOption<T extends string> {
   icon?: LucideIcon
   /** Overrides the accessible name when the visible label is an abbreviation. */
   ariaLabel?: string
+  /** Muted count after the label ("Gastos 12"). */
+  count?: number
 }
 
 interface SegmentedControlProps<T extends string> {
@@ -41,7 +43,7 @@ export function SegmentedControl<T extends string>({
         className,
       )}
     >
-      {options.map(({ value: optionValue, label: optionLabel, icon: Icon, ariaLabel }) => {
+      {options.map(({ value: optionValue, label: optionLabel, icon: Icon, ariaLabel, count }) => {
         const selected = optionValue === value
         return (
           <button
@@ -61,6 +63,9 @@ export function SegmentedControl<T extends string>({
           >
             {Icon && <Icon className="size-4" aria-hidden />}
             {!iconOnly && optionLabel}
+            {!iconOnly && count !== undefined && (
+              <span className="font-normal text-ink-muted tabular-nums">{count}</span>
+            )}
           </button>
         )
       })}

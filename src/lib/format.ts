@@ -172,15 +172,21 @@ export function fromDateInputValue(value: string, now = new Date()): string {
  */
 export function parseAmountInput(value: string, locale: string): number {
   const [group, decimal] = locale.startsWith('es') ? ['.', ','] : [',', '.']
-  const cleaned = value.replace(/[\s$]/g, '').split(group).join('').replace(decimal, '.')
+  const cleaned = value
+    .replace(/[\s$]/g, '')
+    .split(group)
+    .join('')
+    .replace(decimal, '.')
+    // "12," while typing a decimal: treat as 12.
+    .replace(/\.$/, '')
   return /^\d+(\.\d{1,2})?$/.test(cleaned) ? Number(cleaned) : NaN
 }
 
-/** Inverse of `parseAmountInput`, for pre-filling the edit form. */
+/** Inverse of `parseAmountInput`, for pre-filling the edit form ("1.450.000" in es). */
 export function formatAmountInput(amount: number, locale: string): string {
-  return new Intl.NumberFormat(locale, { maximumFractionDigits: 2, useGrouping: true }).format(
-    amount,
-  )
+  const { decimal } = separatorsOf(locale)
+  const [integer, fraction] = String(Math.round(Math.abs(amount) * 100) / 100).split('.')
+  return formatAmountTyping(fraction ? `${integer}${decimal}${fraction}` : integer, locale)
 }
 
 /** Day heading for grouped lists, e.g. "domingo, 21 de septiembre". */
@@ -223,4 +229,85 @@ export function addDaysToDateKey(dateKey: string, days: number): string {
 /** Whole calendar days from `from` to `to` (both `YYYY-MM-DD`); 0 when equal. */
 export function daysBetweenDateKeys(from: string, to: string): number {
   return Math.round((dateKeyToDate(to).getTime() - dateKeyToDate(from).getTime()) / DAY_MS)
+}
+
+function separatorsOf(locale: string): { group: string; decimal: string } {
+  return locale.startsWith('es') ? { group: '.', decimal: ',' } : { group: ',', decimal: '.' }
+}
+
+/**
+ * Live formatting of an amount being typed: keeps digits and one decimal mark (≤ 2
+ * decimals) and regroups the integer part, so "1450000" reads "1.450.000" (es) or
+ * "1,450,000" (en). Group marks typed by the user are dropped and recomputed; a trailing
+ * decimal mark is kept so "12," can become "12,5". Never negative. Parse the result
+ * with `parseAmountInput` — the only string → number conversion.
+ */
+export function formatAmountTyping(raw: string, locale: string): string {
+  const { group, decimal } = separatorsOf(locale)
+  let integer = ''
+  let fraction: string | null = null
+  for (const char of raw) {
+    if (char >= '0' && char <= '9') {
+      if (fraction === null) integer += char
+      else if (fraction.length < 2) fraction += char
+    } else if (char === decimal && fraction === null) {
+      fraction = ''
+    }
+  }
+  integer = integer.replace(/^0+(?=\d)/, '')
+  if (integer === '' && fraction !== null) integer = '0'
+  const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, group)
+  return fraction === null ? grouped : `${grouped}${decimal}${fraction}`
+}
+
+/**
+ * Where the caret goes after `formatAmountTyping`: right after the same number of
+ * significant characters (digits and decimal mark) it had before reformatting.
+ */
+export function caretAfterTyping(
+  raw: string,
+  caret: number,
+  formatted: string,
+  locale: string,
+): number {
+  const { decimal } = separatorsOf(locale)
+  const significant = (char: string) => (char >= '0' && char <= '9') || char === decimal
+  let count = 0
+  for (const char of raw.slice(0, caret)) if (significant(char)) count += 1
+  if (count === 0) return 0
+  for (let index = 0; index < formatted.length; index += 1) {
+    if (significant(formatted[index]) && --count === 0) return index + 1
+  }
+  return formatted.length
+}
+
+/** Currency symbol of `APP_CURRENCY` in the given locale ("$"). */
+export function currencySymbol(locale: string = activeLocale()): string {
+  return (
+    formatMoneyParts(0, { locale }).find(part => part.type === 'currency')?.value ?? APP_CURRENCY
+  )
+}
+
+/**
+ * Whether an instant carries a real time of day. Movements logged for a past day are
+ * pinned to exactly 12:00:00.000 Bogotá by `fromDateInputValue` (a placeholder, not a
+ * time anyone chose), so those don't show a clock time.
+ */
+export function hasClockTime(iso: string): boolean {
+  const date = new Date(iso)
+  return !(
+    date.getUTCHours() === 17 &&
+    date.getUTCMinutes() === 0 &&
+    date.getUTCSeconds() === 0 &&
+    date.getUTCMilliseconds() === 0
+  )
+}
+
+/** Time of day in Bogotá: "3:45 p. m." / "3:45 PM". */
+export function formatTime(iso: string, locale: string = activeLocale()): string {
+  return new Intl.DateTimeFormat(locale, {
+    timeZone: APP_TIME_ZONE,
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(new Date(iso))
 }

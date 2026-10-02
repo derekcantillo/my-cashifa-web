@@ -74,5 +74,11 @@
       "amountTooHigh": "Can't be more than {{max}}",
       "dateRequired": "Pick a date"
     }
+  },
+  "discard": {
+    "title": "Discard changes?",
+    "body": "What you entered hasn't been saved.",
+    "keepEditing": "Keep editing",
+    "confirm": "Discard"
   }
 }

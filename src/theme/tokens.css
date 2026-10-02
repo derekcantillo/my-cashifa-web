@@ -37,6 +37,9 @@
   --color-positive-soft: #e1eee5;
   --color-negative: #a94b2c; /* AA: was #B4502F (4.09:1 on negative-soft) */
   --color-negative-soft: #f5e3db;
+  /* Solid destructive button (confirm delete): fill, hover and the text on it. */
+  --color-negative-hover: #953f22;
+  --color-negative-ink: #fbf7f4;
   --color-warning: #925f0f; /* AA: was #9A6410 (4.46:1 on canvas) */
   --color-warning-soft: #f6ead0;
 
@@ -84,6 +87,11 @@
   --text-display-sm--line-height: 1.15;
   --text-display-sm--letter-spacing: -0.005em;
   /* Sans */
+  /* The amount being typed in the transaction modal. */
+  --text-amount-input: 36px;
+  --text-amount-input--line-height: 1.15;
+  --text-amount-input--letter-spacing: -0.01em;
+  --text-amount-input--font-weight: 600;
   /* Secondary figure of a compact card (net worth on Home). Sans, never serif. */
   --text-figure: 28px;
   --text-figure--line-height: 1.15;
@@ -125,6 +133,18 @@
    */
   --animate-enter: enter 360ms var(--ease-tactile) backwards;
 
+  /* Modal panel: fade + 8px rise, 150ms. */
+  --animate-dialog-in: dialog-in 150ms var(--ease-tactile) backwards;
+  /* Toasts rise from the bottom edge. */
+  --animate-toast-in: dialog-in 180ms var(--ease-tactile) backwards;
+
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+
   @keyframes enter {
     from {
       opacity: 0;
@@ -164,6 +184,8 @@
   --color-positive-soft: #1d2c22;
   --color-negative: #e39070;
   --color-negative-soft: #34211b;
+  --color-negative-hover: #eaa287;
+  --color-negative-ink: #1a0f0b;
   --color-warning: #dba84a;
   --color-warning-soft: #2e2612;
 

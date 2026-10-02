@@ -74,5 +74,11 @@
       "amountTooHigh": "No puede ser más de {{max}}",
       "dateRequired": "Elige una fecha"
     }
+  },
+  "discard": {
+    "title": "¿Descartar los cambios?",
+    "body": "Lo que escribiste no se ha guardado.",
+    "keepEditing": "Seguir editando",
+    "confirm": "Descartar"
   }
 }

@@ -1,8 +1,7 @@
-import type { CSSProperties, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Enter } from '@/components/ui'
 import { useSelectedPeriod } from '@/hooks'
-import { cn } from '@/lib/cn'
 
 import { GoalsCard } from './components/GoalsCard'
 import { HomeHero } from './components/HomeHero'
@@ -10,30 +9,6 @@ import { NetWorthCard } from './components/NetWorthCard'
 import { ReceivablesCard } from './components/ReceivablesCard'
 import { RecentTransactionsCard } from './components/RecentTransactionsCard'
 import { SpendingPaceCard } from './components/SpendingPaceCard'
-
-/** Delay between consecutive blocks of the entrance (never more than 40ms). */
-const STAGGER_MS = 40
-
-/**
- * Fades a block in, `order` steps after the first. The wrappers stay mounted while
- * their content goes from skeleton to data, so it only plays on the page's first mount.
- */
-function Enter({
-  order,
-  className,
-  children,
-}: {
-  order: number
-  className?: string
-  children: ReactNode
-}) {
-  const style: CSSProperties = { animationDelay: `${order * STAGGER_MS}ms` }
-  return (
-    <div className={cn('motion-safe:animate-enter', className)} style={style}>
-      {children}
-    </div>
-  )
-}
 
 export function HomePage() {
   const { t } = useTranslation('home')

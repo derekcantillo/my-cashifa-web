@@ -1,4 +1,9 @@
-import { addDaysToDateKey, daysBetweenDateKeys, toDateInputValue } from '@/lib/format'
+import {
+  addDaysToDateKey,
+  dateKeyToDate,
+  daysBetweenDateKeys,
+  toDateInputValue,
+} from '@/lib/format'
 import type { FinancialPeriod } from '@/types'
 
 export interface PeriodTiming {
@@ -30,4 +35,20 @@ export function getPeriodTiming(
     elapsedDays: Math.max(1, daysBetweenDateKeys(startKey, lastKey) + 1),
     isOpen,
   }
+}
+
+/**
+ * The period a `YYYY-MM-DD` day (Bogotá) belongs to — the one the backend will assign
+ * a movement dated that day to (`[startDate, endDate)`, `endDate` null = open).
+ */
+export function findPeriodForDateKey<T extends Pick<FinancialPeriod, 'startDate' | 'endDate'>>(
+  periods: readonly T[],
+  dateKey: string,
+): T | undefined {
+  const instant = dateKeyToDate(dateKey).getTime()
+  return periods.find(
+    period =>
+      Date.parse(period.startDate) <= instant &&
+      (period.endDate === null || instant < Date.parse(period.endDate)),
+  )
 }

@@ -137,6 +137,18 @@ const FORCED_STATE: Record<ButtonVariant, string[]> = {
     'outline-2 outline-offset-2 outline-accent',
     'translate-y-px shadow-pressed',
   ],
+  danger: [
+    '',
+    'bg-negative-hover',
+    'outline-2 outline-offset-2 outline-accent',
+    'translate-y-px shadow-pressed',
+  ],
+  'danger-ghost': [
+    '',
+    'bg-negative-soft',
+    'outline-2 outline-offset-2 outline-accent',
+    'translate-y-px shadow-pressed',
+  ],
 }
 
 export function DesignShowcasePage() {
@@ -322,30 +334,32 @@ export function DesignShowcasePage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {(['primary', 'secondary', 'ghost'] as const).map(variant => (
-                      <tr key={variant}>
-                        <th className="pr-3 font-mono text-body-sm font-normal text-ink-muted">
-                          {variant}
-                        </th>
-                        {FORCED_STATE[variant].map((forced, index) => (
-                          <td key={index} className="px-3 py-2">
-                            <Button variant={variant} className={forced} tabIndex={-1}>
+                    {(['primary', 'secondary', 'ghost', 'danger', 'danger-ghost'] as const).map(
+                      variant => (
+                        <tr key={variant}>
+                          <th className="pr-3 font-mono text-body-sm font-normal text-ink-muted">
+                            {variant}
+                          </th>
+                          {FORCED_STATE[variant].map((forced, index) => (
+                            <td key={index} className="px-3 py-2">
+                              <Button variant={variant} className={forced} tabIndex={-1}>
+                                {copy.register}
+                              </Button>
+                            </td>
+                          ))}
+                          <td className="px-3 py-2">
+                            <Button variant={variant} disabled>
                               {copy.register}
                             </Button>
                           </td>
-                        ))}
-                        <td className="px-3 py-2">
-                          <Button variant={variant} disabled>
-                            {copy.register}
-                          </Button>
-                        </td>
-                        <td className="px-3 py-2">
-                          <Button variant={variant} loading>
-                            {copy.register}
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
+                          <td className="px-3 py-2">
+                            <Button variant={variant} loading>
+                              {copy.register}
+                            </Button>
+                          </td>
+                        </tr>
+                      ),
+                    )}
                   </tbody>
                 </table>
               </div>

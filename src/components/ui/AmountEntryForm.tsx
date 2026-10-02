@@ -1,13 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { useFormatters } from '@/hooks'
 import { fromDateInputValue, parseAmountInput, toDateInputValue } from '@/lib/format'
 
-import { errorProps, Field, inputClassName } from './FormField'
+import { AmountField } from './AmountField'
+import { Button } from './Button'
+import { errorProps, Field } from './FormField'
+import { DateInput, Input } from './Input'
 
 type ErrorCode =
   'amountRequired' | 'amountInvalid' | 'amountPositive' | 'amountTooHigh' | 'dateRequired'
@@ -70,6 +73,7 @@ export function AmountEntryForm({
   type FormValues = z.infer<typeof schema>
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -100,66 +104,57 @@ export function AmountEntryForm({
     <form
       noValidate
       onSubmit={event => void handleSubmit(submit)(event).catch(() => undefined)}
-      className="space-y-4 rounded-2xl border border-border bg-surface-elevated p-5"
+      className="space-y-4 rounded-lg bg-surface-raised p-5 shadow-raised"
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <Field id={ids.amount} label={t('amountForm.amount')} error={amountError}>
-          <input
-            id={ids.amount}
-            type="text"
-            inputMode="decimal"
-            autoComplete="off"
-            placeholder="0"
-            // eslint-disable-next-line jsx-a11y/no-autofocus -- the panel opens on explicit request; start typing right away
-            autoFocus
-            className={inputClassName(amountError)}
-            {...errorProps(ids.amount, amountError)}
-            {...register('amount')}
+          <Controller
+            control={control}
+            name="amount"
+            render={({ field }) => (
+              <AmountField
+                id={ids.amount}
+                ref={field.ref}
+                name={field.name}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                placeholder="0"
+                invalid={Boolean(amountError)}
+                // eslint-disable-next-line jsx-a11y/no-autofocus -- the panel opens on explicit request; start typing right away
+                autoFocus
+                {...errorProps(ids.amount, amountError)}
+              />
+            )}
           />
         </Field>
         <Field id={ids.date} label={t('amountForm.date')} error={dateError}>
-          <input
+          <DateInput
             id={ids.date}
-            type="date"
             max={today}
-            className={inputClassName(dateError)}
+            invalid={Boolean(dateError)}
             {...errorProps(ids.date, dateError)}
             {...register('date')}
           />
         </Field>
       </div>
       <Field id={ids.note} label={t('amountForm.note')} hint={t('amountForm.optional')}>
-        <input
-          id={ids.note}
-          type="text"
-          maxLength={255}
-          className={inputClassName(null)}
-          {...register('note')}
-        />
+        <Input id={ids.note} maxLength={255} {...register('note')} />
       </Field>
 
       {errorMessage && (
-        <p role="alert" className="text-sm text-danger">
+        <p role="alert" className="text-body-sm text-negative">
           {errorMessage}
         </p>
       )}
 
       <div className="flex justify-end gap-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={isSubmitting}
-          className="rounded-lg px-3 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-ink/5 hover:text-ink disabled:opacity-60"
-        >
+        <Button variant="ghost" onClick={onCancel} disabled={isSubmitting}>
           {t('amountForm.cancel')}
-        </button>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-on-brand transition-colors hover:bg-brand-hover disabled:opacity-60"
-        >
-          {isSubmitting ? t('common.saving') : submitLabel}
-        </button>
+        </Button>
+        <Button type="submit" loading={isSubmitting}>
+          {submitLabel}
+        </Button>
       </div>
     </form>
   )

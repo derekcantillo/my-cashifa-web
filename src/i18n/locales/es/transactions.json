@@ -30,7 +30,31 @@
     },
     "delete": "Eliminar",
     "deleteConfirm": "¿Eliminar este movimiento?",
-    "deleteError": "No se pudo eliminar. Inténtalo de nuevo."
+    "deleteError": "No se pudo eliminar. Inténtalo de nuevo.",
+    "cancel": "Cancelar",
+    "noteCount": "{{count}}/{{max}}",
+    "deleteTitle": "Eliminar movimiento",
+    "deleteBody": "Se eliminará «{{name}}» por {{amount}}.",
+    "deleteRecurring": "El gasto fijo «{{name}}» volverá a aparecer en Fijos por registrar.",
+    "confirmDelete": "Eliminar",
+    "recurring": {
+      "label": "Cruzar con gasto fijo",
+      "none": "Sin gasto fijo",
+      "groupPending": "Pendientes de este periodo",
+      "groupRegistered": "Ya registrados este periodo",
+      "option": "{{name}} · {{amount}} · vence día {{day}}",
+      "registered": "{{name}} · Ya registrado",
+      "estimate": "Estimado: {{amount}}",
+      "over": "{{amount}} más que el estimado",
+      "under": "{{amount}} menos que el estimado",
+      "unlink": "Quitar vínculo",
+      "linked": "Cruzado con {{name}}",
+      "linkedHelp": "El vínculo se elige al registrar el movimiento; después no se puede cambiar.",
+      "categorySet": "Categoría cambiada a {{category}} para coincidir con el gasto fijo.",
+      "unlinkedByCategory": "Se quitó el vínculo con {{name}}: la categoría ya no coincide.",
+      "noActive": "No tienes gastos fijos activos.",
+      "loading": "Cargando gastos fijos…"
+    }
   },
   "types": {
     "EXPENSE": "Gasto",
@@ -54,6 +78,40 @@
     "yesterday": "Ayer",
     "dayExpenses": "Gastos {{amount}}",
     "emptyFiltered": "No hay movimientos de este tipo en el periodo",
-    "empty": "Todavía no registraste movimientos este periodo"
+    "empty": "Todavía no registraste movimientos este periodo",
+    "eyebrowLoading": "Periodo",
+    "stats": {
+      "expenses": "Gastos del periodo",
+      "income": "Ingresos del periodo",
+      "count": "Movimientos"
+    },
+    "search": "Buscar por nota o categoría",
+    "clearSearch": "Borrar búsqueda",
+    "categoryFilter": "Filtrar por categoría",
+    "categoryAll": "Categoría: Todas",
+    "listLabel": "Movimientos del periodo",
+    "dayIncome": "Ingresos {{amount}}",
+    "emptyTitle": "Sin movimientos",
+    "emptyBody": "Todavía no registraste movimientos en este periodo.",
+    "noResultsTitle": "Sin resultados",
+    "noResultsBody": "Ningún movimiento coincide con la búsqueda o los filtros.",
+    "clearFilters": "Limpiar filtros",
+    "searchPlaceholder": "Buscar…"
+  },
+  "row": {
+    "recurring": "Fijo: {{name}}"
+  },
+  "pending": {
+    "title": "Fijos por registrar",
+    "due": "vence el día {{day}}",
+    "register": "Registrar",
+    "registerLabel": "Registrar {{name}}",
+    "upToDate": "Todo al día"
+  },
+  "breakdown": {
+    "title": "Por categoría",
+    "others": "Otras",
+    "empty": "Sin gastos en este periodo.",
+    "share": "{{percentage}} del gasto"
   }
 }
