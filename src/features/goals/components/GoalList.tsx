@@ -106,6 +106,7 @@ function itemClassName(selected: boolean) {
 function GoalItem({ goal, selected, onSelect }: ItemProps) {
   const { t } = useTranslation('goals')
   const { locale, money } = useFormatters()
+  const timeLeft = timeLeftLabel(t, goal)
   const percent = formatPercent(displayPercent(goal.currentAmount, goal.targetAmount) / 100, {
     locale,
   })
@@ -144,8 +145,7 @@ function GoalItem({ goal, selected, onSelect }: ItemProps) {
             year: 'numeric',
           }),
         })}
-        {' · '}
-        {timeLeftLabel(t, goal.targetDate, locale)}
+        {timeLeft && ` · ${timeLeft}`}
       </span>
     </button>
   )

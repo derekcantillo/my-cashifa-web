@@ -18,19 +18,19 @@ import {
   AXIS_TICK,
   CHART_COLORS,
   ChartTooltip,
-  compactMoneyFormat,
   CURSOR,
   GRID,
   LegendSwatch,
   LINE_WIDTH,
   monthTickLabel,
-  niceCeil,
+  moneyTickLabels,
+  niceTicks,
   PROJECTION_DASH,
   tooltipDateFormat,
 } from '@/components/charts'
 import { useFormatters } from '@/hooks'
 import { dateKeyToDate, toDateInputValue } from '@/lib/format'
-import { requiredContribution, savingsSeries } from '@/lib/goalMath'
+import { savingsSeries } from '@/lib/goalMath'
 import type { Goal } from '@/types'
 
 interface ChartRow {
@@ -72,9 +72,11 @@ export function GoalProgressChart({ goal }: { goal: Goal }) {
   const now = new Date()
   const today = dateKeyToDate(toDateInputValue(now)).getTime()
   const series = savingsSeries(goal)
-  const required = requiredContribution(goal, now)
+  // The projection follows the backend plan: straight to the target at its monthly amount.
+  const plan = goal.plan
   const targetTime = dateKeyToDate(toDateInputValue(goal.targetDate)).getTime()
-  const projects = goal.status !== 'COMPLETED' && required.kind === 'monthly'
+  const projects =
+    plan !== null && !plan.isOverdue && goal.currentAmount < goal.targetAmount && targetTime > today
 
   const rows: ChartRow[] = series.map(point => ({
     time: dateKeyToDate(point.dateKey).getTime(),
@@ -94,8 +96,9 @@ export function GoalProgressChart({ goal }: { goal: Goal }) {
   const singlePoint = series.length === 1
   const tickLabel = monthTickLabel(locale, end - start)
   const dateFormat = tooltipDateFormat(locale)
-  const compactMoney = compactMoneyFormat(locale)
   const maxValue = Math.max(goal.targetAmount, ...series.map(point => point.amount))
+  const scale = niceTicks(maxValue)
+  const tickLabels = moneyTickLabels(scale.ticks, locale)
 
   const summary = t('chart.summary', {
     saved: money(goal.currentAmount),
@@ -109,7 +112,7 @@ export function GoalProgressChart({ goal }: { goal: Goal }) {
         <LegendSwatch label={t('chart.saved')} color={CHART_COLORS.main} />
         {projects && (
           <LegendSwatch
-            label={t('chart.projection', { amount: money(required.amount) })}
+            label={t('chart.projection', { amount: money(plan?.requiredMonthlyContribution ?? 0) })}
             color={CHART_COLORS.projection}
             dashed
           />
@@ -136,9 +139,10 @@ export function GoalProgressChart({ goal }: { goal: Goal }) {
               axisLine={AXIS_LINE}
             />
             <YAxis
-              domain={[0, niceCeil(maxValue * 1.05)]}
-              tickCount={4}
-              tickFormatter={(value: number) => compactMoney.format(value)}
+              domain={scale.domain}
+              ticks={scale.ticks}
+              interval={0}
+              tickFormatter={(value: number) => tickLabels.get(value) ?? ''}
               tick={AXIS_TICK}
               tickLine={false}
               axisLine={false}

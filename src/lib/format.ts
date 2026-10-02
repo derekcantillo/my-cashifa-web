@@ -26,18 +26,28 @@ export interface MoneyFormatOptions {
   signDisplay?: Intl.NumberFormatOptions['signDisplay']
   /** "$ 1,2 M" instead of "$ 1.200.000" — for tight spots and chart axes. */
   compact?: boolean
+  /** Compact only: decimals allowed (default 1). */
+  compactFractionDigits?: number
   /** Defaults to the active UI language. */
   locale?: string
 }
 
 function moneyFormatter(options: MoneyFormatOptions): Intl.NumberFormat {
-  const { currency = APP_CURRENCY, signDisplay, compact = false, locale = activeLocale() } = options
+  const {
+    currency = APP_CURRENCY,
+    signDisplay,
+    compact = false,
+    compactFractionDigits = 1,
+    locale = activeLocale(),
+  } = options
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
     currencyDisplay: 'narrowSymbol',
     signDisplay,
-    ...(compact ? { notation: 'compact', maximumFractionDigits: 1 } : { maximumFractionDigits: 0 }),
+    ...(compact
+      ? { notation: 'compact', maximumFractionDigits: compactFractionDigits }
+      : { maximumFractionDigits: 0 }),
   })
 }
 
@@ -312,13 +322,16 @@ export function formatTime(iso: string, locale: string = activeLocale()): string
   }).format(new Date(iso))
 }
 
-/** Plain number in the active language ("3,3" / "3.3"); one decimal at most by default. */
-export function formatNumber(
-  value: number,
-  {
-    locale = activeLocale(),
-    maximumFractionDigits = 1,
-  }: { locale?: string; maximumFractionDigits?: number } = {},
-): string {
-  return new Intl.NumberFormat(locale, { maximumFractionDigits }).format(value)
+/** Compact "29 sept" / "Sep 29" in Bogotá — no "de", no trailing dot (chart labels). */
+export function formatDayMonth(date: Date | string, locale: string = activeLocale()): string {
+  const parts = new Intl.DateTimeFormat(locale, {
+    timeZone: APP_TIME_ZONE,
+    day: 'numeric',
+    month: 'short',
+  }).formatToParts(typeof date === 'string' ? new Date(date) : date)
+  const day = parts.find(part => part.type === 'day')?.value ?? ''
+  const month = (parts.find(part => part.type === 'month')?.value ?? '').replace(/\.$/, '')
+  const monthFirst =
+    parts.findIndex(part => part.type === 'month') < parts.findIndex(part => part.type === 'day')
+  return monthFirst ? `${month} ${day}` : `${day} ${month}`
 }

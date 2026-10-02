@@ -1,6 +1,6 @@
 import { addDaysToDateKey, toDateInputValue } from '@/lib/format'
 import type { PeriodTiming } from '@/lib/periodTiming'
-import { getTransactionDirection } from '@/lib/transactionDirection'
+import { spendingByDay } from '@/lib/dailySpending'
 import type { Transaction } from '@/types'
 
 export const PACE_DAYS = 7
@@ -37,14 +37,8 @@ export function buildSpendingPace(
   timing: PeriodTiming,
   now = new Date(),
 ): SpendingPace {
-  const byDay = new Map<string, number>()
-  let total = 0
-  for (const transaction of transactions) {
-    if (getTransactionDirection(transaction.type) !== 'out') continue
-    const dateKey = toDateInputValue(transaction.transactionDate)
-    byDay.set(dateKey, (byDay.get(dateKey) ?? 0) + transaction.amount)
-    total += transaction.amount
-  }
+  const byDay = spendingByDay(transactions)
+  const total = [...byDay.values()].reduce((sum, amount) => sum + amount, 0)
 
   const todayKey = toDateInputValue(now)
   const days: PaceDay[] = Array.from({ length: PACE_DAYS }, (_, index) => {

@@ -80,5 +80,12 @@
     "body": "What you entered hasn't been saved.",
     "keepEditing": "Keep editing",
     "confirm": "Discard"
+  },
+  "categoryBreakdown": {
+    "others": "Smaller categories ({{count}})",
+    "othersName": "Smaller categories",
+    "itemLabel": "{{name}}, {{amount}}, {{percent}}",
+    "showOthers": "Show the smaller categories",
+    "barLabel": "Spending by category"
   }
 }

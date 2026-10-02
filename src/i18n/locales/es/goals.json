@@ -22,18 +22,15 @@
     "required": "Aporte mensual requerido",
     "requiredHint": "Para llegar a tiempo a todas",
     "next": "Próxima fecha objetivo",
-    "overdueCount_one": "{{count}} meta con fecha vencida no suma",
-    "overdueCount_other": "{{count}} metas con fecha vencida no suman"
+    "overdueCount_one": "Incluye {{count}} meta vencida (todo lo que le falta)",
+    "overdueCount_other": "Incluye {{count}} metas vencidas (todo lo que les falta)"
   },
   "list": {
     "label": "Tus metas",
     "saved": "{{saved}} de {{target}}",
     "by": "Para el {{date}}",
-    "monthsLeft_one": "falta {{months}} mes",
-    "monthsLeft_other": "faltan {{months}} meses",
-    "daysLeft_one": "falta {{count}} día",
-    "daysLeft_other": "faltan {{count}} días",
-    "dueToday": "vence hoy",
+    "monthsLeft_one": "falta {{count}} mes",
+    "monthsLeft_other": "faltan {{count}} meses",
     "overdue": "Fecha vencida",
     "completed": "Completadas ({{count}})",
     "reachedOn": "Alcanzada el {{date}}",
@@ -58,7 +55,8 @@
     "reached": "Meta alcanzada",
     "reachedOn": "Meta alcanzada el {{date}}",
     "paused": "En pausa: no suma al aporte mensual requerido.",
-    "noSelection": "Elige una meta de la lista."
+    "noSelection": "Elige una meta de la lista.",
+    "overdueAll": "Fecha vencida: falta todo en un aporte"
   },
   "history": {
     "title": "Aportes",

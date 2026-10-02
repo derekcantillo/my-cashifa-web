@@ -17,6 +17,18 @@ export interface GoalContribution {
   createdAt: string
 }
 
+/**
+ * Contribution plan computed by the backend on every read (`calculateGoalPlan`, the
+ * single source also used by the SAVINGS_TARGET_AT_RISK alert). `null` unless ACTIVE.
+ */
+export interface GoalPlan {
+  /** Calendar months to the target date, counted month to month (day ignored). Minimum 1; 0 once overdue. */
+  monthsRemaining: number
+  /** `ceil(remaining / monthsRemaining)`; the whole remaining amount once overdue. */
+  requiredMonthlyContribution: number
+  isOverdue: boolean
+}
+
 export interface Goal {
   id: string
   name: string
@@ -27,6 +39,7 @@ export interface Goal {
   targetDate: string
   phase: PlanPhase
   status: GoalStatus
+  plan: GoalPlan | null
   /** Newest first. */
   contributions: GoalContribution[]
   createdAt: string

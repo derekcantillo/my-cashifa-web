@@ -1,25 +1,51 @@
 {
   "title": "Reports",
-  "income": "Income",
-  "expenses": "Expenses",
+  "eyebrowLoading": "Period",
   "hero": {
     "label": "Savings capacity",
-    "summary": "Income {{income}} · Expenses {{expenses}}",
-    "rate": "You keep {{percentage}}% of what you earned"
+    "rate": "You keep {{percent}} of what you earned",
+    "deficit": "Spending above income",
+    "spentOfIncome": "Spent {{spent}} of {{income}} income",
+    "progress": "Share of the period's income spent"
   },
-  "distribution": {
-    "title": "Spending breakdown",
-    "empty": "No spending this period",
-    "total": "Spent",
-    "other": "Other categories",
-    "description": "Donut chart of the period's spending by category"
+  "stats": {
+    "income": "Income this period",
+    "expenses": "Expenses this period",
+    "previous": "Previous period: {{amount}} spent",
+    "fixed": "Recurring expenses",
+    "fixedShare": "{{percent}} of expenses"
   },
-  "projection": {
-    "title": "Savings projection",
-    "subtitle": "What you've saved in your active goals",
-    "empty": "No projection data yet",
-    "single": "You've saved {{amount}} in your goals",
+  "daily": {
+    "title": "Spending by day",
+    "average": "Average {{amount}}",
+    "peak": "Biggest spending day: {{date}} · {{amount}}",
+    "emptyTitle": "No spending",
+    "emptyBody": "Once you add expenses this period, you'll see how they spread across the days here.",
+    "summary": "Daily spending this period: average {{average}}, biggest day {{date}} with {{amount}}.",
+    "tableCaption": "Spending by day",
+    "date": "Date",
+    "amount": "Amount",
+    "titleVariable": "Variable spending by day",
+    "modeVariable": "Variable",
+    "modeAll": "All",
+    "modeLabel": "Which spending to show",
+    "variableFooter": "Variable spending: {{total}} · Daily average {{average}}"
+  },
+  "categories": {
+    "title": "By category",
+    "empty": "No spending this period."
+  },
+  "savings": {
+    "title": "Savings in goals",
+    "subtitle": "Real running total of your contributions to active goals",
+    "saved": "Saved",
     "targets": "Target dates",
-    "description": "Savings in active goals accumulated over time"
+    "empty": "No contributions to your goals yet.",
+    "goToGoals": "Go to Goals",
+    "summary": "You've contributed {{amount}} to your active goals.",
+    "tableCaption": "Cumulative savings and target dates",
+    "date": "Date",
+    "amount": "Cumulative savings",
+    "target": "Target date of {{name}}"
   }
 }

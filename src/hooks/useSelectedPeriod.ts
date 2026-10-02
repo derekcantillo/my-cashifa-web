@@ -8,6 +8,8 @@ import { usePeriods } from './usePeriods'
 interface SelectedPeriod {
   period: FinancialPeriod | undefined
   periodId: string | undefined
+  /** The period right before the selected one, if any. */
+  previousPeriod: FinancialPeriod | undefined
   isLoading: boolean
   goToPrevious: () => void
   goToNext: () => void
@@ -49,6 +51,7 @@ export function useSelectedPeriod(): SelectedPeriod {
   return {
     period,
     periodId: period?.id,
+    previousPeriod: previous,
     isLoading: isPending,
     goToPrevious: () => previous && setSelectedPeriodId(previous.id),
     goToNext: () => next && setSelectedPeriodId(next.id),

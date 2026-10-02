@@ -22,18 +22,15 @@
     "required": "Monthly contribution needed",
     "requiredHint": "To reach all of them on time",
     "next": "Next target date",
-    "overdueCount_one": "{{count}} overdue goal not included",
-    "overdueCount_other": "{{count}} overdue goals not included"
+    "overdueCount_one": "Includes {{count}} overdue goal (everything left)",
+    "overdueCount_other": "Includes {{count}} overdue goals (everything left)"
   },
   "list": {
     "label": "Your goals",
     "saved": "{{saved}} of {{target}}",
     "by": "By {{date}}",
-    "monthsLeft_one": "{{months}} month left",
-    "monthsLeft_other": "{{months}} months left",
-    "daysLeft_one": "{{count}} day left",
-    "daysLeft_other": "{{count}} days left",
-    "dueToday": "due today",
+    "monthsLeft_one": "{{count}} month left",
+    "monthsLeft_other": "{{count}} months left",
     "overdue": "Past due date",
     "completed": "Completed ({{count}})",
     "reachedOn": "Reached on {{date}}",
@@ -58,7 +55,8 @@
     "reached": "Goal reached",
     "reachedOn": "Goal reached on {{date}}",
     "paused": "Paused: not part of the monthly contribution needed.",
-    "noSelection": "Pick a goal from the list."
+    "noSelection": "Pick a goal from the list.",
+    "overdueAll": "Past due: everything left, in one go"
   },
   "history": {
     "title": "Contributions",

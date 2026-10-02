@@ -21,7 +21,6 @@ import {
   progressPercent,
   projectedReachDate,
   reachedOn,
-  requiredContribution,
   savingsSeries,
 } from '@/lib/goalMath'
 import { useGoalModalStore } from '@/store/goalModalStore'
@@ -51,7 +50,8 @@ export function GoalDetailPanel({ goal, onDeleted }: GoalDetailPanelProps) {
   const now = new Date()
   const completed = goal.status === 'COMPLETED'
   const remaining = Math.max(0, goal.targetAmount - goal.currentAmount)
-  const required = requiredContribution(goal, now)
+  const plan = goal.plan
+  const timeLeft = timeLeftLabel(t, goal)
   const pace = completed ? null : currentPace(goal.contributions, now)
   const paceReach = pace ? projectedReachDate(remaining, pace.monthly, now) : null
   const reached = completed ? reachedOn(savingsSeries(goal), goal.targetAmount) : null
@@ -151,20 +151,28 @@ export function GoalDetailPanel({ goal, onDeleted }: GoalDetailPanelProps) {
           <dl className="grid gap-5 sm:grid-cols-3">
             <Datum label={t('detail.targetDate')}>
               <span className="block">{longDate(goal.targetDate)}</span>
-              <span className="block text-body-sm font-normal text-ink-muted">
-                {timeLeftLabel(t, goal.targetDate, locale, now)}
-              </span>
+              {timeLeft && (
+                <span className="block text-body-sm font-normal text-ink-muted">{timeLeft}</span>
+              )}
             </Datum>
             <Datum label={t('detail.remaining')}>
               <Amount value={remaining} />
             </Datum>
-            <Datum label={t('detail.required')}>
-              {required.kind === 'monthly' ? (
-                t('detail.perMonth', { amount: money(required.amount) })
-              ) : (
-                <span className="font-normal text-ink-muted">{t('detail.overdue')}</span>
-              )}
-            </Datum>
+            {/* From the backend plan; paused goals have none. */}
+            {plan && (
+              <Datum label={t('detail.required')}>
+                {plan.isOverdue ? (
+                  <>
+                    <Amount value={plan.requiredMonthlyContribution} />
+                    <span className="block text-body-sm font-normal text-ink-muted">
+                      {t('detail.overdueAll')}
+                    </span>
+                  </>
+                ) : (
+                  t('detail.perMonth', { amount: money(plan.requiredMonthlyContribution) })
+                )}
+              </Datum>
+            )}
             {pace && (
               <Datum label={t('detail.pace')} className="sm:col-span-3">
                 {t('detail.perMonth', { amount: money(pace.monthly) })}
@@ -199,11 +207,15 @@ export function GoalDetailPanel({ goal, onDeleted }: GoalDetailPanelProps) {
           <GoalProgressChart goal={goal} />
         ) : (
           <div className="space-y-4">
-            <p className="text-body text-ink-muted">
-              {required.kind === 'monthly'
-                ? t('chart.noContributions', { amount: money(required.amount) })
-                : t('chart.noContributionsOverdue', { amount: money(remaining) })}
-            </p>
+            {plan && (
+              <p className="text-body text-ink-muted">
+                {plan.isOverdue
+                  ? t('chart.noContributionsOverdue', { amount: money(remaining) })
+                  : t('chart.noContributions', {
+                      amount: money(plan.requiredMonthlyContribution),
+                    })}
+              </p>
+            )}
             {!completed && (
               <Button variant="secondary" size="sm" icon={Plus} onClick={() => contribute(goal.id)}>
                 {t('history.first')}

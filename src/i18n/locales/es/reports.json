@@ -1,25 +1,51 @@
 {
   "title": "Reportes",
-  "income": "Ingresos",
-  "expenses": "Gastos",
+  "eyebrowLoading": "Periodo",
   "hero": {
     "label": "Capacidad de ahorro",
-    "summary": "Ingresos {{income}} · Gastos {{expenses}}",
-    "rate": "Te queda el {{percentage}} % de lo que ganaste"
+    "rate": "Te queda el {{percent}} de lo que ganaste",
+    "deficit": "Gastos por encima de los ingresos",
+    "spentOfIncome": "Gastado {{spent}} de {{income}} ingresos",
+    "progress": "Gastado de los ingresos del periodo"
   },
-  "distribution": {
-    "title": "Distribución de gastos",
-    "empty": "Sin gastos registrados este periodo",
-    "total": "Gastado",
-    "other": "Otras categorías",
-    "description": "Gráfico de dona con el gasto del periodo por categoría"
+  "stats": {
+    "income": "Ingresos del periodo",
+    "expenses": "Gastos del periodo",
+    "previous": "Periodo anterior: {{amount}} de gastos",
+    "fixed": "Gastos fijos",
+    "fixedShare": "{{percent}} de los gastos"
   },
-  "projection": {
-    "title": "Proyección de ahorro",
-    "subtitle": "Lo que llevas ahorrado en tus metas activas",
-    "empty": "Sin datos de proyección todavía",
-    "single": "Llevas {{amount}} ahorrado en tus metas",
+  "daily": {
+    "title": "Gasto por día",
+    "average": "Promedio {{amount}}",
+    "peak": "Día de mayor gasto: {{date}} · {{amount}}",
+    "emptyTitle": "Sin gastos",
+    "emptyBody": "Cuando registres gastos en este periodo, verás aquí cómo se reparten por día.",
+    "summary": "Gasto diario del periodo: promedio {{average}}, día de mayor gasto {{date}} con {{amount}}.",
+    "tableCaption": "Gasto por día",
+    "date": "Fecha",
+    "amount": "Monto",
+    "titleVariable": "Gasto variable por día",
+    "modeVariable": "Variables",
+    "modeAll": "Todos",
+    "modeLabel": "Qué gastos mostrar",
+    "variableFooter": "Gasto variable: {{total}} · Promedio diario {{average}}"
+  },
+  "categories": {
+    "title": "Por categoría",
+    "empty": "Sin gastos en este periodo."
+  },
+  "savings": {
+    "title": "Ahorro en metas",
+    "subtitle": "Acumulado real de los aportes a tus metas activas",
+    "saved": "Ahorrado",
     "targets": "Fechas objetivo",
-    "description": "Ahorro acumulado en metas activas a lo largo del tiempo"
+    "empty": "Aún no hay aportes a tus metas.",
+    "goToGoals": "Ir a Metas",
+    "summary": "Llevas {{amount}} aportados a tus metas activas.",
+    "tableCaption": "Ahorro acumulado y fechas objetivo",
+    "date": "Fecha",
+    "amount": "Ahorro acumulado",
+    "target": "Fecha objetivo de {{name}}"
   }
 }

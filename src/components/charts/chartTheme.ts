@@ -1,4 +1,4 @@
-import { APP_TIME_ZONE } from '@/lib/format'
+import { APP_TIME_ZONE, formatMoney } from '@/lib/format'
 
 /**
  * The system chart style (Tactile Neo-Minimalism). Every color is a `var()` to a design
@@ -16,6 +16,8 @@ export const CHART_COLORS = {
   main: 'var(--color-accent)',
   projection: 'var(--color-ink-muted)',
   target: 'var(--color-positive)',
+  /** Neutral bars (the highlighted one uses `main`). ≥ 3:1 on surface-raised. */
+  bar: 'var(--color-chart-bar)',
   axis: 'var(--color-ink-subtle)',
   grid: 'var(--color-line)',
   /** Ring around active dots, so they read on top of the line. */
@@ -38,13 +40,57 @@ export const AREA_FILL = { fill: CHART_COLORS.main, fillOpacity: 0.08 } as const
 
 const LONG_RANGE_MS = 300 * 24 * 60 * 60 * 1000
 
-/** Rounds up to a "nice" axis maximum (1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8 × 10ⁿ) so ticks land on round values. */
-export function niceCeil(value: number): number {
-  if (value <= 0) return 1
-  const magnitude = 10 ** Math.floor(Math.log10(value))
-  const step =
-    [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 10].find(factor => factor * magnitude >= value) ?? 10
-  return step * magnitude
+const STEP_FACTORS = [1, 2, 2.5, 5] as const
+const MAX_INTERVALS = 4
+
+export interface NiceScale {
+  /** `[0, top]`: the top grid line is exactly the domain maximum. */
+  domain: [number, number]
+  /** Evenly spaced, starting at 0 and ending at `top`. */
+  ticks: number[]
+}
+
+/** Removes float noise (0.30000000000000004 → 0.3). */
+function clean(value: number): number {
+  return Number(value.toPrecision(12))
+}
+
+/**
+ * Y scale for a chart of non-negative amounts: the step is the smallest of
+ * {1, 2, 2.5, 5} × 10ⁿ that covers `max` in at most four intervals; the domain ends on
+ * the last tick. A zero (or invalid) max gives a minimal `[0, 1]` domain with only the
+ * 0 tick.
+ */
+export function niceTicks(max: number): NiceScale {
+  if (!Number.isFinite(max) || max <= 0) return { domain: [0, 1], ticks: [0] }
+  let exponent = Math.floor(Math.log10(max / MAX_INTERVALS))
+  for (;;) {
+    for (const factor of STEP_FACTORS) {
+      const step = clean(factor * 10 ** exponent)
+      const intervals = Math.ceil(clean(max / step))
+      if (intervals <= MAX_INTERVALS) {
+        const ticks = Array.from({ length: intervals + 1 }, (_, index) => clean(index * step))
+        return { domain: [0, ticks[ticks.length - 1]], ticks }
+      }
+    }
+    exponent += 1
+  }
+}
+
+/**
+ * Compact money labels for `ticks` ("$1M", "$2,5M"): up to one decimal, more only if
+ * two different ticks would otherwise read the same.
+ */
+export function moneyTickLabels(ticks: readonly number[], locale: string): Map<number, string> {
+  for (let digits = 1; digits <= 4; digits += 1) {
+    const labels = ticks.map(tick =>
+      formatMoney(tick, { compact: true, compactFractionDigits: digits, locale }),
+    )
+    if (new Set(labels).size === labels.length || digits === 4) {
+      return new Map(ticks.map((tick, index) => [tick, labels[index]]))
+    }
+  }
+  return new Map()
 }
 
 /** Time-axis ticks: day + month, or month + year when the range crosses ~10 months. */
@@ -78,16 +124,5 @@ export function tooltipDateFormat(locale: string): Intl.DateTimeFormat {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
-  })
-}
-
-/** Compact money for axis ticks ("$15 M"). */
-export function compactMoneyFormat(locale: string): Intl.NumberFormat {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: 'COP',
-    currencyDisplay: 'narrowSymbol',
-    notation: 'compact',
-    maximumFractionDigits: 1,
   })
 }

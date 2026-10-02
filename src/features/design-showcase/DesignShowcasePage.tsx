@@ -117,7 +117,10 @@ const TOKEN_GROUPS: { title: string; tokens: string[] }[] = [
     title: 'Meaning',
     tokens: ['positive', 'positive-soft', 'negative', 'negative-soft', 'warning', 'warning-soft'],
   },
-  { title: 'Chart', tokens: ['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5', 'chart-6'] },
+  {
+    title: 'Chart',
+    tokens: ['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5', 'chart-6', 'chart-other'],
+  },
 ]
 
 /** Static stand-ins for interactive states, so they can be reviewed side by side. */

@@ -22,11 +22,12 @@
   --color-surface-sunken: #ede9df;
   --color-line: rgba(26, 33, 28, 0.09);
   /*
-   * Empty part of a progress bar. ≥ 3:1 (WCAG 1.4.11, UI components) against canvas,
-   * surface, surface-raised and surface-sunken, so a bar reads on every background,
-   * a selected (sunken) row included.
+   * Empty part of a progress bar: a soft groove, 1.3–1.6:1 against whatever holds it
+   * (canvas 1.42, surface 1.53, surface-raised 1.59, surface-sunken 1.31), so 0% reads
+   * empty. Every fill stays ≥ 3:1 on it (accent 6.0, positive 3.5, negative 3.5,
+   * warning 3.4, ink-muted 4.4) — the fill is what carries the value (WCAG 1.4.11).
    */
-  --color-track: #81867d;
+  --color-track: #cfcdc4;
 
   --color-ink: #1a211c;
   --color-ink-muted: #525b54;
@@ -50,12 +51,24 @@
   --color-warning-soft: #f6ead0;
 
   /* ---- Data visualization ---- */
+  /*
+   * Category colors go by RANK in the period (chart-1 = biggest), not by category;
+   * the rest fold into "Otras" (chart-other). Checked: CIEDE2000 ≥ 15 between every
+   * pair of chart-1…5 + chart-other, and ≥ 3:1 against surface-raised (WCAG 1.4.11).
+   */
   --color-chart-1: #1f4d3a;
-  --color-chart-2: #c58a2e;
+  --color-chart-2: #c2872b; /* was #C58A2E (2.98:1 on surface-raised) */
   --color-chart-3: #b4502f;
   --color-chart-4: #5f8f7c;
   --color-chart-5: #8c8068;
   --color-chart-6: #6d7fa0;
+  /* "Otras": a cool neutral, 3.44:1 on surface-raised. */
+  --color-chart-other: #828c90;
+  /*
+   * Neutral bars of a chart (the highlighted one is accent): 3.16:1 on surface-raised,
+   * and a grey — told apart from accent by hue (ΔE2000 32.8), not only lightness.
+   */
+  --color-chart-bar: #8f928a;
 
   /* Backdrop behind modals/drawers — always used with opacity (`bg-overlay/40`). */
   --color-overlay: #0b0e0c;
@@ -186,7 +199,8 @@
   --color-surface-raised: #1f2521;
   --color-surface-sunken: #0d100e;
   --color-line: rgba(236, 239, 232, 0.1);
-  --color-track: #686f68;
+  /* canvas 1.54, surface 1.43, raised 1.30, sunken 1.60; fills: accent 5.5, negative 4.9. */
+  --color-track: #323834;
 
   --color-ink: #ecefe8;
   --color-ink-muted: #a5ada4;
@@ -209,9 +223,12 @@
   --color-chart-1: #7dbe97;
   --color-chart-2: #e0b060;
   --color-chart-3: #e39070;
-  --color-chart-4: #8fbfaa;
-  --color-chart-5: #b3a68c;
+  --color-chart-4: #8dc1c3; /* was #8FBFAA (ΔE 6.0 vs chart-1) */
+  --color-chart-5: #b2a690; /* was #B3A68C (ΔE 14.7 vs chart-2) */
   --color-chart-6: #8fa3c4;
+  --color-chart-other: #82908a;
+  /* 3.07:1 on surface-raised; ΔE2000 28.4 vs accent. */
+  --color-chart-bar: #6a7069;
 
   --color-overlay: #000000;
 

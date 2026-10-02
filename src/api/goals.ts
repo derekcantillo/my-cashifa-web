@@ -29,6 +29,11 @@ interface RawGoal {
   targetDate: string
   phase: PlanPhase
   status: GoalStatus
+  plan: {
+    monthsRemaining: number
+    requiredMonthlyContribution: RawAmount
+    isOverdue: boolean
+  } | null
   contributions: RawGoalContribution[]
   createdAt: string
   updatedAt: string
@@ -43,6 +48,10 @@ function toGoal(raw: RawGoal): Goal {
     ...raw,
     targetAmount: parseAmount(raw.targetAmount),
     currentAmount: parseAmount(raw.currentAmount),
+    plan: raw.plan && {
+      ...raw.plan,
+      requiredMonthlyContribution: parseAmount(raw.plan.requiredMonthlyContribution),
+    },
     contributions: raw.contributions.map(contribution => toGoalContribution(contribution, raw.id)),
   }
 }

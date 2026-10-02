@@ -1,7 +1,5 @@
 import type { TFunction } from 'i18next'
 
-import { formatNumber } from '@/lib/format'
-import { timeLeft } from '@/lib/goalMath'
 import type { Goal } from '@/types'
 
 /** Closest target date first (every goal has one: `targetDate` is required). */
@@ -30,25 +28,12 @@ export function defaultGoal(groups: GoalGroups): Goal | undefined {
   return groups.active[0] ?? groups.inProgress[0] ?? groups.completed[0]
 }
 
-/** "faltan 3,3 meses", "falta 1 día", "vence hoy" or "Fecha vencida" (see `timeLeft`). */
-export function timeLeftLabel(
-  t: TFunction<'goals'>,
-  targetDate: string,
-  locale: string,
-  now = new Date(),
-): string {
-  const left = timeLeft(targetDate, now)
-  switch (left.kind) {
-    case 'overdue':
-      return t('list.overdue')
-    case 'today':
-      return t('list.dueToday')
-    case 'days':
-      return t('list.daysLeft', { count: left.days })
-    case 'months':
-      return t('list.monthsLeft', {
-        count: left.months,
-        months: formatNumber(left.months, { locale }),
-      })
-  }
+/**
+ * "faltan 3 meses" / "Fecha vencida" from the backend plan (whole calendar months).
+ * `null` for goals without a plan (paused, completed): they only show the date.
+ */
+export function timeLeftLabel(t: TFunction<'goals'>, goal: Pick<Goal, 'plan'>): string | null {
+  if (!goal.plan) return null
+  if (goal.plan.isOverdue) return t('list.overdue')
+  return t('list.monthsLeft', { count: goal.plan.monthsRemaining })
 }

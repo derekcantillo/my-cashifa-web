@@ -80,5 +80,12 @@
     "body": "Lo que escribiste no se ha guardado.",
     "keepEditing": "Seguir editando",
     "confirm": "Descartar"
+  },
+  "categoryBreakdown": {
+    "others": "Categorías menores ({{count}})",
+    "othersName": "Categorías menores",
+    "itemLabel": "{{name}}, {{amount}}, {{percent}}",
+    "showOthers": "Ver las categorías menores",
+    "barLabel": "Gasto por categoría"
   }
 }

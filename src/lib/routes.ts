@@ -26,3 +26,11 @@ export function goalPath(id: string): string {
 export function loanPath(id: string): string {
   return `/prestamos/${id}`
 }
+
+/** Query param that preselects the category filter on Gastos. */
+export const CATEGORY_PARAM = 'category'
+
+/** Gastos filtered by a category. */
+export function transactionsByCategoryPath(category: string): string {
+  return `${ROUTES.transactions}?${CATEGORY_PARAM}=${encodeURIComponent(category)}`
+}

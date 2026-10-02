@@ -1,6 +1,7 @@
 import { Plus, Receipt, SearchX } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSearchParams } from 'react-router-dom'
 
 import {
   Button,
@@ -23,8 +24,9 @@ import {
   useTransactions,
 } from '@/hooks'
 import { CATEGORY_META } from '@/lib/categoryMeta'
+import { CATEGORY_PARAM } from '@/lib/routes'
 import { useTransactionModalStore } from '@/store/transactionModalStore'
-import type { Category } from '@/types'
+import { CATEGORIES, type Category } from '@/types'
 
 import { CategoryBreakdownCard } from './components/CategoryBreakdownCard'
 import { PendingRecurringCard } from './components/PendingRecurringCard'
@@ -42,6 +44,11 @@ import {
 
 const SEARCH_DEBOUNCE_MS = 150
 
+/** `?category=` value, if it names a real category. */
+function parseCategory(value: string | null): Category | '' {
+  return value && (CATEGORIES as readonly string[]).includes(value) ? (value as Category) : ''
+}
+
 export function TransactionsPage() {
   const { t } = useTranslation(['transactions', 'common', 'categories'])
   const { period, periodId } = useSelectedPeriod()
@@ -51,12 +58,34 @@ export function TransactionsPage() {
   const openModal = useTransactionModalStore(state => state.open)
   const openForEdit = useCallback(({ id }: { id: string }) => openModal('edit', id), [openModal])
 
-  const [filters, setFilters] = useState<ListFilters>(NO_FILTERS)
+  // The category filter lives in the URL (`?category=`), so Reportes can link to it.
+  const [params, setParams] = useSearchParams()
+  const category = useMemo(() => parseCategory(params.get(CATEGORY_PARAM)), [params])
+  const [localFilters, setLocalFilters] = useState<Omit<ListFilters, 'category'>>(NO_FILTERS)
+  const filters: ListFilters = { ...localFilters, category }
+  const setCategory = (next: Category | '') =>
+    setParams(
+      current => {
+        const updated = new URLSearchParams(current)
+        if (next) updated.set(CATEGORY_PARAM, next)
+        else updated.delete(CATEGORY_PARAM)
+        return updated
+      },
+      { replace: true },
+    )
+  const setFilters = (next: ListFilters) => {
+    setLocalFilters({ direction: next.direction, query: next.query })
+    setCategory(next.category)
+  }
   const query = useDebouncedValue(filters.query, SEARCH_DEBOUNCE_MS)
-  const update = (patch: Partial<ListFilters>) => setFilters(current => ({ ...current, ...patch }))
+  const update = (patch: Partial<ListFilters>) => {
+    const { category: nextCategory, ...rest } = patch
+    if (Object.keys(rest).length > 0) setLocalFilters(current => ({ ...current, ...rest }))
+    if (nextCategory !== undefined) setCategory(nextCategory)
+  }
 
   const categoryLabel = useCallback(
-    (category: Category) => t(CATEGORY_META[category].translationKey),
+    (value: Category) => t(CATEGORY_META[value].translationKey),
     [t],
   )
 
@@ -65,21 +94,29 @@ export function TransactionsPage() {
   const searched = useMemo(
     () =>
       transactions.filter(transaction =>
-        matchesSearchAndCategory(transaction, { query, category: filters.category }, categoryLabel),
+        matchesSearchAndCategory(transaction, { query, category }, categoryLabel),
       ),
-    [transactions, query, filters.category, categoryLabel],
+    [transactions, query, category, categoryLabel],
   )
   const counts = useMemo(() => countByDirection(searched), [searched])
   const groups = useMemo(
     () =>
-      groupByDay(searched.filter(transaction => matchesDirection(transaction, filters.direction))),
-    [searched, filters.direction],
+      groupByDay(
+        searched.filter(transaction => matchesDirection(transaction, localFilters.direction)),
+      ),
+    [searched, localFilters.direction],
   )
   const hasFilters =
     filters.direction !== 'all' || filters.query.trim() !== '' || filters.category !== ''
 
   // Only categories that appear in the period, alphabetical in the active language.
-  const categoriesInPeriod = [...new Set(transactions.map(transaction => transaction.category))]
+  // The URL's category stays selectable even if the period has no movement in it.
+  const categoriesInPeriod = [
+    ...new Set([
+      ...transactions.map(transaction => transaction.category),
+      ...(category ? [category] : []),
+    ]),
+  ]
     .map(category => ({ category, label: categoryLabel(category) }))
     .sort((a, b) => a.label.localeCompare(b.label))
 

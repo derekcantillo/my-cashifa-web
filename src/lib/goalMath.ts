@@ -2,10 +2,11 @@ import { addDaysToDateKey, daysBetweenDateKeys, toDateInputValue } from '@/lib/f
 import type { Goal, GoalContribution } from '@/types'
 
 /**
- * Goal arithmetic shared by Home, the goals list and the goal detail. Days are
- * Bogotá calendar days; a month is 30.44 days (the mobile app's `DAYS_PER_MONTH`).
+ * Goal arithmetic shared by Home, the goals list and the goal detail. Months remaining
+ * and the required monthly contribution are NOT here: they come from the backend
+ * (`goal.plan`). Days are Bogotá calendar days; for pace averages a month is 30.44 days.
  */
-export const DAYS_PER_MONTH = 30.44
+const DAYS_PER_MONTH = 30.44
 
 /** How many months back "current pace" looks. */
 export const PACE_WINDOW_MONTHS = 3
@@ -30,73 +31,14 @@ export function displayPercent(current: number, target: number): number {
   return Math.floor(progressPercent(current, target))
 }
 
-/** Calendar days from today to the target date (Bogotá); negative once it has passed. */
-export function daysUntil(targetDate: string, now = new Date()): number {
-  return daysBetweenDateKeys(toDateInputValue(now), toDateInputValue(targetDate))
-}
-
-/** Fractional months from today to the target date (Bogotá); negative once passed. */
-export function monthsUntil(targetDate: string, now = new Date()): number {
-  return daysUntil(targetDate, now) / DAYS_PER_MONTH
-}
-
-/** Below this many days the time left reads in days ("faltan 20 días"). */
-const DAYS_THRESHOLD = 31
-
-export type TimeLeft =
-  | { kind: 'overdue' }
-  | { kind: 'today' }
-  | { kind: 'days'; days: number }
-  /** Months to one decimal — the same figure `requiredContribution` divides by. */
-  | { kind: 'months'; months: number }
-
 /**
- * Time left until the target date, from the same day count as `requiredContribution`,
- * so "faltan 3,3 meses" and "$X al mes" always agree (X = remaining / 3,3). Under a
- * month the requirement is the whole remaining amount, matching "faltan 20 días".
+ * Sum of the monthly contributions the backend plans for the given goals — the same
+ * total the SAVINGS_TARGET_AT_RISK alert compares against (overdue goals count with
+ * their whole remaining amount; goals without a plan, i.e. not ACTIVE, add nothing).
+ * Months and amounts are never computed here: they come from `goal.plan`.
  */
-export function timeLeft(targetDate: string, now = new Date()): TimeLeft {
-  const days = daysUntil(targetDate, now)
-  if (days < 0) return { kind: 'overdue' }
-  if (days === 0) return { kind: 'today' }
-  if (days < DAYS_THRESHOLD) return { kind: 'days', days }
-  return { kind: 'months', months: Math.round((days / DAYS_PER_MONTH) * 10) / 10 }
-}
-
-export type RequiredContribution =
-  /** Nothing left to save. */
-  | { kind: 'reached' }
-  /** The target date is behind us: it doesn't add to the monthly total. */
-  | { kind: 'overdue' }
-  /** What has to be set aside each month to arrive on time. */
-  | { kind: 'monthly'; amount: number; months: number }
-
-/**
- * Monthly contribution a goal needs: what's left / months until its target date
- * (fractional), never dividing by less than one month. Overdue goals don't get a
- * figure — there's no honest monthly amount for a date that already passed.
- */
-export function requiredContribution(
-  goal: Pick<Goal, 'currentAmount' | 'targetAmount' | 'targetDate'>,
-  now = new Date(),
-): RequiredContribution {
-  const remaining = goal.targetAmount - goal.currentAmount
-  if (remaining <= 0) return { kind: 'reached' }
-  const days = daysUntil(goal.targetDate, now)
-  if (days < 0) return { kind: 'overdue' }
-  const months = Math.max(1, days / DAYS_PER_MONTH)
-  return { kind: 'monthly', amount: remaining / months, months }
-}
-
-/** Sum of the monthly contributions of the given goals (overdue/reached ones add 0). */
-export function totalRequiredContribution(
-  goals: readonly Pick<Goal, 'currentAmount' | 'targetAmount' | 'targetDate'>[],
-  now = new Date(),
-): number {
-  return goals.reduce((sum, goal) => {
-    const required = requiredContribution(goal, now)
-    return required.kind === 'monthly' ? sum + required.amount : sum
-  }, 0)
+export function totalRequiredMonthly(goals: readonly Pick<Goal, 'plan'>[]): number {
+  return goals.reduce((sum, goal) => sum + (goal.plan?.requiredMonthlyContribution ?? 0), 0)
 }
 
 export interface SeriesPoint {

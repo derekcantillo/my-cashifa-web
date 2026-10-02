@@ -3,13 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { Amount, Eyebrow, HeroProgress, Stat } from '@/components/ui'
 import { useFormatters } from '@/hooks'
 import { formatDate, formatPercent } from '@/lib/format'
-import {
-  displayPercent,
-  progressPercent,
-  requiredContribution,
-  totalRequiredContribution,
-} from '@/lib/goalMath'
+import { displayPercent, progressPercent, totalRequiredMonthly } from '@/lib/goalMath'
 import type { Goal } from '@/types'
+
+import { timeLeftLabel } from '../lib/goalView'
 
 /** Stacked on phones (hairline between rows); a row split by vertical hairlines from `sm`. */
 const CELL = 'py-4 sm:px-8 sm:py-1 sm:first:pl-0 sm:last:pr-0'
@@ -21,14 +18,15 @@ const CELL = 'py-4 sm:px-8 sm:py-1 sm:first:pl-0 sm:last:pr-0'
 export function GoalsHero({ active }: { active: readonly Goal[] }) {
   const { t } = useTranslation('goals')
   const { locale, money } = useFormatters()
-  const now = new Date()
 
   const saved = active.reduce((sum, goal) => sum + goal.currentAmount, 0)
   const target = active.reduce((sum, goal) => sum + goal.targetAmount, 0)
-  const required = totalRequiredContribution(active, now)
-  const overdue = active.filter(goal => requiredContribution(goal, now).kind === 'overdue').length
+  // Same total as the backend's savings alert (overdue goals count in full).
+  const required = totalRequiredMonthly(active)
+  const overdue = active.filter(goal => goal.plan?.isOverdue).length
   // Lists are sorted by date: the first not yet past is the next one.
-  const next = active.find(goal => requiredContribution(goal, now).kind !== 'overdue')
+  const next = active.find(goal => goal.plan && !goal.plan.isOverdue)
+  const nextLeft = next ? timeLeftLabel(t, next) : null
   const percent = formatPercent(displayPercent(saved, target) / 100, { locale })
 
   return (
@@ -64,7 +62,12 @@ export function GoalsHero({ active }: { active: readonly Goal[] }) {
               month: 'short',
               year: 'numeric',
             })}
-            hint={<span className="line-clamp-1">{next.name}</span>}
+            hint={
+              <span className="line-clamp-1">
+                {next.name}
+                {nextLeft && ` · ${nextLeft}`}
+              </span>
+            }
           />
         )}
       </div>
