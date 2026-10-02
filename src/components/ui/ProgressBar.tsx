@@ -4,7 +4,8 @@ import type { Tone } from './Badge'
 
 const FILLS: Record<Tone | 'accent', string> = {
   accent: 'bg-accent',
-  neutral: 'bg-ink-subtle',
+  // Paused/neutral: muted ink, still distinguishable from the `track`.
+  neutral: 'bg-ink-muted',
   positive: 'bg-positive',
   negative: 'bg-negative',
   warning: 'bg-warning',
@@ -35,7 +36,7 @@ export function ProgressBar({
       aria-valuemax={100}
       aria-valuenow={percentage}
       className={cn(
-        'overflow-hidden rounded-full bg-surface-sunken shadow-pressed',
+        'overflow-hidden rounded-full bg-track',
         size === 'sm' ? 'h-2' : 'h-3',
         className,
       )}
@@ -51,7 +52,5 @@ export function ProgressBar({
   )
 }
 
-/** `currentAmount / targetAmount` as a 0–100 percentage. */
-export function progressPercentage(current: number, target: number): number {
-  return target > 0 ? Math.min(100, (current / target) * 100) : 0
-}
+/** `current / target` as a 0–100 percentage (see `progressPercent` in lib/goalMath). */
+export { progressPercent as progressPercentage } from '@/lib/goalMath'

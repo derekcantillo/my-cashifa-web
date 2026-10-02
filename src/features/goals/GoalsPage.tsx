@@ -1,99 +1,169 @@
-import { ChevronRight, Plus } from 'lucide-react'
+import { ArrowLeft, Plus, Target } from 'lucide-react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { InlineError, Skeleton } from '@/components/ui'
-import { useFormatters, useGoals } from '@/hooks'
-import { goalPath } from '@/lib/routes'
+import {
+  Button,
+  Card,
+  EmptyState,
+  Enter,
+  PageHeader,
+  SectionError,
+  Skeleton,
+} from '@/components/ui'
+import { DESKTOP_QUERY, useGoals, useMediaQuery } from '@/hooks'
+import { cn } from '@/lib/cn'
+import { GOAL_PARAM, goalPath } from '@/lib/routes'
 import { useGoalModalStore } from '@/store/goalModalStore'
+import type { Goal } from '@/types'
 
-import { GoalCard } from './components/GoalCard'
+import { GoalDetailPanel } from './components/GoalDetailPanel'
+import { GoalList } from './components/GoalList'
+import { GoalsHero } from './components/GoalsHero'
+import { defaultGoal, groupGoals } from './lib/goalView'
 
+interface ListNavigationState {
+  /** The detail was opened from the list on this screen (so ← can go back in history). */
+  fromList?: boolean
+}
+
+/**
+ * Goals: list + detail of the selected goal, which lives in `?goal=<id>` (reload and
+ * Back keep it). From `lg` both sit side by side and the first active goal is the
+ * default; below it the detail is its own view with "← Metas".
+ */
 export function GoalsPage() {
   const { t } = useTranslation('goals')
-  const { money } = useFormatters()
   const { data, isPending, isError, refetch } = useGoals()
+  const [params, setParams] = useSearchParams()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const isDesktop = useMediaQuery(DESKTOP_QUERY)
   const openModal = useGoalModalStore(state => state.open)
 
-  // Paused goals stay with the active ones (still in progress); only completed ones fold away.
-  const inProgress = (data ?? []).filter(goal => goal.status !== 'COMPLETED')
-  const completed = (data ?? []).filter(goal => goal.status === 'COMPLETED')
+  const groups = useMemo(() => groupGoals(data ?? []), [data])
+  const requested = data?.find(goal => goal.id === params.get(GOAL_PARAM))
+  // A missing or unknown id falls back to the default without an error. Below `lg`
+  // without an id only the list shows (the default detail stays hidden by CSS).
+  const selected = requested ?? defaultGoal(groups)
+
+  const select = (goal: Goal) => {
+    if (goal.id === selected?.id && isDesktop) return
+    navigate(goalPath(goal.id), { state: { fromList: true } satisfies ListNavigationState })
+  }
+  const backToList = () => {
+    if ((location.state as ListNavigationState | null)?.fromList) navigate(-1)
+    else setParams({}, { replace: true })
+  }
+  const clearSelection = () => setParams({}, { replace: true })
 
   const newGoalButton = (
-    <button
-      type="button"
-      onClick={() => openModal('create')}
-      className="inline-flex items-center gap-2 rounded-lg bg-brand px-3.5 py-2 text-sm font-medium text-on-brand transition-colors hover:bg-brand-hover"
-    >
-      <Plus className="size-4" aria-hidden />
+    <Button variant="secondary" icon={Plus} onClick={() => openModal('create')}>
       {t('new')}
-    </button>
+    </Button>
   )
+
+  // One tree for every width: below `lg` the list and the detail are separate views,
+  // swapped with CSS (`max-lg:hidden`), so resizing never unmounts the page.
+  const listView = requested ? 'max-lg:hidden' : undefined
+  const detailView = requested ? undefined : 'max-lg:hidden'
 
   return (
     <div className="space-y-8">
-      <header className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">{t('title')}</h1>
-        {(data?.length ?? 0) > 0 && newGoalButton}
-      </header>
+      {requested && (
+        <Button
+          variant="ghost"
+          size="sm"
+          icon={ArrowLeft}
+          onClick={backToList}
+          className="-mb-3 -ml-3 lg:hidden"
+        >
+          {t('detail.back')}
+        </Button>
+      )}
+
+      <Enter order={0} className={listView}>
+        <PageHeader eyebrow={t('eyebrow')} title={t('title')} actions={newGoalButton} />
+      </Enter>
 
       {isError ? (
-        <InlineError onRetry={() => void refetch()} />
+        <SectionError onRetry={() => void refetch()} />
       ) : isPending ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-busy="true">
-          {Array.from({ length: 3 }, (_, index) => (
-            <div key={index} className="space-y-4 rounded-2xl border border-border p-5">
-              <Skeleton className="h-5 w-1/2" />
-              <Skeleton className="h-2 w-full rounded-full" />
-              <Skeleton className="h-4 w-2/3" />
-            </div>
-          ))}
-        </div>
+        <GoalsSkeleton />
       ) : data.length === 0 ? (
-        <div className="space-y-4 py-6">
-          <p className="text-ink-muted">{t('empty')}</p>
-          {newGoalButton}
-        </div>
+        <Card variant="flat" padding="none">
+          <EmptyState
+            icon={Target}
+            title={t('empty.title')}
+            description={t('empty.body')}
+            action={
+              <Button icon={Plus} onClick={() => openModal('create')}>
+                {t('empty.cta')}
+              </Button>
+            }
+          />
+        </Card>
       ) : (
         <>
-          {inProgress.length > 0 && (
-            <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {inProgress.map(goal => (
-                <li key={goal.id}>
-                  <GoalCard goal={goal} />
-                </li>
-              ))}
-            </ul>
+          {groups.active.length > 0 && (
+            <Enter order={1} className={listView}>
+              <GoalsHero active={groups.active} />
+            </Enter>
           )}
 
-          {completed.length > 0 && (
-            <details className="group">
-              <summary className="inline-flex cursor-pointer list-none items-center gap-1 text-sm font-medium text-ink-muted hover:text-ink [&::-webkit-details-marker]:hidden">
-                <ChevronRight
-                  className="size-4 transition-transform group-open:rotate-90"
-                  aria-hidden
-                />
-                {t('showCompleted', { count: completed.length })}
-              </summary>
-              <ul className="mt-3 divide-y divide-border">
-                {completed.map(goal => (
-                  <li key={goal.id}>
-                    <Link
-                      to={goalPath(goal.id)}
-                      className="flex items-center justify-between gap-4 py-3 text-sm hover:text-brand"
-                    >
-                      <span className="truncate">{goal.name}</span>
-                      <span className="shrink-0 text-ink-muted tabular-nums">
-                        {money(goal.targetAmount)}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          )}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            <Enter order={2} className={cn('lg:col-span-5', listView)}>
+              <GoalList
+                inProgress={groups.inProgress}
+                completed={groups.completed}
+                // Highlighted only where list and detail sit side by side.
+                selectedId={isDesktop ? selected?.id : undefined}
+                onSelect={select}
+              />
+            </Enter>
+            {selected && (
+              <Enter order={3} className={cn('lg:col-span-7', detailView)}>
+                {/* Stays in view under the topbar while the list scrolls. */}
+                <div className="lg:sticky lg:top-20">
+                  <GoalDetailPanel key={selected.id} goal={selected} onDeleted={clearSelection} />
+                </div>
+              </Enter>
+            )}
+          </div>
         </>
       )}
+    </div>
+  )
+}
+
+function GoalsSkeleton() {
+  return (
+    <div aria-busy className="space-y-8">
+      <div className="space-y-3">
+        <Skeleton className="h-3.5 w-40" />
+        <Skeleton className="h-11 w-64 sm:h-14 sm:w-80" />
+        <Skeleton className="h-4 w-56" />
+        <Skeleton className="h-1.5 w-full max-w-md" />
+      </div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <Card padding="sm" className="space-y-1 lg:col-span-5">
+          {[0, 1, 2].map(index => (
+            <div key={index} className="space-y-2.5 px-3 py-3">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-2 w-full rounded-full" />
+              <Skeleton className="h-3 w-48" />
+            </div>
+          ))}
+        </Card>
+        <Card padding="lg" className="hidden space-y-6 lg:col-span-7 lg:block">
+          <Skeleton className="h-7 w-48" />
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-3 w-full rounded-full" />
+          <Skeleton className="h-60 w-full" />
+        </Card>
+      </div>
     </div>
   )
 }

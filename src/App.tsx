@@ -47,16 +47,16 @@ const router = createBrowserRouter([
               {
                 path: ROUTES.goals,
                 lazy: lazyScreen(
-                  () => import('@/features/goals/GoalsPage'),
+                  () => import('@/features/goals'),
                   m => m.GoalsPage,
                 ),
               },
               {
                 path: ROUTES.goalDetail,
-                // Own chunk: only the detail page needs Recharts.
+                // Detail moved into the goals screen (`?goal=`); keeps old links working.
                 lazy: lazyScreen(
-                  () => import('@/features/goals/GoalDetailPage'),
-                  m => m.GoalDetailPage,
+                  () => import('@/features/goals'),
+                  m => m.GoalDetailRedirect,
                 ),
               },
               {

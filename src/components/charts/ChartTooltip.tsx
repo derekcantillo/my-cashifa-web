@@ -4,15 +4,22 @@ interface ChartTooltipProps {
   label: string | undefined
   /** The formatted amount. */
   value: string | undefined
+  /** Optional series name ("Proyección"), after the label. */
+  series?: string
 }
 
-/** The one tooltip shape for every chart: a label and an amount, nothing else. */
-export function ChartTooltip({ active, label, value }: ChartTooltipProps) {
+/** The one tooltip for every chart: floating surface, a label and an amount, no arrow. */
+export function ChartTooltip({ active, label, value, series }: ChartTooltipProps) {
   if (!active || value === undefined) return null
   return (
-    <div className="rounded-lg border border-border bg-surface-elevated px-3 py-2 text-sm shadow-sm">
-      {label && <p className="text-ink-muted">{label}</p>}
-      <p className="font-medium tabular-nums">{value}</p>
+    <div className="rounded-md bg-surface-raised px-3 py-2 text-body-sm shadow-floating">
+      {label && (
+        <p className="text-ink-muted">
+          {label}
+          {series && ` · ${series}`}
+        </p>
+      )}
+      <p className="font-medium text-ink tabular-nums">{value}</p>
     </div>
   )
 }

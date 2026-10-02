@@ -1,31 +1,113 @@
 {
   "title": "Metas",
+  "eyebrow": "Metas",
   "new": "Nueva meta",
-  "empty": "Todavía no creaste ninguna meta",
-  "completed": "Completadas",
-  "showCompleted": "Ver completadas ({{count}})",
-  "paused": "En pausa",
-  "by": "Para el {{date}}",
-  "progressLine": "{{current}} de {{target}}",
+  "status": {
+    "ACTIVE": "Activa",
+    "PAUSED": "En pausa",
+    "COMPLETED": "Completada"
+  },
+  "empty": {
+    "title": "Aún no tienes metas",
+    "body": "Ponle nombre, monto y fecha a lo que quieres lograr, y sigue cada aporte desde aquí.",
+    "cta": "Crear mi primera meta"
+  },
+  "hero": {
+    "label": "Ahorrado en metas activas",
+    "of": "de {{target}} en objetivos · {{percent}}",
+    "progress": "Avance de las metas activas"
+  },
+  "stats": {
+    "active": "Metas activas",
+    "required": "Aporte mensual requerido",
+    "requiredHint": "Para llegar a tiempo a todas",
+    "next": "Próxima fecha objetivo",
+    "overdueCount_one": "{{count}} meta con fecha vencida no suma",
+    "overdueCount_other": "{{count}} metas con fecha vencida no suman"
+  },
+  "list": {
+    "label": "Tus metas",
+    "saved": "{{saved}} de {{target}}",
+    "by": "Para el {{date}}",
+    "monthsLeft_one": "falta {{months}} mes",
+    "monthsLeft_other": "faltan {{months}} meses",
+    "daysLeft_one": "falta {{count}} día",
+    "daysLeft_other": "faltan {{count}} días",
+    "dueToday": "vence hoy",
+    "overdue": "Fecha vencida",
+    "completed": "Completadas ({{count}})",
+    "reachedOn": "Alcanzada el {{date}}",
+    "progress": "Avance de {{name}}"
+  },
+  "detail": {
+    "back": "Metas",
+    "actions": "Más acciones",
+    "edit": "Editar",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "delete": "Eliminar",
+    "of": "de {{target}}",
+    "targetDate": "Fecha objetivo",
+    "remaining": "Faltan",
+    "required": "Aporte mensual requerido",
+    "perMonth": "{{amount}} al mes",
+    "overdue": "Fecha vencida",
+    "pace": "Ritmo actual",
+    "paceProjection": "A este ritmo la alcanzarías en {{month}}.",
+    "contribute": "Aportar",
+    "reached": "Meta alcanzada",
+    "reachedOn": "Meta alcanzada el {{date}}",
+    "paused": "En pausa: no suma al aporte mensual requerido.",
+    "noSelection": "Elige una meta de la lista."
+  },
+  "history": {
+    "title": "Aportes",
+    "emptyTitle": "Aún no hay aportes",
+    "emptyBody": "Cada aporte que registres aparecerá aquí y en el gráfico.",
+    "first": "Hacer el primer aporte",
+    "showAll": "Ver todos ({{count}})",
+    "showLess": "Ver menos"
+  },
+  "chart": {
+    "title": "Progreso",
+    "saved": "Ahorrado",
+    "projection": "Aporte requerido · {{amount}} al mes",
+    "projectionSeries": "Proyección",
+    "target": "Objetivo",
+    "today": "Hoy",
+    "summary": "Ahorrado {{saved}} de {{target}}. Fecha objetivo: {{date}}.",
+    "tableCaption": "Ahorro acumulado por fecha",
+    "date": "Fecha",
+    "amount": "Monto",
+    "noContributions": "Para llegar a tiempo necesitas aportar {{amount}} al mes.",
+    "noContributionsOverdue": "La fecha objetivo ya pasó; faltan {{amount}}."
+  },
   "form": {
     "createTitle": "Nueva meta",
     "editTitle": "Editar meta",
     "name": "Nombre",
     "namePlaceholder": "Ej. Fondo de emergencia",
     "targetAmount": "Monto objetivo",
+    "currentAmount": "Ya ahorrado",
+    "currentAmountHelp": "Lo que ya tienes guardado para esta meta. No cuenta como aporte de ningún periodo.",
+    "optional": "opcional",
     "targetDate": "Fecha objetivo",
     "phase": "Fase del plan",
+    "cancel": "Cancelar",
+    "save": "Guardar",
     "loadError": "No pudimos cargar esta meta.",
     "saveError": "No se pudo guardar. Revisa los datos e inténtalo de nuevo.",
-    "deleteConfirm": "¿Eliminar esta meta?",
-    "deleteError": "No se pudo eliminar. Inténtalo de nuevo.",
+    "belowSaved": "El objetivo queda por debajo de lo ya ahorrado ({{saved}}).",
     "errors": {
       "nameRequired": "Escribe un nombre",
       "nameTooLong": "Máximo 120 caracteres",
       "amountRequired": "Escribe el monto",
       "amountInvalid": "Escribe un monto válido, por ejemplo 6.000.000",
       "amountPositive": "El monto debe ser mayor que cero",
-      "dateRequired": "Elige una fecha"
+      "currentInvalid": "Escribe un monto válido",
+      "currentAboveTarget": "Lo ya ahorrado no puede superar el objetivo",
+      "dateRequired": "Elige una fecha",
+      "datePast": "Elige hoy o una fecha futura"
     }
   },
   "phases": {
@@ -34,38 +116,45 @@
     "PHASE_3_VEHICLE_PURCHASE": "Compra de vehículo",
     "PHASE_4_CONSOLIDATION": "Consolidación"
   },
-  "detail": {
-    "back": "Volver",
-    "saved": "Ahorrado",
-    "goal": "Meta",
-    "remaining": "Faltan",
-    "summary": "Meta: {{target}} · Faltan {{remaining}}",
-    "reached": "Meta: {{target}} · ¡Lo lograste!",
-    "completed": "Completada",
-    "contribute": "Hacer contribución",
-    "edit": "Editar meta",
-    "delete": "Eliminar meta",
-    "notFound": "Esta meta ya no existe."
-  },
   "contribution": {
-    "save": "Guardar contribución",
-    "saveError": "No se pudo registrar. Inténtalo de nuevo."
+    "title": "Aportar a una meta",
+    "goal": "Meta",
+    "chooseGoal": "Elige una meta",
+    "amount": "Monto",
+    "date": "Fecha",
+    "note": "Nota",
+    "optional": "opcional",
+    "remaining": "Faltan {{amount}} para el objetivo.",
+    "exceeds": "Con este aporte superas el objetivo por {{amount}}; la meta quedará completada.",
+    "ledgerHelp": "No se registra como movimiento, pero se descuenta del disponible para gastar del periodo de esa fecha.",
+    "cancel": "Cancelar",
+    "save": "Guardar aporte",
+    "saveError": "No se pudo registrar el aporte. Inténtalo de nuevo.",
+    "errors": {
+      "goalRequired": "Elige una meta",
+      "amountRequired": "Escribe el monto",
+      "amountInvalid": "Escribe un monto válido, por ejemplo 200.000",
+      "amountPositive": "El monto debe ser mayor que cero",
+      "dateRequired": "Elige una fecha",
+      "dateFuture": "La fecha no puede ser futura",
+      "noteTooLong": "Máximo 255 caracteres"
+    }
   },
-  "history": {
-    "title": "Contribuciones",
-    "empty": "Todavía no registraste contribuciones a esta meta"
-  },
-  "chart": {
-    "title": "Progreso",
-    "actual": "Real",
-    "projected": "Proyectado",
-    "targetLine": "Meta {{amount}}",
-    "pace": "A tu ritmo actual (≈ {{amount}} al mes)",
-    "description": "Ahorro acumulado de la meta en el tiempo"
+  "delete": {
+    "title": "Eliminar meta",
+    "body": "Se eliminará «{{name}}», con {{saved}} ahorrados.",
+    "contributions_one": "Se borra también su aporte ({{amount}}): ese dinero vuelve a contar como disponible en el periodo en que se aportó.",
+    "contributions_other": "Se borran también sus {{count}} aportes ({{amount}}): ese dinero vuelve a contar como disponible en los periodos en que se aportó.",
+    "confirm": "Eliminar meta",
+    "error": "No se pudo eliminar. Inténtalo de nuevo."
   },
   "toast": {
     "saved": "Meta guardada",
     "deleted": "Meta eliminada",
-    "contributed": "Contribución registrada"
+    "contributed": "Aporte registrado",
+    "completed": "Meta alcanzada: {{name}}",
+    "paused": "Meta en pausa",
+    "resumed": "Meta reanudada",
+    "statusError": "No se pudo cambiar el estado de la meta"
   }
 }

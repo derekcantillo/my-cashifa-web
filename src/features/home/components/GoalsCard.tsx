@@ -8,13 +8,13 @@ import {
   CardHeader,
   EmptyState,
   ProgressBar,
-  progressPercentage,
   SectionError,
   Skeleton,
 } from '@/components/ui'
 import { useFormatters, useGoals } from '@/hooks'
 import { cn } from '@/lib/cn'
 import { formatDate, formatPercent } from '@/lib/format'
+import { displayPercent, progressPercent } from '@/lib/goalMath'
 import { goalPath, ROUTES } from '@/lib/routes'
 import { useGoalModalStore } from '@/store/goalModalStore'
 import type { Goal } from '@/types'
@@ -93,7 +93,8 @@ export function GoalsCard({ className }: { className?: string }) {
 function GoalRow({ goal }: { goal: Goal }) {
   const { t } = useTranslation('home')
   const { locale, money } = useFormatters()
-  const percentage = progressPercentage(goal.currentAmount, goal.targetAmount)
+  // Same helpers as the goals screen: clamped bar, label rounded down.
+  const percentage = progressPercent(goal.currentAmount, goal.targetAmount)
 
   return (
     <Link
@@ -103,7 +104,7 @@ function GoalRow({ goal }: { goal: Goal }) {
       <div className="flex items-baseline justify-between gap-3">
         <span className="truncate text-body font-medium text-ink">{goal.name}</span>
         <span className="shrink-0 text-body-sm font-medium text-ink tabular-nums">
-          {formatPercent(percentage / 100, { locale })}
+          {formatPercent(displayPercent(goal.currentAmount, goal.targetAmount) / 100, { locale })}
         </span>
       </div>
       <ProgressBar value={percentage} label={goal.name} />

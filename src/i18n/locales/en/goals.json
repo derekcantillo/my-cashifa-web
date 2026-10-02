@@ -1,31 +1,113 @@
 {
   "title": "Goals",
+  "eyebrow": "Goals",
   "new": "New goal",
-  "empty": "You haven't created any goals yet",
-  "completed": "Completed",
-  "showCompleted": "Show completed ({{count}})",
-  "paused": "Paused",
-  "by": "By {{date}}",
-  "progressLine": "{{current}} of {{target}}",
+  "status": {
+    "ACTIVE": "Active",
+    "PAUSED": "Paused",
+    "COMPLETED": "Completed"
+  },
+  "empty": {
+    "title": "No goals yet",
+    "body": "Give what you want to achieve a name, an amount and a date, and follow every contribution from here.",
+    "cta": "Create my first goal"
+  },
+  "hero": {
+    "label": "Saved in active goals",
+    "of": "of {{target}} in targets · {{percent}}",
+    "progress": "Progress of active goals"
+  },
+  "stats": {
+    "active": "Active goals",
+    "required": "Monthly contribution needed",
+    "requiredHint": "To reach all of them on time",
+    "next": "Next target date",
+    "overdueCount_one": "{{count}} overdue goal not included",
+    "overdueCount_other": "{{count}} overdue goals not included"
+  },
+  "list": {
+    "label": "Your goals",
+    "saved": "{{saved}} of {{target}}",
+    "by": "By {{date}}",
+    "monthsLeft_one": "{{months}} month left",
+    "monthsLeft_other": "{{months}} months left",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "dueToday": "due today",
+    "overdue": "Past due date",
+    "completed": "Completed ({{count}})",
+    "reachedOn": "Reached on {{date}}",
+    "progress": "Progress of {{name}}"
+  },
+  "detail": {
+    "back": "Goals",
+    "actions": "More actions",
+    "edit": "Edit",
+    "pause": "Pause",
+    "resume": "Resume",
+    "delete": "Delete",
+    "of": "of {{target}}",
+    "targetDate": "Target date",
+    "remaining": "Left",
+    "required": "Monthly contribution needed",
+    "perMonth": "{{amount}} a month",
+    "overdue": "Past due date",
+    "pace": "Current pace",
+    "paceProjection": "At this pace you'd reach it in {{month}}.",
+    "contribute": "Contribute",
+    "reached": "Goal reached",
+    "reachedOn": "Goal reached on {{date}}",
+    "paused": "Paused: not part of the monthly contribution needed.",
+    "noSelection": "Pick a goal from the list."
+  },
+  "history": {
+    "title": "Contributions",
+    "emptyTitle": "No contributions yet",
+    "emptyBody": "Every contribution you add shows up here and in the chart.",
+    "first": "Make the first contribution",
+    "showAll": "Show all ({{count}})",
+    "showLess": "Show less"
+  },
+  "chart": {
+    "title": "Progress",
+    "saved": "Saved",
+    "projection": "Needed · {{amount}} a month",
+    "projectionSeries": "Projection",
+    "target": "Target",
+    "today": "Today",
+    "summary": "Saved {{saved}} of {{target}}. Target date: {{date}}.",
+    "tableCaption": "Cumulative savings by date",
+    "date": "Date",
+    "amount": "Amount",
+    "noContributions": "To get there on time you need to contribute {{amount}} a month.",
+    "noContributionsOverdue": "The target date has passed; {{amount}} left."
+  },
   "form": {
     "createTitle": "New goal",
     "editTitle": "Edit goal",
     "name": "Name",
-    "namePlaceholder": "e.g. Emergency fund",
+    "namePlaceholder": "E.g. Emergency fund",
     "targetAmount": "Target amount",
+    "currentAmount": "Already saved",
+    "currentAmountHelp": "What you already have set aside for this goal. It doesn't count as a contribution of any period.",
+    "optional": "optional",
     "targetDate": "Target date",
     "phase": "Plan phase",
+    "cancel": "Cancel",
+    "save": "Save",
     "loadError": "We couldn't load this goal.",
     "saveError": "Couldn't save. Check the details and try again.",
-    "deleteConfirm": "Delete this goal?",
-    "deleteError": "Couldn't delete. Try again.",
+    "belowSaved": "The target is below what's already saved ({{saved}}).",
     "errors": {
       "nameRequired": "Enter a name",
       "nameTooLong": "120 characters max",
       "amountRequired": "Enter the amount",
       "amountInvalid": "Enter a valid amount, e.g. 6,000,000",
       "amountPositive": "The amount must be greater than zero",
-      "dateRequired": "Pick a date"
+      "currentInvalid": "Enter a valid amount",
+      "currentAboveTarget": "What's already saved can't exceed the target",
+      "dateRequired": "Pick a date",
+      "datePast": "Pick today or a future date"
     }
   },
   "phases": {
@@ -34,38 +116,45 @@
     "PHASE_3_VEHICLE_PURCHASE": "Vehicle purchase",
     "PHASE_4_CONSOLIDATION": "Consolidation"
   },
-  "detail": {
-    "back": "Back",
-    "saved": "Saved",
-    "goal": "Goal",
-    "remaining": "Left",
-    "summary": "Goal: {{target}} · {{remaining}} to go",
-    "reached": "Goal: {{target}} · You made it!",
-    "completed": "Completed",
-    "contribute": "Add contribution",
-    "edit": "Edit goal",
-    "delete": "Delete goal",
-    "notFound": "This goal no longer exists."
-  },
   "contribution": {
+    "title": "Contribute to a goal",
+    "goal": "Goal",
+    "chooseGoal": "Pick a goal",
+    "amount": "Amount",
+    "date": "Date",
+    "note": "Note",
+    "optional": "optional",
+    "remaining": "{{amount}} left to the target.",
+    "exceeds": "This goes {{amount}} over the target; the goal will be completed.",
+    "ledgerHelp": "It isn't logged as a transaction, but it comes out of the money available to spend in that date's period.",
+    "cancel": "Cancel",
     "save": "Save contribution",
-    "saveError": "Couldn't save. Try again."
+    "saveError": "Couldn't save the contribution. Try again.",
+    "errors": {
+      "goalRequired": "Pick a goal",
+      "amountRequired": "Enter the amount",
+      "amountInvalid": "Enter a valid amount, e.g. 200,000",
+      "amountPositive": "The amount must be greater than zero",
+      "dateRequired": "Pick a date",
+      "dateFuture": "The date can't be in the future",
+      "noteTooLong": "255 characters max"
+    }
   },
-  "history": {
-    "title": "Contributions",
-    "empty": "You haven't added any contributions to this goal yet"
-  },
-  "chart": {
-    "title": "Progress",
-    "actual": "Actual",
-    "projected": "Projected",
-    "targetLine": "Goal {{amount}}",
-    "pace": "At your current pace (≈ {{amount}} a month)",
-    "description": "Goal savings accumulated over time"
+  "delete": {
+    "title": "Delete goal",
+    "body": "“{{name}}” will be deleted, with {{saved}} saved.",
+    "contributions_one": "Its contribution ({{amount}}) goes too: that money counts as available again in the period it was made.",
+    "contributions_other": "Its {{count}} contributions ({{amount}}) go too: that money counts as available again in the periods they were made.",
+    "confirm": "Delete goal",
+    "error": "Couldn't delete. Try again."
   },
   "toast": {
     "saved": "Goal saved",
     "deleted": "Goal deleted",
-    "contributed": "Contribution added"
+    "contributed": "Contribution saved",
+    "completed": "Goal reached: {{name}}",
+    "paused": "Goal paused",
+    "resumed": "Goal resumed",
+    "statusError": "Couldn't change the goal's status"
   }
 }

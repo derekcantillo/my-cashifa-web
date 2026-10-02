@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { useState, type AnimationEvent, type CSSProperties, type ReactNode } from 'react'
 
 import { cn } from '@/lib/cn'
 
@@ -13,14 +13,28 @@ interface EnterProps {
 }
 
 /**
- * Fades a page block in (6px rise), `order` steps after the first. Keep the wrapper
- * mounted while its content goes from skeleton to data so it only plays on the page's
- * first mount. Skipped entirely with `prefers-reduced-motion`.
+ * Fades a page block in (6px rise), `order` steps after the first. Plays once: the
+ * class is dropped when it ends, so a block that is hidden and shown again with CSS
+ * (`display: none` at some breakpoint) doesn't replay it. A block hidden from the
+ * start plays it the first time it appears. Skipped with `prefers-reduced-motion`.
  */
 export function Enter({ order, className, children }: EnterProps) {
-  const style: CSSProperties = { animationDelay: `${order * STAGGER_MS}ms` }
+  const [played, setPlayed] = useState(false)
+  const style: CSSProperties | undefined = played
+    ? undefined
+    : { animationDelay: `${order * STAGGER_MS}ms` }
+
+  const onAnimationEnd = (event: AnimationEvent<HTMLDivElement>) => {
+    // Ignore animations of descendants (skeleton pulse, dialogs…), which bubble.
+    if (event.target === event.currentTarget) setPlayed(true)
+  }
+
   return (
-    <div className={cn('motion-safe:animate-enter', className)} style={style}>
+    <div
+      className={cn(!played && 'motion-safe:animate-enter', className)}
+      style={style}
+      onAnimationEnd={onAnimationEnd}
+    >
       {children}
     </div>
   )

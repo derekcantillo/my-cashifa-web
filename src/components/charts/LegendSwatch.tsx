@@ -10,7 +10,7 @@ export function LegendSwatch({
   dashed?: boolean
 }) {
   return (
-    <span className="inline-flex items-center gap-2">
+    <span className="inline-flex items-center gap-2 text-body-sm text-ink-muted">
       <svg width="20" height="4" aria-hidden>
         <line
           x1="0"

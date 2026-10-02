@@ -311,3 +311,14 @@ export function formatTime(iso: string, locale: string = activeLocale()): string
     minute: '2-digit',
   }).format(new Date(iso))
 }
+
+/** Plain number in the active language ("3,3" / "3.3"); one decimal at most by default. */
+export function formatNumber(
+  value: number,
+  {
+    locale = activeLocale(),
+    maximumFractionDigits = 1,
+  }: { locale?: string; maximumFractionDigits?: number } = {},
+): string {
+  return new Intl.NumberFormat(locale, { maximumFractionDigits }).format(value)
+}

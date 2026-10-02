@@ -3,6 +3,7 @@ export const ROUTES = {
   dashboard: '/',
   transactions: '/gastos',
   goals: '/metas',
+  /** Old detail URL: redirects to `/metas?goal=:id`. */
   goalDetail: '/metas/:id',
   reports: '/reportes',
   loans: '/prestamos',
@@ -14,8 +15,12 @@ export const ROUTES = {
   designShowcase: '/__design',
 } as const
 
+/** Query param holding the selected goal on the goals screen. */
+export const GOAL_PARAM = 'goal'
+
+/** The goals screen with `id` selected (list + detail live on one route). */
 export function goalPath(id: string): string {
-  return `/metas/${id}`
+  return `${ROUTES.goals}?${GOAL_PARAM}=${encodeURIComponent(id)}`
 }
 
 export function loanPath(id: string): string {

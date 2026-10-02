@@ -1,7 +1,15 @@
 import { CalendarClock } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { Amount, EmptyState, Eyebrow, ProgressBar, SectionError, Skeleton } from '@/components/ui'
+import {
+  Amount,
+  EmptyState,
+  Eyebrow,
+  HeroProgress,
+  HeroProgressSkeleton,
+  SectionError,
+  Skeleton,
+} from '@/components/ui'
 import { useBudgets, useFormatters, usePeriodLabel, usePeriodLedger } from '@/hooks'
 import { getPeriodTiming } from '@/lib/periodTiming'
 import type { FinancialPeriod } from '@/types'
@@ -91,12 +99,7 @@ function BudgetProgress({ periodId }: { periodId: string }) {
   const { data, isPending } = useBudgets(periodId)
 
   if (isPending) {
-    return (
-      <div aria-hidden className="max-w-md space-y-2 pt-3">
-        <Skeleton className="h-1.5 w-full" />
-        <Skeleton className="h-3 w-44" />
-      </div>
-    )
+    return <HeroProgressSkeleton className="pt-3" />
   }
 
   const budget = (data ?? []).reduce((sum, line) => sum + line.limitAmount, 0)
@@ -105,16 +108,12 @@ function BudgetProgress({ periodId }: { periodId: string }) {
   const percentage = (spent / budget) * 100
 
   return (
-    <div className="max-w-md space-y-2 pt-3">
-      <ProgressBar
-        value={percentage}
-        label={t('hero.budgetProgress')}
-        tone={spent > budget ? 'negative' : 'accent'}
-        className="h-1.5"
-      />
-      <p className="text-body-sm text-ink-muted tabular-nums">
-        {t('hero.spentOfBudget', { spent: money(spent), budget: money(budget) })}
-      </p>
-    </div>
+    <HeroProgress
+      value={percentage}
+      label={t('hero.budgetProgress')}
+      tone={spent > budget ? 'negative' : 'accent'}
+      caption={t('hero.spentOfBudget', { spent: money(spent), budget: money(budget) })}
+      className="pt-3"
+    />
   )
 }

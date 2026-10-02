@@ -21,6 +21,12 @@
   --color-surface-raised: #ffffff;
   --color-surface-sunken: #ede9df;
   --color-line: rgba(26, 33, 28, 0.09);
+  /*
+   * Empty part of a progress bar. ≥ 3:1 (WCAG 1.4.11, UI components) against canvas,
+   * surface, surface-raised and surface-sunken, so a bar reads on every background,
+   * a selected (sunken) row included.
+   */
+  --color-track: #81867d;
 
   --color-ink: #1a211c;
   --color-ink-muted: #525b54;
@@ -92,6 +98,16 @@
   --text-amount-input--line-height: 1.15;
   --text-amount-input--letter-spacing: -0.01em;
   --text-amount-input--font-weight: 600;
+  /* Section / panel heading in sans (goal name in the detail panel). */
+  --text-heading: 24px;
+  --text-heading--line-height: 1.25;
+  --text-heading--letter-spacing: -0.005em;
+  --text-heading--font-weight: 600;
+  /* Main figure of a panel (not the screen's hero): sans, never serif. */
+  --text-figure-lg: 36px;
+  --text-figure-lg--line-height: 1.1;
+  --text-figure-lg--letter-spacing: -0.015em;
+  --text-figure-lg--font-weight: 600;
   /* Secondary figure of a compact card (net worth on Home). Sans, never serif. */
   --text-figure: 28px;
   --text-figure--line-height: 1.15;
@@ -170,6 +186,7 @@
   --color-surface-raised: #1f2521;
   --color-surface-sunken: #0d100e;
   --color-line: rgba(236, 239, 232, 0.1);
+  --color-track: #686f68;
 
   --color-ink: #ecefe8;
   --color-ink-muted: #a5ada4;

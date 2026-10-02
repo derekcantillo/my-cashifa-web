@@ -15,6 +15,8 @@ const twMerge = extendTailwindMerge({
         'display-md',
         'display-sm',
         'figure',
+        'figure-lg',
+        'heading',
         'amount-input',
         'title',
         'body',

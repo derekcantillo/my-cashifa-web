@@ -107,7 +107,10 @@ const COPY = {
 } as const
 
 const TOKEN_GROUPS: { title: string; tokens: string[] }[] = [
-  { title: 'Surfaces', tokens: ['canvas', 'surface', 'surface-raised', 'surface-sunken', 'line'] },
+  {
+    title: 'Surfaces',
+    tokens: ['canvas', 'surface', 'surface-raised', 'surface-sunken', 'line', 'track'],
+  },
   { title: 'Ink', tokens: ['ink', 'ink-muted', 'ink-subtle'] },
   { title: 'Accent', tokens: ['accent', 'accent-hover', 'accent-ink', 'accent-soft'] },
   {
