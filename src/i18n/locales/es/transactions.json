@@ -54,7 +54,10 @@
       "unlinkedByCategory": "Se quitó el vínculo con {{name}}: la categoría ya no coincide.",
       "noActive": "No tienes gastos fijos activos.",
       "loading": "Cargando gastos fijos…"
-    }
+    },
+    "loanTitle": "Movimiento de préstamo",
+    "loanReadOnly": "Este movimiento lo genera un préstamo. Para cambiarlo, hazlo desde Préstamos.",
+    "viewLoan": "Ver préstamo"
   },
   "types": {
     "EXPENSE": "Gasto",

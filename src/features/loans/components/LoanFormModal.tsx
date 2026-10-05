@@ -1,33 +1,44 @@
 import { useTranslation } from 'react-i18next'
 
-import { InlineError, Modal, Skeleton } from '@/components/ui'
-import { useLoan } from '@/hooks'
+import { Modal, SectionError, Skeleton } from '@/components/ui'
+import { useLoans } from '@/hooks'
 import { useLoanModalStore } from '@/store/loanModalStore'
 
 import { LoanForm } from './LoanForm'
+import { RepaymentForm } from './RepaymentForm'
 
-/** Mounted once in AppShell while the store says it's open. */
+/**
+ * Mounted once in AppShell while the store says it's open: create / edit a loan, or log
+ * a repayment. Edit and repay read the loan from the list (it carries the balance).
+ */
 export function LoanFormModal() {
   const { t } = useTranslation('loans')
   const { mode, loanId, close } = useLoanModalStore()
-  const isEdit = mode === 'edit'
-  const { data: loan, isPending, isError, refetch } = useLoan(isEdit ? loanId : undefined)
+  const { data: loans, isPending, isError, refetch } = useLoans()
+  const loan = mode === 'create' ? undefined : loans?.find(item => item.id === loanId)
+  const title =
+    mode === 'repay'
+      ? t('repayment.title')
+      : mode === 'edit'
+        ? t('form.editTitle')
+        : t('form.createTitle')
 
   return (
-    <Modal title={isEdit ? t('form.editTitle') : t('form.createTitle')} onClose={close}>
-      {!isEdit ? (
+    <Modal title={title} onClose={close}>
+      {mode === 'create' ? (
         <LoanForm onDone={close} />
       ) : isError ? (
-        <div className="space-y-2">
-          <p className="text-ink-muted">{t('form.loadError')}</p>
-          <InlineError onRetry={() => void refetch()} />
-        </div>
+        <SectionError message={t('form.loadError')} onRetry={() => void refetch()} />
       ) : isPending ? (
         <div className="space-y-5" aria-busy="true">
           <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-16 w-full" />
           <Skeleton className="h-10 w-full" />
         </div>
+      ) : !loan ? (
+        <p className="text-body text-ink-muted">{t('form.loadError')}</p>
+      ) : mode === 'repay' ? (
+        <RepaymentForm loan={loan} onDone={close} />
       ) : (
         <LoanForm loan={loan} onDone={close} />
       )}

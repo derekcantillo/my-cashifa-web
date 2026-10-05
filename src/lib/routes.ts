@@ -7,6 +7,7 @@ export const ROUTES = {
   goalDetail: '/metas/:id',
   reports: '/reportes',
   loans: '/prestamos',
+  /** Old detail URL: redirects to `/prestamos?loan=:id`. */
   loanDetail: '/prestamos/:id',
   alerts: '/alertas',
   netWorth: '/patrimonio-neto',
@@ -23,8 +24,12 @@ export function goalPath(id: string): string {
   return `${ROUTES.goals}?${GOAL_PARAM}=${encodeURIComponent(id)}`
 }
 
+/** Query param holding the selected loan on the loans screen. */
+export const LOAN_PARAM = 'loan'
+
+/** The loans screen with `id` selected (list + detail live on one route). */
 export function loanPath(id: string): string {
-  return `/prestamos/${id}`
+  return `${ROUTES.loans}?${LOAN_PARAM}=${encodeURIComponent(id)}`
 }
 
 /** Query param that preselects the category filter on Gastos. */

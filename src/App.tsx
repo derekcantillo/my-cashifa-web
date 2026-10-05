@@ -69,15 +69,16 @@ const router = createBrowserRouter([
               {
                 path: ROUTES.loans,
                 lazy: lazyScreen(
-                  () => import('@/features/loans/LoansPage'),
+                  () => import('@/features/loans'),
                   m => m.LoansPage,
                 ),
               },
               {
                 path: ROUTES.loanDetail,
+                // Detail moved into the loans screen (`?loan=`); keeps old links working.
                 lazy: lazyScreen(
-                  () => import('@/features/loans/LoanDetailPage'),
-                  m => m.LoanDetailPage,
+                  () => import('@/features/loans'),
+                  m => m.LoanDetailRedirect,
                 ),
               },
               {

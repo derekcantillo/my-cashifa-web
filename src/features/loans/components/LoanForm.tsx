@@ -1,16 +1,34 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useMemo } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
-import { DeleteConfirmation, errorProps, Field, inputClassName } from '@/components/ui'
-import { useAccounts, useCreateLoan, useDeleteLoan, useFormatters, useUpdateLoan } from '@/hooks'
+import {
+  AmountField,
+  Button,
+  DateInput,
+  errorProps,
+  Field,
+  Input,
+  ModalFooter,
+  Select,
+  Textarea,
+  useModalClose,
+  useModalUnsavedChanges,
+} from '@/components/ui'
+import { useAccounts, useCreateLoan, useFormatters, useUpdateLoan } from '@/hooks'
 import { fromDateInputValue, parseAmountInput, toDateInputValue } from '@/lib/format'
 import { loanPath, ROUTES } from '@/lib/routes'
 import { useToastStore } from '@/store/toastStore'
 import type { CreateLoanInput, Loan, UpdateLoanInput } from '@/types'
+
+const FORM_ID = 'loan-form'
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
+/** CreateLoanDto: `borrowerName` ≤ 120, `note` ≤ 255. */
+const NAME_MAX_LENGTH = 120
+const NOTE_MAX_LENGTH = 255
 
 type ErrorCode =
   | 'borrowerRequired'
@@ -19,35 +37,50 @@ type ErrorCode =
   | 'amountInvalid'
   | 'amountPositive'
   | 'dateRequired'
+  | 'dateFuture'
+  | 'dueBeforeLoan'
   | 'noteTooLong'
 
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
-
-function createSchema(locale: string, isEdit: boolean) {
-  return z.object({
-    borrowerName: z
-      .string()
-      .trim()
-      .min(1, { error: 'borrowerRequired' })
-      .max(120, { error: 'borrowerTooLong' }),
-    // Amount, loan date and account are create-only (UpdateLoanDto doesn't accept them).
-    amount: isEdit
-      ? z.string()
-      : z
-          .string()
-          .trim()
-          .min(1, { error: 'amountRequired' })
-          .refine(value => !Number.isNaN(parseAmountInput(value, locale)), {
-            error: 'amountInvalid',
-          })
-          .refine(value => parseAmountInput(value, locale) > 0, { error: 'amountPositive' }),
-    loanDate: isEdit ? z.string() : z.string().regex(DATE_PATTERN, { error: 'dateRequired' }),
-    dueDate: z.string().refine(value => value === '' || DATE_PATTERN.test(value), {
-      error: 'dateRequired',
-    }),
-    note: z.string().trim().max(255, { error: 'noteTooLong' }),
-    accountId: z.string(),
-  })
+/**
+ * Create: borrower, amount, loan date (required by CreateLoanDto), optional due date,
+ * note and account. Edit: UpdateLoanDto only takes borrower, due date and note — amount,
+ * loan date and account are fixed after creation (same as the mobile app).
+ */
+function createSchema(locale: string, today: string, isEdit: boolean) {
+  return z
+    .object({
+      borrowerName: z
+        .string()
+        .trim()
+        .min(1, { error: 'borrowerRequired' })
+        .max(NAME_MAX_LENGTH, { error: 'borrowerTooLong' }),
+      amount: isEdit
+        ? z.string()
+        : z
+            .string()
+            .trim()
+            .min(1, { error: 'amountRequired' })
+            .refine(value => !Number.isNaN(parseAmountInput(value, locale)), {
+              error: 'amountInvalid',
+            })
+            .refine(value => parseAmountInput(value, locale) > 0, { error: 'amountPositive' }),
+      loanDate: isEdit
+        ? z.string()
+        : z
+            .string()
+            .regex(DATE_PATTERN, { error: 'dateRequired' })
+            .refine(value => value <= today, { error: 'dateFuture' }),
+      dueDate: z.string().refine(value => value === '' || DATE_PATTERN.test(value), {
+        error: 'dateRequired',
+      }),
+      note: z.string().trim().max(NOTE_MAX_LENGTH, { error: 'noteTooLong' }),
+      accountId: z.string(),
+    })
+    .superRefine((values, context) => {
+      if (values.dueDate && values.loanDate && values.dueDate < values.loanDate) {
+        context.addIssue({ code: 'custom', path: ['dueDate'], message: 'dueBeforeLoan' })
+      }
+    })
 }
 
 type FormValues = z.infer<ReturnType<typeof createSchema>>
@@ -57,37 +90,38 @@ interface LoanFormProps {
   onDone: () => void
 }
 
+/** Inside the loan Modal: its actions go to the pinned footer. */
 export function LoanForm({ loan, onDone }: LoanFormProps) {
-  const { t } = useTranslation(['loans', 'common'])
+  const { t } = useTranslation('loans')
   const { locale, money } = useFormatters()
-  const navigate = useNavigate()
-  const location = useLocation()
   const { data: accounts = [] } = useAccounts()
   const createLoan = useCreateLoan()
   const updateLoan = useUpdateLoan()
-  const deleteLoan = useDeleteLoan()
   const pushToast = useToastStore(state => state.push)
-  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const requestClose = useModalClose()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const today = toDateInputValue()
   const isEdit = loan !== undefined
-  const schema = useMemo(() => createSchema(locale, isEdit), [locale, isEdit])
-  // Same rule as the backend (and mobile): a loan with repayments keeps its history.
-  const hasRepayments = (loan?.amountRepaid ?? 0) > 0
+  const schema = useMemo(() => createSchema(locale, today, isEdit), [locale, today, isEdit])
 
   const {
+    control,
     register,
     handleSubmit,
-    formState: { errors, dirtyFields, isSubmitting },
+    formState: { errors, dirtyFields, isDirty, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       borrowerName: loan?.borrowerName ?? '',
       amount: '',
-      loanDate: loan ? toDateInputValue(loan.loanDate) : toDateInputValue(),
+      loanDate: loan ? toDateInputValue(loan.loanDate) : today,
       dueDate: loan?.dueDate ? toDateInputValue(loan.dueDate) : '',
       note: loan?.note ?? '',
       accountId: '',
     },
   })
+  useModalUnsavedChanges(isDirty && !isSubmitting)
 
   const onSubmit = async (values: FormValues) => {
     if (!loan) {
@@ -99,12 +133,13 @@ export function LoanForm({ loan, onDone }: LoanFormProps) {
         ...(values.note ? { note: values.note } : {}),
         ...(values.accountId ? { accountId: values.accountId } : {}),
       }
-      await createLoan.mutateAsync(input)
+      const created = await createLoan.mutateAsync(input)
       pushToast(t('toast.saved'))
+      if (location.pathname === ROUTES.loans) navigate(loanPath(created.id))
     } else {
       const input: UpdateLoanInput = {
         ...(dirtyFields.borrowerName ? { borrowerName: values.borrowerName } : {}),
-        // The backend can set a due date but not clear it, so an emptied field is ignored.
+        // The backend can set a due date but not clear it: an emptied field is ignored.
         ...(dirtyFields.dueDate && values.dueDate
           ? { dueDate: fromDateInputValue(values.dueDate) }
           : {}),
@@ -118,14 +153,6 @@ export function LoanForm({ loan, onDone }: LoanFormProps) {
     onDone()
   }
 
-  const onDelete = async () => {
-    if (!loan) return
-    await deleteLoan.mutateAsync(loan.id)
-    pushToast(t('toast.deleted'))
-    onDone()
-    if (location.pathname === loanPath(loan.id)) navigate(ROUTES.loans, { replace: true })
-  }
-
   const errorText = (code: string | undefined) =>
     code ? t(`form.errors.${code as ErrorCode}`) : null
   const borrowerError = errorText(errors.borrowerName?.message)
@@ -134,134 +161,130 @@ export function LoanForm({ loan, onDone }: LoanFormProps) {
   const dueDateError = errorText(errors.dueDate?.message)
   const noteError = errorText(errors.note?.message)
   const mutation = loan ? updateLoan : createLoan
-  const isBusy = isSubmitting || deleteLoan.isPending
 
   return (
-    <form
-      noValidate
-      onSubmit={event => void handleSubmit(onSubmit)(event).catch(() => undefined)}
-      className="space-y-5"
-    >
-      <Field id="loan-borrower" label={t('form.borrower')} error={borrowerError}>
-        <input
-          id="loan-borrower"
-          type="text"
-          autoComplete="off"
-          placeholder={t('form.borrowerPlaceholder')}
-          className={inputClassName(borrowerError)}
-          {...errorProps('loan-borrower', borrowerError)}
-          {...register('borrowerName')}
-        />
-      </Field>
-
-      {loan ? (
-        <div className="space-y-1">
-          <p className="text-sm font-medium">{t('form.amount')}</p>
-          <p className="tabular-nums">{money(loan.amount)}</p>
-          <p className="text-sm text-ink-muted">{t('form.amountFixed')}</p>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field id="loan-amount" label={t('form.amount')} error={amountError}>
-            <input
-              id="loan-amount"
-              type="text"
-              inputMode="decimal"
-              autoComplete="off"
-              placeholder="0"
-              className={inputClassName(amountError)}
-              {...errorProps('loan-amount', amountError)}
-              {...register('amount')}
-            />
-          </Field>
-          <Field id="loan-date" label={t('form.loanDate')} error={loanDateError}>
-            <input
-              id="loan-date"
-              type="date"
-              className={inputClassName(loanDateError)}
-              {...errorProps('loan-date', loanDateError)}
-              {...register('loanDate')}
-            />
-          </Field>
-        </div>
-      )}
-
-      <Field id="loan-due" label={t('form.dueDate')} hint={t('form.optional')} error={dueDateError}>
-        <input
-          id="loan-due"
-          type="date"
-          className={inputClassName(dueDateError)}
-          {...errorProps('loan-due', dueDateError)}
-          {...register('dueDate')}
-        />
-      </Field>
-
-      {!loan && (
-        <Field id="loan-account" label={t('form.account')} hint={t('form.optional')}>
-          <select id="loan-account" className={inputClassName(null)} {...register('accountId')}>
-            <option value="">{t('form.noAccount')}</option>
-            {accounts.map(account => (
-              <option key={account.id} value={account.id}>
-                {account.name}
-              </option>
-            ))}
-          </select>
+    <>
+      <form
+        id={FORM_ID}
+        noValidate
+        onSubmit={event => void handleSubmit(onSubmit)(event).catch(() => undefined)}
+        className="space-y-5"
+      >
+        <Field id="loan-borrower" label={t('form.borrower')} error={borrowerError}>
+          <Input
+            id="loan-borrower"
+            autoComplete="off"
+            maxLength={NAME_MAX_LENGTH}
+            placeholder={t('form.borrowerPlaceholder')}
+            invalid={Boolean(borrowerError)}
+            data-autofocus
+            {...errorProps('loan-borrower', borrowerError)}
+            {...register('borrowerName')}
+          />
         </Field>
-      )}
 
-      <Field id="loan-note" label={t('form.note')} hint={t('form.optional')} error={noteError}>
-        <input
-          id="loan-note"
-          type="text"
-          className={inputClassName(noteError)}
-          {...errorProps('loan-note', noteError)}
-          {...register('note')}
-        />
-      </Field>
-
-      {mutation.isError && (
-        <p role="alert" className="text-sm text-danger">
-          {t('form.saveError')}
-        </p>
-      )}
-
-      {confirmingDelete ? (
-        <DeleteConfirmation
-          title={t('form.deleteConfirm')}
-          isPending={deleteLoan.isPending}
-          error={deleteLoan.isError ? t('form.deleteError') : null}
-          onConfirm={() => void onDelete().catch(() => undefined)}
-          onCancel={() => setConfirmingDelete(false)}
-        />
-      ) : (
-        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
-          {loan && (
-            <div className="flex items-center gap-3 sm:-ml-3">
-              <button
-                type="button"
-                onClick={() => setConfirmingDelete(true)}
-                disabled={isBusy || hasRepayments}
-                aria-describedby={hasRepayments ? 'loan-cant-delete' : undefined}
-                className="shrink-0 rounded-lg px-3 py-2.5 text-sm font-medium text-danger transition-colors hover:bg-danger/10 disabled:pointer-events-none disabled:opacity-40"
-              >
-                {t('common:common.delete')}
-              </button>
-              {hasRepayments && (
-                <p id="loan-cant-delete" className="text-xs text-ink-muted">
-                  {t('form.cantDelete')}
-                </p>
+        {isEdit ? (
+          <div className="space-y-1.5">
+            <p className="text-body-sm font-medium text-ink">{t('form.amount')}</p>
+            <p className="rounded-sm bg-surface-sunken px-3 py-2.5 text-body text-ink tabular-nums">
+              {money(loan.amount)}
+            </p>
+            <p className="text-body-sm text-ink-muted">{t('form.amountFixed')}</p>
+          </div>
+        ) : (
+          <Field id="loan-amount" label={t('form.amount')} error={amountError}>
+            <Controller
+              control={control}
+              name="amount"
+              render={({ field }) => (
+                <AmountField
+                  id="loan-amount"
+                  ref={field.ref}
+                  name={field.name}
+                  size="lg"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  placeholder="0"
+                  invalid={Boolean(amountError)}
+                  {...errorProps('loan-amount', amountError)}
+                />
               )}
-            </div>
+            />
+          </Field>
+        )}
+
+        <div className="grid gap-5 sm:grid-cols-2">
+          {!isEdit && (
+            <Field id="loan-date" label={t('form.loanDate')} error={loanDateError}>
+              <DateInput
+                id="loan-date"
+                max={today}
+                invalid={Boolean(loanDateError)}
+                {...errorProps('loan-date', loanDateError)}
+                {...register('loanDate')}
+              />
+            </Field>
           )}
-          <button
-            type="submit"
-            disabled={isBusy}
-            className="shrink-0 rounded-lg bg-brand px-6 py-2.5 text-sm font-medium text-on-brand transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60 sm:ml-auto"
+          <Field
+            id="loan-due"
+            label={t('form.dueDate')}
+            hint={t('form.optional')}
+            help={isEdit && loan.dueDate ? t('form.dueDateHelp') : undefined}
+            error={dueDateError}
           >
-            {isSubmitting ? t('common:common.saving') : t('common:common.save')}
-          </button>
+            <DateInput
+              id="loan-due"
+              invalid={Boolean(dueDateError)}
+              {...errorProps('loan-due', dueDateError, Boolean(isEdit && loan.dueDate))}
+              {...register('dueDate')}
+            />
+          </Field>
+          {!isEdit && (
+            <Field id="loan-account" label={t('form.account')} hint={t('form.optional')}>
+              <Select id="loan-account" {...register('accountId')}>
+                <option value="">{t('form.noAccount')}</option>
+                {accounts.map(account => (
+                  <option key={account.id} value={account.id}>
+                    {account.name}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          )}
         </div>
-      )}
-    </form>
+
+        <Field id="loan-note" label={t('form.note')} hint={t('form.optional')} error={noteError}>
+          <Textarea
+            id="loan-note"
+            rows={2}
+            maxLength={NOTE_MAX_LENGTH}
+            invalid={Boolean(noteError)}
+            {...errorProps('loan-note', noteError)}
+            {...register('note')}
+          />
+        </Field>
+
+        {!isEdit && <p className="text-body-sm text-ink-muted">{t('form.createHelp')}</p>}
+
+        {mutation.isError && (
+          <p
+            role="alert"
+            className="rounded-sm bg-negative-soft px-3 py-2.5 text-body-sm text-negative"
+          >
+            {t('form.saveError')}
+          </p>
+        )}
+      </form>
+
+      <ModalFooter>
+        <Button variant="ghost" className="ml-auto" onClick={requestClose} disabled={isSubmitting}>
+          {t('form.cancel')}
+        </Button>
+        <Button type="submit" form={FORM_ID} loading={isSubmitting}>
+          {t('form.save')}
+        </Button>
+      </ModalFooter>
+    </>
   )
 }

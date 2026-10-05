@@ -1,2 +1,2 @@
-export { LoanDetailPage } from './LoanDetailPage'
+export { LoanDetailRedirect } from './LoanDetailRedirect'
 export { LoansPage } from './LoansPage'

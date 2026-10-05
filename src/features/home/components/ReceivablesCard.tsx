@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { Amount, Card, Eyebrow, interactiveCardClassName, SectionError } from '@/components/ui'
 import { useLoans } from '@/hooks'
 import { cn } from '@/lib/cn'
+import { isOpenLoan, receivables } from '@/lib/loanMath'
 import { ROUTES } from '@/lib/routes'
 
 /** Money lent and still owed. Only rendered when there's at least one active loan. */
@@ -23,11 +24,11 @@ export function ReceivablesCard() {
     )
   }
 
-  // `LoanStatus` is ACTIVE | PARTIALLY_PAID | PAID: anything not PAID is still owed.
-  const active = (data ?? []).filter(loan => loan.status !== 'PAID')
+  // Shared with Préstamos: open = not PAID, owed = sum of `remainingAmount`.
+  const active = (data ?? []).filter(isOpenLoan)
   // While loading there's nothing to reserve: it's the last block of its column.
   if (active.length === 0) return null
-  const owed = active.reduce((sum, loan) => sum + loan.remainingAmount, 0)
+  const owed = receivables(active)
 
   return (
     <Link to={ROUTES.loans} className={cn(interactiveCardClassName, 'group space-y-2 p-6')}>

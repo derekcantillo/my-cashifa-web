@@ -4,6 +4,8 @@ import { Modal, SectionError, Skeleton } from '@/components/ui'
 import { useRecurringExpenses, useTransaction } from '@/hooks'
 import { useTransactionModalStore } from '@/store/transactionModalStore'
 
+import { isLoanMovement } from '../lib/loanTransactions'
+import { LoanMovementView } from './LoanMovementView'
 import { TransactionForm } from './TransactionForm'
 
 /**
@@ -19,7 +21,16 @@ export function TransactionFormModal() {
   const { data: recurringExpenses = [] } = useRecurringExpenses()
 
   return (
-    <Modal title={isEdit ? t('form.editTitle') : t('form.createTitle')} onClose={close}>
+    <Modal
+      title={
+        !isEdit
+          ? t('form.createTitle')
+          : query.data && isLoanMovement(query.data)
+            ? t('form.loanTitle')
+            : t('form.editTitle')
+      }
+      onClose={close}
+    >
       {!isEdit ? (
         <TransactionForm
           recurringExpense={recurringExpense}
@@ -35,6 +46,9 @@ export function TransactionFormModal() {
           <Skeleton className="h-52 w-full" />
           <Skeleton className="h-10 w-full" />
         </div>
+      ) : isLoanMovement(query.data) ? (
+        // Read-only: editing it here would desync the loan and the account balance.
+        <LoanMovementView transaction={query.data} />
       ) : (
         <TransactionForm
           transaction={query.data}

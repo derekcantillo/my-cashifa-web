@@ -1,5 +1,6 @@
 export { AppShell } from './AppShell'
 export { LanguageSwitcher } from './LanguageSwitcher'
+export { MasterDetailLayout } from './MasterDetailLayout'
 export { PageContainer } from './PageContainer'
 export { RequireApiKey } from './RequireApiKey'
 export { ThemeSwitcher } from './ThemeSwitcher'

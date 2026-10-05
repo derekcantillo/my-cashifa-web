@@ -54,7 +54,10 @@
       "unlinkedByCategory": "Unlinked from {{name}}: the category no longer matches.",
       "noActive": "You have no active recurring expenses.",
       "loading": "Loading recurring expenses…"
-    }
+    },
+    "loanTitle": "Loan transaction",
+    "loanReadOnly": "This transaction comes from a loan. To change it, do it from Loans.",
+    "viewLoan": "View loan"
   },
   "types": {
     "EXPENSE": "Expense",

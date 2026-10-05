@@ -1,10 +1,13 @@
 import { create } from 'zustand'
 
+type LoanModalMode = 'create' | 'edit' | 'repay'
+
 interface LoanModalState {
   isOpen: boolean
-  mode: 'create' | 'edit'
+  mode: LoanModalMode
+  /** Edit: the loan being edited. Repay: the loan receiving the repayment. */
   loanId?: string
-  open: (mode: 'create' | 'edit', loanId?: string) => void
+  open: (mode: LoanModalMode, loanId?: string) => void
   close: () => void
 }
 

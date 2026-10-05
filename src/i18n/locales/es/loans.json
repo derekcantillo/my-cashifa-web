@@ -1,30 +1,92 @@
 {
   "title": "Préstamos",
+  "eyebrow": "Préstamos",
   "new": "Nuevo préstamo",
-  "empty": "Todavía no registraste ningún préstamo",
-  "completed": "Completados",
-  "showCompleted": "Ver completados ({{count}})",
-  "progressLine": "{{pending}} pendiente de {{total}}",
-  "due": "Vence el {{date}}",
-  "overdue": "Venció el {{date}}",
+  "status": {
+    "ACTIVE": "Activo",
+    "PARTIALLY_PAID": "Con abonos",
+    "PAID": "Pagado"
+  },
+  "empty": {
+    "title": "Aún no registras préstamos",
+    "body": "Cuando le prestes dinero a alguien, regístralo aquí y sigue cada abono hasta que te pague.",
+    "cta": "Registrar mi primer préstamo"
+  },
+  "hero": {
+    "label": "Por cobrar",
+    "recovered": "Recuperado {{recovered}} de {{lent}} prestados",
+    "progress": "Recuperado de los préstamos activos",
+    "upToDate": "Todo al día"
+  },
+  "stats": {
+    "active": "Préstamos activos",
+    "totalLent": "Total prestado",
+    "totalLentHint": "Histórico, pagados incluidos",
+    "recovered": "Recuperado",
+    "recoveredHint": "Suma de todos los abonos",
+    "nextDue": "Próximo cobro"
+  },
+  "list": {
+    "label": "Tus préstamos",
+    "progress": "{{recovered}} de {{lent}}",
+    "progressLabel": "Recuperado de {{name}}",
+    "due": "Para el {{date}}",
+    "overdue": "Venció el {{date}}",
+    "completed": "Completados ({{count}})",
+    "paidOn": "Pagado · {{amount}}"
+  },
+  "detail": {
+    "back": "Préstamos",
+    "actions": "Más acciones",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "cantDelete": "No se puede eliminar: ya tiene abonos y se perdería su historial.",
+    "pending": "pendiente de {{lent}}",
+    "lentOn": "Fecha del préstamo",
+    "dueDate": "Fecha límite",
+    "noDueDate": "Sin fecha límite",
+    "recovered": "Recuperado",
+    "account": "Cuenta",
+    "noAccount": "Sin cuenta asignada",
+    "note": "Nota",
+    "repay": "Registrar abono",
+    "accountMissing": "Cuenta no disponible",
+    "overdue": "Vencida",
+    "remind": "Copiar recordatorio",
+    "reminderText": "Hola {{name}}, te recuerdo el saldo pendiente de {{amount}}. ¡Gracias!",
+    "reminderCopied": "Recordatorio copiado",
+    "reminderTitle": "Copia el recordatorio",
+    "reminderHelp": "No pudimos usar el portapapeles. Selecciona el texto y cópialo.",
+    "paidOn": "Pagado el {{date}}",
+    "close": "Cerrar"
+  },
+  "history": {
+    "title": "Abonos",
+    "emptyTitle": "Sin abonos todavía",
+    "emptyBody": "Cada pago que te hagan aparecerá aquí.",
+    "showAll": "Ver todos ({{count}})",
+    "showLess": "Ver menos",
+    "loadError": "No pudimos cargar los abonos."
+  },
   "form": {
     "createTitle": "Nuevo préstamo",
     "editTitle": "Editar préstamo",
-    "borrower": "Nombre del deudor",
-    "borrowerPlaceholder": "¿A quién le prestaste?",
-    "amount": "Monto original",
-    "amountFixed": "No se puede cambiar después de creado",
+    "borrower": "¿A quién le prestaste?",
+    "borrowerPlaceholder": "Nombre",
+    "amount": "Monto prestado",
+    "amountFixed": "El monto no se puede cambiar después de creado.",
     "loanDate": "Fecha del préstamo",
-    "dueDate": "Fecha de vencimiento",
+    "dueDate": "Fecha límite",
+    "dueDateHelp": "Una vez puesta, se puede cambiar pero no quitar.",
     "note": "Nota o motivo",
     "optional": "opcional",
     "account": "Cuenta de la que salió",
     "noAccount": "Sin cuenta asignada",
+    "createHelp": "Se registra como movimiento de préstamo: resta del saldo de la cuenta elegida, pero no es un gasto ni cambia tu disponible para gastar.",
+    "cancel": "Cancelar",
+    "save": "Guardar",
     "loadError": "No pudimos cargar este préstamo.",
     "saveError": "No se pudo guardar. Revisa los datos e inténtalo de nuevo.",
-    "deleteConfirm": "¿Eliminar este préstamo?",
-    "deleteError": "No se pudo eliminar. Inténtalo de nuevo.",
-    "cantDelete": "No se puede eliminar porque ya tiene abonos registrados.",
     "errors": {
       "borrowerRequired": "Escribe el nombre",
       "borrowerTooLong": "Máximo 120 caracteres",
@@ -32,31 +94,44 @@
       "amountInvalid": "Escribe un monto válido, por ejemplo 500.000",
       "amountPositive": "El monto debe ser mayor que cero",
       "dateRequired": "Elige una fecha",
+      "dateFuture": "La fecha no puede ser futura",
+      "dueBeforeLoan": "La fecha límite no puede ser anterior al préstamo",
       "noteTooLong": "Máximo 255 caracteres"
     }
   },
-  "detail": {
-    "back": "Volver",
-    "pending": "Pendiente",
-    "summary": "Original: {{total}} · Recuperado: {{recovered}}",
-    "lent": "Prestado el {{date}}",
-    "paid": "Pagado",
-    "repay": "Registrar abono",
-    "edit": "Editar préstamo",
-    "delete": "Eliminar préstamo",
-    "notFound": "Este préstamo ya no existe."
-  },
   "repayment": {
+    "title": "Registrar abono",
+    "loan": "Préstamo de",
+    "amount": "Monto",
+    "date": "Fecha",
+    "note": "Nota",
+    "optional": "opcional",
+    "remaining": "Pendiente {{amount}}.",
+    "settles": "Con este abono el préstamo queda pagado.",
+    "help": "Suma al saldo de la cuenta del préstamo. No cuenta como ingreso ni cambia tu disponible para gastar.",
+    "cancel": "Cancelar",
     "save": "Guardar abono",
-    "saveError": "No se pudo registrar el abono. Inténtalo de nuevo."
+    "saveError": "No se pudo registrar el abono. Inténtalo de nuevo.",
+    "errors": {
+      "amountRequired": "Escribe el monto",
+      "amountInvalid": "Escribe un monto válido, por ejemplo 200.000",
+      "amountPositive": "El monto debe ser mayor que cero",
+      "amountTooHigh": "No puede ser más de lo pendiente ({{max}})",
+      "dateRequired": "Elige una fecha",
+      "dateFuture": "La fecha no puede ser futura",
+      "noteTooLong": "Máximo 255 caracteres"
+    }
   },
-  "history": {
-    "title": "Abonos",
-    "empty": "Todavía no hay abonos registrados"
+  "delete": {
+    "title": "Eliminar préstamo",
+    "body": "Se eliminará el préstamo a «{{name}}» por {{amount}}, con su movimiento de préstamo.",
+    "confirm": "Eliminar préstamo",
+    "error": "No se pudo eliminar. Inténtalo de nuevo."
   },
   "toast": {
     "saved": "Préstamo guardado",
     "deleted": "Préstamo eliminado",
-    "repaid": "Abono registrado"
+    "repaid": "Abono registrado",
+    "settled": "Préstamo pagado: {{name}}"
   }
 }
