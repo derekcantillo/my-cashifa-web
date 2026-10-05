@@ -12,7 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-import type { AlertType } from '@/types'
+import { ALERT_TYPES, type AlertType } from '@/types'
 
 // Mirrors the backend `AlertType` enum (prisma/schema.prisma).
 const ALERT_ICONS: Record<AlertType, LucideIcon> = {
@@ -30,11 +30,25 @@ const ALERT_ICONS: Record<AlertType, LucideIcon> = {
 }
 
 /** Falls back to a bell for a type the backend adds before the web knows it. */
-export function getAlertIcon(type: AlertType | string): LucideIcon {
-  return ALERT_ICONS[type as AlertType] ?? Bell
+export function getAlertIcon(type: string): LucideIcon {
+  return isKnownAlertType(type) ? ALERT_ICONS[type] : Bell
+}
+
+/**
+ * Types that express a real risk get the `warning` tone on their icon; every other
+ * icon stays neutral (ink-muted). Color carries meaning only here.
+ */
+const RISK_TYPES: readonly AlertType[] = ['SAVINGS_TARGET_AT_RISK', 'PERIOD_DEFICIT', 'BUDGET_100']
+
+export function isRiskAlert(type: string): boolean {
+  return (RISK_TYPES as readonly string[]).includes(type)
+}
+
+export function isKnownAlertType(type: string): type is AlertType {
+  return (ALERT_TYPES as readonly string[]).includes(type)
 }
 
 /** Renders the icon for an alert type (a component, so callers don't pick one mid-render). */
-export function AlertTypeIcon({ type, className }: { type: AlertType; className?: string }) {
+export function AlertTypeIcon({ type, className }: { type: string; className?: string }) {
   return createElement(getAlertIcon(type), { className, 'aria-hidden': true })
 }

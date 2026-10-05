@@ -26,6 +26,8 @@ import { cn } from '@/lib/cn'
 import { formatDate, formatPercent, formatPeriodRange } from '@/lib/format'
 import { useTheme } from '@/theme'
 
+import { AlertsShowcase } from './AlertsShowcase'
+
 /** Dev-only copy, kept out of the production locale files. */
 const COPY = {
   es: {
@@ -37,6 +39,11 @@ const COPY = {
     typography: 'Tipografía',
     primitives: 'Primitivos',
     composition: 'Composición',
+    alerts: 'Alertas',
+    alertsAll: 'Lista completa (36 alertas, sin filtros)',
+    alertsCombined: 'Filtro combinado: no leídas + gasto fijo',
+    alertsNote:
+      'Componente real de la lista con datos simulados. Las acciones solo cambian el estado local: no se envía ninguna request.',
     available: 'Balance disponible',
     spent: 'Gastado este periodo',
     budget: 'Presupuesto',
@@ -75,6 +82,11 @@ const COPY = {
     typography: 'Typography',
     primitives: 'Primitives',
     composition: 'Composition',
+    alerts: 'Alerts',
+    alertsAll: 'Full list (36 alerts, no filters)',
+    alertsCombined: 'Combined filter: unread + recurring expense',
+    alertsNote:
+      'The real list component over mock data. Actions only change local state: no request is sent.',
     available: 'Available balance',
     spent: 'Spent this period',
     budget: 'Budget',
@@ -155,6 +167,7 @@ const FORCED_STATE: Record<ButtonVariant, string[]> = {
     'outline-2 outline-offset-2 outline-accent',
     'translate-y-px shadow-pressed',
   ],
+  link: ['', 'underline', 'outline-2 outline-offset-2 outline-accent', 'opacity-80'],
 }
 
 export function DesignShowcasePage() {
@@ -340,32 +353,32 @@ export function DesignShowcasePage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {(['primary', 'secondary', 'ghost', 'danger', 'danger-ghost'] as const).map(
-                      variant => (
-                        <tr key={variant}>
-                          <th className="pr-3 font-mono text-body-sm font-normal text-ink-muted">
-                            {variant}
-                          </th>
-                          {FORCED_STATE[variant].map((forced, index) => (
-                            <td key={index} className="px-3 py-2">
-                              <Button variant={variant} className={forced} tabIndex={-1}>
-                                {copy.register}
-                              </Button>
-                            </td>
-                          ))}
-                          <td className="px-3 py-2">
-                            <Button variant={variant} disabled>
+                    {(
+                      ['primary', 'secondary', 'ghost', 'danger', 'danger-ghost', 'link'] as const
+                    ).map(variant => (
+                      <tr key={variant}>
+                        <th className="pr-3 font-mono text-body-sm font-normal text-ink-muted">
+                          {variant}
+                        </th>
+                        {FORCED_STATE[variant].map((forced, index) => (
+                          <td key={index} className="px-3 py-2">
+                            <Button variant={variant} className={forced} tabIndex={-1}>
                               {copy.register}
                             </Button>
                           </td>
-                          <td className="px-3 py-2">
-                            <Button variant={variant} loading>
-                              {copy.register}
-                            </Button>
-                          </td>
-                        </tr>
-                      ),
-                    )}
+                        ))}
+                        <td className="px-3 py-2">
+                          <Button variant={variant} disabled>
+                            {copy.register}
+                          </Button>
+                        </td>
+                        <td className="px-3 py-2">
+                          <Button variant={variant} loading>
+                            {copy.register}
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -476,6 +489,17 @@ export function DesignShowcasePage() {
               </Card>
             </Demo>
           </div>
+        </Section>
+
+        {/* ---------- Alerts ---------- */}
+        <Section title={copy.alerts}>
+          <p className="text-body-sm text-ink-muted">{copy.alertsNote}</p>
+          <Demo title={copy.alertsAll}>
+            <AlertsShowcase />
+          </Demo>
+          <Demo title={copy.alertsCombined}>
+            <AlertsShowcase initialFilters={{ unreadOnly: true, type: 'RECURRING_EXPENSE_DUE' }} />
+          </Demo>
         </Section>
       </PageContainer>
     </div>

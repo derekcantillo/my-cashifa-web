@@ -5,7 +5,7 @@ import { cn } from '@/lib/cn'
 
 import { Spinner } from './Spinner'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'danger-ghost'
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'danger-ghost' | 'link'
 export type ButtonSize = 'sm' | 'md'
 
 const VARIANTS: Record<ButtonVariant, string> = {
@@ -16,11 +16,22 @@ const VARIANTS: Record<ButtonVariant, string> = {
   danger: 'bg-negative text-negative-ink shadow-raised hover:bg-negative-hover',
   /** Starts a destructive action ("Eliminar" in a form footer). */
   'danger-ghost': 'text-negative hover:bg-negative-soft',
+  /**
+   * Inline action in accent text with no box and no horizontal padding, so its text
+   * lines up with the text around it ("Ver metas →").
+   */
+  link: 'cursor-pointer text-accent underline-offset-4 hover:underline',
 }
 
 const SIZES: Record<ButtonSize, string> = {
   sm: 'h-9 gap-1.5 px-3.5 text-body-sm',
   md: 'h-10 gap-2 px-4 text-body',
+}
+
+/** `link` keeps a 36px target height but no horizontal padding. */
+const LINK_SIZES: Record<ButtonSize, string> = {
+  sm: 'min-h-9 gap-1 px-0 text-body-sm',
+  md: 'min-h-10 gap-1.5 px-0 text-body',
 }
 
 interface ButtonStyleOptions {
@@ -32,10 +43,11 @@ interface ButtonStyleOptions {
 export function buttonClassName({ variant = 'primary', size = 'md' }: ButtonStyleOptions = {}) {
   return cn(
     'inline-flex shrink-0 items-center justify-center rounded-md font-medium whitespace-nowrap select-none',
-    'transition-tactile press-tactile',
+    'transition-tactile',
+    variant !== 'link' && 'press-tactile',
     'disabled:pointer-events-none disabled:opacity-45 disabled:shadow-none',
     VARIANTS[variant],
-    SIZES[size],
+    variant === 'link' ? LINK_SIZES[size] : SIZES[size],
   )
 }
 

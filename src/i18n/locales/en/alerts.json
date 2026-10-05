@@ -1,12 +1,54 @@
 {
   "title": "Alerts",
-  "filter": "Show",
-  "all": "All",
-  "unread": "Unread",
+  "eyebrow": "Alerts",
+  "unreadCount_one": "{{count}} unread",
+  "unreadCount_other": "{{count}} unread",
+  "allRead": "All read",
   "markAll": "Mark all as read",
-  "empty": "You don't have any alerts",
-  "emptyUnread": "You don't have unread alerts",
-  "unreadLabel": "Unread",
   "markedAll": "Alerts marked as read",
-  "markError": "Couldn't mark them. Try again."
+  "markError": "Couldn't mark as read. Try again.",
+  "filter": {
+    "title": "Filter",
+    "label": "Filter alerts",
+    "all": "All",
+    "unread": "Unread",
+    "types": "By type"
+  },
+  "types": {
+    "BUDGET_70": "Budget at 70%",
+    "BUDGET_90": "Budget at 90%",
+    "BUDGET_100": "Budget used up",
+    "LARGE_EXPENSE": "Large expense",
+    "SAVING_REMINDER": "Saving reminder",
+    "WEEKLY_SUMMARY": "Weekly summary",
+    "MONTHLY_REPORT": "Monthly report",
+    "GOAL_PROGRESS": "Goal progress",
+    "RECURRING_EXPENSE_DUE": "Recurring expense due",
+    "SAVINGS_TARGET_AT_RISK": "Goals at risk",
+    "PERIOD_DEFICIT": "Period in deficit",
+    "UNKNOWN": "Notice"
+  },
+  "list": {
+    "label": "Alerts",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "unreadLabel": "Unread",
+    "showMore": "Show more"
+  },
+  "actions": {
+    "markRead": "Mark as read",
+    "register": "Log it",
+    "registered": "Already logged",
+    "goals": "See goals",
+    "expenses": "See expenses"
+  },
+  "empty": {
+    "title": "No alerts",
+    "body": "When something needs your attention — a recurring expense coming due, a goal at risk — it shows up here.",
+    "allReadTitle": "All read",
+    "allReadBody": "You have no unread alerts.",
+    "noResultsTitle": "No results",
+    "noResultsBody": "No alert matches these filters.",
+    "clearFilters": "Clear filters"
+  }
 }

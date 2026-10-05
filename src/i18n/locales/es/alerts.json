@@ -1,12 +1,54 @@
 {
   "title": "Alertas",
-  "filter": "Mostrar",
-  "all": "Todas",
-  "unread": "No leídas",
+  "eyebrow": "Alertas",
+  "unreadCount_one": "{{count}} sin leer",
+  "unreadCount_other": "{{count}} sin leer",
+  "allRead": "Todo leído",
   "markAll": "Marcar todas como leídas",
-  "empty": "No tienes alertas",
-  "emptyUnread": "No tienes alertas sin leer",
-  "unreadLabel": "No leída",
   "markedAll": "Alertas marcadas como leídas",
-  "markError": "No se pudo marcar. Inténtalo de nuevo."
+  "markError": "No se pudo marcar como leída. Inténtalo de nuevo.",
+  "filter": {
+    "title": "Filtrar",
+    "label": "Filtrar alertas",
+    "all": "Todas",
+    "unread": "Sin leer",
+    "types": "Por tipo"
+  },
+  "types": {
+    "BUDGET_70": "Presupuesto al 70%",
+    "BUDGET_90": "Presupuesto al 90%",
+    "BUDGET_100": "Presupuesto agotado",
+    "LARGE_EXPENSE": "Gasto grande",
+    "SAVING_REMINDER": "Recordatorio de ahorro",
+    "WEEKLY_SUMMARY": "Resumen semanal",
+    "MONTHLY_REPORT": "Reporte mensual",
+    "GOAL_PROGRESS": "Avance de meta",
+    "RECURRING_EXPENSE_DUE": "Gasto fijo por vencer",
+    "SAVINGS_TARGET_AT_RISK": "Metas en riesgo",
+    "PERIOD_DEFICIT": "Periodo en déficit",
+    "UNKNOWN": "Aviso"
+  },
+  "list": {
+    "label": "Alertas",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "unreadLabel": "Sin leer",
+    "showMore": "Ver más"
+  },
+  "actions": {
+    "markRead": "Marcar como leída",
+    "register": "Registrar",
+    "registered": "Ya registrado",
+    "goals": "Ver metas",
+    "expenses": "Ver gastos"
+  },
+  "empty": {
+    "title": "Sin alertas",
+    "body": "Cuando algo necesite tu atención —un gasto fijo por vencer, una meta en riesgo— aparecerá aquí.",
+    "allReadTitle": "Todo leído",
+    "allReadBody": "No tienes alertas sin leer.",
+    "noResultsTitle": "Sin resultados",
+    "noResultsBody": "Ninguna alerta coincide con estos filtros.",
+    "clearFilters": "Limpiar filtros"
+  }
 }
