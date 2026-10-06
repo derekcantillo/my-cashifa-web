@@ -1,12 +1,43 @@
 {
   "title": "Net worth",
-  "assets": "Assets",
-  "liabilities": "Liabilities",
-  "accounts": "Accounts",
-  "receivables": "Owed to you",
-  "goalsSavings": "Saved in goals",
-  "debts": "Debts",
-  "creditCards": "Credit cards",
-  "comingSoon": "Coming soon",
-  "liabilitiesPending": "Doesn't include debts or credit cards yet."
+  "asOf": "As of {{date}}",
+  "heroLabel": "Net worth",
+  "liabilitiesPending": "Doesn't include your own debts or credit cards yet.",
+  "composition": {
+    "label": "Asset breakdown",
+    "item": "{{name}}, {{amount}}, {{percent}}"
+  },
+  "groups": {
+    "accounts": "Accounts",
+    "receivables": "Owed to you",
+    "goals": "Saved in goals"
+  },
+  "assets": {
+    "title": "Assets"
+  },
+  "accounts": {
+    "noInitialBalance": "No starting balance",
+    "define": "Set it",
+    "defineLabel": "Set the starting balance of {{name}} in Settings",
+    "manage": "Manage accounts",
+    "emptyTitle": "No accounts yet",
+    "emptyBody": "Create your first account in Settings so its balance counts toward your net worth.",
+    "emptyCta": "Create an account"
+  },
+  "receivables": {
+    "pending": "<amount>{{amount}}</amount> pending",
+    "empty": "Nothing owed to you",
+    "see": "See loans"
+  },
+  "goals": {
+    "empty": "No savings in goals yet",
+    "see": "See goals"
+  },
+  "liabilities": {
+    "title": "Liabilities",
+    "notTracked": "Not tracked",
+    "body": "Your own debts and credit cards aren't tracked in Cashifa yet, so nothing is subtracted here.",
+    "debts": "Debts",
+    "creditCards": "Credit cards"
+  }
 }

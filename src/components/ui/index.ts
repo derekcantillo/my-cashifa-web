@@ -18,7 +18,13 @@ export { Badge, type Tone } from './Badge'
 export { Button, buttonClassName, type ButtonSize, type ButtonVariant } from './Button'
 export { Card, type CardPadding, type CardVariant, interactiveCardClassName } from './Card'
 export { CardHeader } from './CardHeader'
-export { CategoryBreakdownView, formatShare } from './CategoryBreakdown'
+export { CategoryBreakdownView } from './CategoryBreakdown'
+export {
+  SegmentedBar,
+  useSegmentHighlight,
+  type BarSegment,
+  type HighlightHandlers,
+} from './SegmentedBar'
 export { Divider } from './Divider'
 export { EmptyState } from './EmptyState'
 export { Eyebrow } from './Eyebrow'

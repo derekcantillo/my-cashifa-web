@@ -11,14 +11,10 @@ import {
 } from '@/lib/categoryBreakdown'
 import { CATEGORY_META } from '@/lib/categoryMeta'
 import { cn } from '@/lib/cn'
-import { formatPercent } from '@/lib/format'
+import { formatShare } from '@/lib/format'
 import type { Category } from '@/types'
 
-/** Below 1% a share reads "<1%" instead of a misleading "0%". */
-export function formatShare(percent: number, locale: string): string {
-  if (percent > 0 && percent < 1) return `<${formatPercent(0.01, { locale })}`
-  return formatPercent(Math.round(percent) / 100, { locale })
-}
+import { SegmentedBar, useSegmentHighlight, type HighlightHandlers } from './SegmentedBar'
 
 const OTHERS_KEY = 'others'
 
@@ -36,7 +32,8 @@ interface CategoryBreakdownViewProps {
 export function CategoryBreakdownView({ breakdown, hrefFor }: CategoryBreakdownViewProps) {
   const { t } = useTranslation(['common', 'categories'])
   const { locale, money } = useFormatters()
-  const [active, setActive] = useState<string | null>(null)
+  const segmentHighlight = useSegmentHighlight()
+  const { highlight, dimmed } = segmentHighlight
   const [othersOpen, setOthersOpen] = useState(false)
 
   const name = (category: Category) => t(CATEGORY_META[category].translationKey)
@@ -46,19 +43,11 @@ export function CategoryBreakdownView({ breakdown, hrefFor }: CategoryBreakdownV
       amount: money(amount),
       percent: formatShare(percent, locale),
     })
-  const highlight = (key: string | null) => ({
-    onMouseEnter: () => setActive(key),
-    onMouseLeave: () => setActive(null),
-    onFocus: () => setActive(key),
-    onBlur: () => setActive(null),
-  })
-  const dimmed = (key: string) => active !== null && active !== key
-
   const segments = [
     ...breakdown.items.map(item => ({
       key: item.category,
       label: describe(name(item.category), item.amount, item.percent),
-      percent: item.percent,
+      weight: item.percent,
       fillClass: item.fillClass,
       href: hrefFor(item.category),
     })),
@@ -71,9 +60,10 @@ export function CategoryBreakdownView({ breakdown, hrefFor }: CategoryBreakdownV
               breakdown.others.amount,
               breakdown.others.percent,
             ),
-            percent: breakdown.others.percent,
+            weight: breakdown.others.percent,
             fillClass: OTHERS_FILL,
-            href: undefined,
+            expanded: othersOpen,
+            onClick: () => setOthersOpen(value => !value),
           },
         ]
       : []),
@@ -81,47 +71,11 @@ export function CategoryBreakdownView({ breakdown, hrefFor }: CategoryBreakdownV
 
   return (
     <div className="space-y-5">
-      {/* 2px gaps show the card's own surface between segments. */}
-      <div
-        role="group"
-        aria-label={t('common:categoryBreakdown.barLabel')}
-        className="flex h-2.5 gap-0.5"
-      >
-        {segments.map((segment, index) => {
-          const className = cn(
-            'h-full min-w-1 transition-opacity duration-150 motion-reduce:transition-none',
-            segment.fillClass,
-            index === 0 && 'rounded-l-full',
-            index === segments.length - 1 && 'rounded-r-full',
-            dimmed(segment.key) && 'opacity-55',
-            'focus-visible:outline-2 focus-visible:outline-offset-2',
-          )
-          const style = { flex: `${segment.percent} 1 0` }
-          return segment.href ? (
-            <Link
-              key={segment.key}
-              to={segment.href}
-              aria-label={segment.label}
-              title={segment.label}
-              className={className}
-              style={style}
-              {...highlight(segment.key)}
-            />
-          ) : (
-            <button
-              key={segment.key}
-              type="button"
-              aria-label={segment.label}
-              title={segment.label}
-              aria-expanded={othersOpen}
-              onClick={() => setOthersOpen(value => !value)}
-              className={className}
-              style={style}
-              {...highlight(segment.key)}
-            />
-          )
-        })}
-      </div>
+      <SegmentedBar
+        label={t('common:categoryBreakdown.barLabel')}
+        segments={segments}
+        highlight={segmentHighlight}
+      />
 
       <ul className="divide-y divide-line">
         {breakdown.items.map(item => (
@@ -206,7 +160,7 @@ interface BreakdownRowProps {
   fillClass: string
   href: string
   dimmed: boolean
-  highlight: Record<'onMouseEnter' | 'onMouseLeave' | 'onFocus' | 'onBlur', () => void>
+  highlight: HighlightHandlers
 }
 
 function BreakdownRow({ item, label, fillClass, href, dimmed, highlight }: BreakdownRowProps) {

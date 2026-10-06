@@ -80,6 +80,15 @@ export function formatPercent(value: number, options: PercentFormatOptions = {})
   }).format(value)
 }
 
+/**
+ * A share of a whole, given in percent (0–100), rounded to a whole number. Below 1% it
+ * reads "<1%" instead of a misleading "0%".
+ */
+export function formatShare(percent: number, locale?: string): string {
+  if (percent > 0 && percent < 1) return `<${formatPercent(0.01, { locale })}`
+  return formatPercent(Math.round(percent) / 100, { locale })
+}
+
 export type DateFormatOptions = Intl.DateTimeFormatOptions & { locale?: string }
 
 /** Any instant formatted in Bogotá time (override with `timeZone`). Default: "21 sept 2026". */

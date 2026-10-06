@@ -27,6 +27,7 @@ import { formatDate, formatPercent, formatPeriodRange } from '@/lib/format'
 import { useTheme } from '@/theme'
 
 import { AlertsShowcase } from './AlertsShowcase'
+import { NetWorthShowcase } from './NetWorthShowcase'
 
 /** Dev-only copy, kept out of the production locale files. */
 const COPY = {
@@ -39,6 +40,18 @@ const COPY = {
     typography: 'Tipografía',
     primitives: 'Primitivos',
     composition: 'Composición',
+    netWorth: 'Patrimonio neto',
+    netWorthNote:
+      'Pantalla real con estados simulados (sin requests). Las cifras se calculan con las fórmulas del backend.',
+    netWorthScenarios: {
+      typical: 'Típico',
+      many: 'Muchas cuentas · sin saldo inicial',
+      negative: 'Negativo · grupo negativo',
+      empty: 'Sin cuentas · activos en 0',
+      netWorthFailed: 'Falla /net-worth',
+      listsFailed: 'Fallan las listas',
+      loading: 'Cargando',
+    },
     alerts: 'Alertas',
     alertsAll: 'Lista completa (36 alertas, sin filtros)',
     alertsCombined: 'Filtro combinado: no leídas + gasto fijo',
@@ -82,6 +95,18 @@ const COPY = {
     typography: 'Typography',
     primitives: 'Primitives',
     composition: 'Composition',
+    netWorth: 'Net worth',
+    netWorthNote:
+      'The real screen over mock states (no requests). Figures use the backend formulas.',
+    netWorthScenarios: {
+      typical: 'Typical',
+      many: 'Many accounts · no starting balance',
+      negative: 'Negative · negative group',
+      empty: 'No accounts · zero assets',
+      netWorthFailed: '/net-worth fails',
+      listsFailed: 'Lists fail',
+      loading: 'Loading',
+    },
     alerts: 'Alerts',
     alertsAll: 'Full list (36 alerts, no filters)',
     alertsCombined: 'Combined filter: unread + recurring expense',
@@ -489,6 +514,12 @@ export function DesignShowcasePage() {
               </Card>
             </Demo>
           </div>
+        </Section>
+
+        {/* ---------- Net worth ---------- */}
+        <Section title={copy.netWorth}>
+          <p className="text-body-sm text-ink-muted">{copy.netWorthNote}</p>
+          <NetWorthShowcase labels={copy.netWorthScenarios} />
         </Section>
 
         {/* ---------- Alerts ---------- */}

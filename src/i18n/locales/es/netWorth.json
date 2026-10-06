@@ -1,12 +1,43 @@
 {
   "title": "Patrimonio neto",
-  "assets": "Activos",
-  "liabilities": "Pasivos",
-  "accounts": "Cuentas",
-  "receivables": "Por cobrar",
-  "goalsSavings": "Ahorro en metas",
-  "debts": "Deudas",
-  "creditCards": "Tarjetas de crédito",
-  "comingSoon": "Próximamente",
-  "liabilitiesPending": "Todavía no incluye deudas ni tarjetas de crédito."
+  "asOf": "Al {{date}}",
+  "heroLabel": "Patrimonio neto",
+  "liabilitiesPending": "Todavía no incluye deudas propias ni tarjetas de crédito.",
+  "composition": {
+    "label": "Composición de los activos",
+    "item": "{{name}}, {{amount}}, {{percent}}"
+  },
+  "groups": {
+    "accounts": "Cuentas",
+    "receivables": "Por cobrar",
+    "goals": "Ahorro en metas"
+  },
+  "assets": {
+    "title": "Activos"
+  },
+  "accounts": {
+    "noInitialBalance": "Sin saldo inicial",
+    "define": "Definir",
+    "defineLabel": "Definir el saldo inicial de {{name}} en Ajustes",
+    "manage": "Administrar cuentas",
+    "emptyTitle": "Aún no tienes cuentas",
+    "emptyBody": "Crea tu primera cuenta en Ajustes para que su saldo cuente en tu patrimonio.",
+    "emptyCta": "Crear una cuenta"
+  },
+  "receivables": {
+    "pending": "pendiente <amount>{{amount}}</amount>",
+    "empty": "Nada por cobrar",
+    "see": "Ver préstamos"
+  },
+  "goals": {
+    "empty": "Sin ahorro en metas todavía",
+    "see": "Ver metas"
+  },
+  "liabilities": {
+    "title": "Pasivos",
+    "notTracked": "No registrados",
+    "body": "Las deudas propias y las tarjetas de crédito todavía no se registran en Cashifa, por eso no restan aquí.",
+    "debts": "Deudas",
+    "creditCards": "Tarjetas de crédito"
+  }
 }
