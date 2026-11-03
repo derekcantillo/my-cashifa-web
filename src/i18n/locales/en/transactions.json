@@ -41,11 +41,11 @@
     "recurring": {
       "label": "Match with a recurring expense",
       "none": "No recurring expense",
+      "groupCurrent": "Currently matched",
       "groupPending": "Pending this period",
       "groupRegistered": "Already logged this period",
       "option": "{{name}} · {{amount}} · due day {{day}}",
       "registered": "{{name}} · Already logged",
-      "registeredHere": "{{name}} · Matched with this transaction",
       "estimate": "Estimate: {{amount}}",
       "over": "{{amount}} more than the estimate",
       "under": "{{amount}} less than the estimate",

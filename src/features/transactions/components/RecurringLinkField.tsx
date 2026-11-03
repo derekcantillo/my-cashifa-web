@@ -20,8 +20,8 @@ export type LinkNotice =
 interface RecurringLinkFieldProps {
   /** Selected recurring expense id ('' = none). */
   value: string
-  /** Edit mode: the movement's link on the server. It stays selectable after unlinking,
-   *  even though it shows as already registered (by this very movement). */
+  /** Edit mode: the movement's link on the server, offered first as "Currently matched"
+   *  (and still selectable after unlinking). */
   originalId?: string
   /** Current amount text, to compare with the estimate. */
   amount: string
@@ -57,10 +57,13 @@ export function RecurringLinkField({
   const periodId = findPeriodForDateKey(periods, date)?.id
   const all = useRecurringExpenses()
   const pending = usePendingRecurringExpenses(periodId)
-  const options = groupRecurringOptions(all.data ?? [], pending.data ?? [])
+  const options = groupRecurringOptions(all.data ?? [], pending.data ?? [], originalId)
   const isLoading = all.isPending || (periodId !== undefined && pending.isPending)
   // A prefilled link stays selectable even if the lists disagree (e.g. still loading).
-  const linkedIsListed = !linked || options.pending.some(item => item.id === linked.id)
+  const linkedIsListed =
+    !linked ||
+    options.current?.id === linked.id ||
+    options.pending.some(item => item.id === linked.id)
 
   const difference = linked ? differenceFromEstimate(amount, linked.estimatedAmount, locale) : null
 
@@ -92,9 +95,10 @@ export function RecurringLinkField({
       {notice?.kind === 'unlinkedByCategory' && (
         <p>{t('transactions:form.recurring.unlinkedByCategory', { name: notice.name })}</p>
       )}
-      {!isLoading && options.pending.length === 0 && options.registered.length === 0 && (
-        <p>{t('transactions:form.recurring.noActive')}</p>
-      )}
+      {!isLoading &&
+        !options.current &&
+        options.pending.length === 0 &&
+        options.registered.length === 0 && <p>{t('transactions:form.recurring.noActive')}</p>}
     </div>
   )
 
@@ -127,6 +131,11 @@ export function RecurringLinkField({
               : t('transactions:form.recurring.none')}
           </option>
           {!linkedIsListed && linked && <option value={linked.id}>{optionLabel(linked)}</option>}
+          {options.current && (
+            <optgroup label={t('transactions:form.recurring.groupCurrent')}>
+              <option value={options.current.id}>{optionLabel(options.current)}</option>
+            </optgroup>
+          )}
           {options.pending.length > 0 && (
             <optgroup label={t('transactions:form.recurring.groupPending')}>
               {options.pending.map(item => (
@@ -139,14 +148,8 @@ export function RecurringLinkField({
           {options.registered.length > 0 && (
             <optgroup label={t('transactions:form.recurring.groupRegistered')}>
               {options.registered.map(item => (
-                <option
-                  key={item.id}
-                  value={item.id}
-                  disabled={item.id !== recurringExpenseId && item.id !== originalId}
-                >
-                  {item.id === originalId
-                    ? t('transactions:form.recurring.registeredHere', { name: item.name })
-                    : t('transactions:form.recurring.registered', { name: item.name })}
+                <option key={item.id} value={item.id} disabled={item.id !== recurringExpenseId}>
+                  {t('transactions:form.recurring.registered', { name: item.name })}
                 </option>
               ))}
             </optgroup>

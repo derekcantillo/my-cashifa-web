@@ -41,11 +41,11 @@
     "recurring": {
       "label": "Cruzar con gasto fijo",
       "none": "Sin gasto fijo",
+      "groupCurrent": "Cruzado actualmente",
       "groupPending": "Pendientes de este periodo",
       "groupRegistered": "Ya registrados este periodo",
       "option": "{{name}} · {{amount}} · vence día {{day}}",
       "registered": "{{name}} · Ya registrado",
-      "registeredHere": "{{name}} · Cruzado con este movimiento",
       "estimate": "Estimado: {{amount}}",
       "over": "{{amount}} más que el estimado",
       "under": "{{amount}} menos que el estimado",

@@ -78,6 +78,9 @@ export function recurringLinkUpdate(
 }
 
 export interface RecurringOptions {
+  /** Edit mode: the recurring expense the movement is linked to on the server, offered
+   *  first and kept out of the other groups. */
+  current: RecurringExpense | undefined
   /** Active and with nothing registered in the period: linkable. */
   pending: RecurringExpense[]
   /** Active but already registered in the period: shown disabled, like the mobile app
@@ -88,11 +91,16 @@ export interface RecurringOptions {
 export function groupRecurringOptions(
   all: readonly RecurringExpense[],
   pending: readonly RecurringExpense[],
+  currentId?: string,
 ): RecurringOptions {
   const pendingIds = new Set(pending.map(item => item.id))
   const byDay = (a: RecurringExpense, b: RecurringExpense) => a.dayOfMonth - b.dayOfMonth
+  const notCurrent = (item: RecurringExpense) => item.id !== currentId
   return {
-    pending: [...pending].sort(byDay),
-    registered: all.filter(item => item.active && !pendingIds.has(item.id)).sort(byDay),
+    current: currentId === undefined ? undefined : all.find(item => item.id === currentId),
+    pending: pending.filter(notCurrent).sort(byDay),
+    registered: all
+      .filter(item => item.active && !pendingIds.has(item.id) && notCurrent(item))
+      .sort(byDay),
   }
 }

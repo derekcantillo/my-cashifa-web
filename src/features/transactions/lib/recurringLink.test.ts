@@ -103,6 +103,29 @@ describe('link helpers', () => {
     const options = groupRecurringOptions([rent, phone, gym, paused], [rent, gym])
     expect(options.pending.map(item => item.id)).toEqual(['gym', 'rent'])
     expect(options.registered.map(item => item.id)).toEqual(['phone'])
+    expect(options.current).toBeUndefined()
+  })
+
+  it('offers the current link on its own, out of the registered group', () => {
+    const phone = { ...rent, id: 'phone', dayOfMonth: 2 }
+    const gym = { ...rent, id: 'gym', dayOfMonth: 1 }
+    // `phone` is linked to the edited movement, so it's registered in the period.
+    const options = groupRecurringOptions([rent, phone, gym], [rent, gym], 'phone')
+    expect(options.current?.id).toBe('phone')
+    expect(options.registered.map(item => item.id)).toEqual([])
+    expect(options.pending.map(item => item.id)).toEqual(['gym', 'rent'])
+  })
+
+  it('keeps the current link out of pending too (e.g. after moving the date)', () => {
+    const options = groupRecurringOptions([rent], [rent], 'rent')
+    expect(options.current?.id).toBe('rent')
+    expect(options.pending).toEqual([])
+  })
+
+  it('still offers a current link that is no longer active', () => {
+    const paused = { ...rent, id: 'paused', active: false }
+    const options = groupRecurringOptions([rent, paused], [rent], 'paused')
+    expect(options.current?.id).toBe('paused')
   })
 })
 
