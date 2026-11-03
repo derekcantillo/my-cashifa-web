@@ -45,4 +45,10 @@ export interface CreateTransactionInput {
   transactionDate?: string
 }
 
-export type UpdateTransactionInput = Partial<Omit<CreateTransactionInput, 'recurringExpenseId'>>
+/**
+ * Matches UpdateTransactionDto. `recurringExpenseId`: a string links the movement to a
+ * recurring expense, `null` unlinks it, omitted leaves the link as it is.
+ */
+export type UpdateTransactionInput = Partial<Omit<CreateTransactionInput, 'recurringExpenseId'>> & {
+  recurringExpenseId?: string | null
+}

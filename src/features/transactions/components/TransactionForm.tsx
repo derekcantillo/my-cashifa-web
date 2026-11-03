@@ -46,7 +46,7 @@ import {
 } from '@/types'
 
 import { categoriesForType, FORM_TYPES, isFormType, type FormType } from '../lib/categoriesByType'
-import { applyRecurringLink, keepsLink } from '../lib/recurringLink'
+import { applyRecurringLink, keepsLink, recurringLinkUpdate } from '../lib/recurringLink'
 import { RecurringLinkField, type LinkNotice } from './RecurringLinkField'
 
 export const TRANSACTION_FORM_ID = 'transaction-form'
@@ -137,14 +137,15 @@ export function TransactionForm({
   const requestClose = useModalClose()
   const schema = useMemo(() => createSchema(locale), [locale])
 
+  const isEdit = transaction !== undefined
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [linkNotice, setLinkNotice] = useState<LinkNotice | null>(null)
-  // What the user changed by hand (autofill never overwrites those).
-  const [editedByUser, setEditedByUser] = useState({ amount: false, category: false })
+  // What the user changed by hand (autofill never overwrites those). An edited
+  // movement's amount and category are real values, so linking never replaces the
+  // amount and says so when it changes the category.
+  const [editedByUser, setEditedByUser] = useState({ amount: isEdit, category: isEdit })
   const markEdited = (field: 'amount' | 'category') =>
     setEditedByUser(current => (current[field] ? current : { ...current, [field]: true }))
-
-  const isEdit = transaction !== undefined
   const typeIsEditable = !transaction || isFormType(transaction.type)
 
   const {
@@ -203,7 +204,7 @@ export function TransactionForm({
       setValue('category', '', { shouldDirty: true })
     }
     // Recurring expenses are expenses: switching to income drops the link.
-    if (next !== 'EXPENSE' && getValues('recurringExpenseId') && !isEdit) {
+    if (next !== 'EXPENSE' && getValues('recurringExpenseId')) {
       setValue('recurringExpenseId', '', { shouldDirty: true })
       setLinkNotice(null)
     }
@@ -239,7 +240,7 @@ export function TransactionForm({
       markEdited('category')
       const next = (event.target as HTMLInputElement).value as Category
       // A category picked by hand that isn't the recurring expense's drops the link.
-      if (!isEdit && linked && !keepsLink(linked, next)) {
+      if (linked && !keepsLink(linked, next)) {
         setValue('recurringExpenseId', '', { shouldDirty: true })
         setLinkNotice({ kind: 'unlinkedByCategory', name: linked.name })
       }
@@ -256,7 +257,6 @@ export function TransactionForm({
         transactionDate: fromDateInputValue(values.date),
         ...(values.accountId ? { accountId: values.accountId } : {}),
         ...(values.description ? { description: values.description } : {}),
-        // Only accepted on create (UpdateTransactionDto has no such field).
         ...(values.type === 'EXPENSE' && values.recurringExpenseId
           ? { recurringExpenseId: values.recurringExpenseId }
           : {}),
@@ -272,6 +272,9 @@ export function TransactionForm({
         ...(dirtyFields.date ? { transactionDate: fromDateInputValue(values.date) } : {}),
         ...(dirtyFields.accountId ? { accountId: values.accountId || null } : {}),
         ...(dirtyFields.description ? { description: values.description } : {}),
+        // Only when the user changed it: `null` unlinks. A category change that no
+        // longer matches already cleared the link in the form (with a notice).
+        ...recurringLinkUpdate(transaction.recurringExpenseId, values.recurringExpenseId),
       }
       if (Object.keys(input).length > 0) {
         await updateTransaction.mutateAsync({ id: transaction.id, input })
@@ -371,25 +374,24 @@ export function TransactionForm({
           error={categoryError}
         />
 
-        {type === 'EXPENSE' && !isEdit && (
+        {type === 'EXPENSE' ? (
           <RecurringLinkField
             value={recurringExpenseId}
+            originalId={transaction?.recurringExpenseId ?? undefined}
             amount={amount}
             date={date}
             linked={linked}
             notice={linkNotice}
             onChange={link}
           />
-        )}
-        {isEdit && linkedOnServer && (
-          <div className="space-y-1 rounded-sm bg-surface-sunken px-3 py-2.5">
-            <p className="text-body-sm font-medium text-ink">
-              {t('transactions:form.recurring.linked', { name: linkedOnServer.name })}
+        ) : (
+          // A non-expense type the form can't switch (e.g. a debt payment) may still be
+          // linked: shown, not editable here.
+          linked && (
+            <p className="rounded-sm bg-surface-sunken px-3 py-2.5 text-body-sm font-medium text-ink">
+              {t('transactions:form.recurring.linked', { name: linked.name })}
             </p>
-            <p className="text-body-sm text-ink-muted">
-              {t('transactions:form.recurring.linkedHelp')}
-            </p>
-          </div>
+          )
         )}
 
         <div className="grid gap-4 sm:grid-cols-2">

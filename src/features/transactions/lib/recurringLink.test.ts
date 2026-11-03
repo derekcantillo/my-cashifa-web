@@ -8,6 +8,7 @@ import {
   differenceFromEstimate,
   groupRecurringOptions,
   keepsLink,
+  recurringLinkUpdate,
 } from './recurringLink'
 
 vi.mock('@/i18n', () => ({ default: { resolvedLanguage: 'es' } }))
@@ -119,5 +120,24 @@ describe('categories by type', () => {
   it('keeps the current category of an edited movement', () => {
     expect(categoriesForType('EXPENSE', 'SALARY')).toContain('SALARY')
     expect(categoriesForType('LOAN_REPAYMENT', 'LOAN')).toEqual(['LOAN'])
+  })
+})
+
+describe('recurringLinkUpdate (PATCH)', () => {
+  it('sends nothing when the link did not change', () => {
+    expect(recurringLinkUpdate('rent', 'rent')).toEqual({})
+    expect(recurringLinkUpdate(null, '')).toEqual({})
+  })
+
+  it('sends the id to link an unlinked movement', () => {
+    expect(recurringLinkUpdate(null, 'rent')).toEqual({ recurringExpenseId: 'rent' })
+  })
+
+  it('sends null to unlink', () => {
+    expect(recurringLinkUpdate('rent', '')).toEqual({ recurringExpenseId: null })
+  })
+
+  it('sends the new id when switching to another recurring expense', () => {
+    expect(recurringLinkUpdate('rent', 'internet')).toEqual({ recurringExpenseId: 'internet' })
   })
 })

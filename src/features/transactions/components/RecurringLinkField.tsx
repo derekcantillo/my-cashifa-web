@@ -20,6 +20,9 @@ export type LinkNotice =
 interface RecurringLinkFieldProps {
   /** Selected recurring expense id ('' = none). */
   value: string
+  /** Edit mode: the movement's link on the server. It stays selectable after unlinking,
+   *  even though it shows as already registered (by this very movement). */
+  originalId?: string
   /** Current amount text, to compare with the estimate. */
   amount: string
   /** Movement date (`YYYY-MM-DD`): picks the period whose pending list is offered. */
@@ -40,6 +43,7 @@ const FIELD_ID = 'transaction-recurring'
  */
 export function RecurringLinkField({
   value: recurringExpenseId,
+  originalId,
   amount,
   date,
   linked,
@@ -135,8 +139,14 @@ export function RecurringLinkField({
           {options.registered.length > 0 && (
             <optgroup label={t('transactions:form.recurring.groupRegistered')}>
               {options.registered.map(item => (
-                <option key={item.id} value={item.id} disabled={item.id !== recurringExpenseId}>
-                  {t('transactions:form.recurring.registered', { name: item.name })}
+                <option
+                  key={item.id}
+                  value={item.id}
+                  disabled={item.id !== recurringExpenseId && item.id !== originalId}
+                >
+                  {item.id === originalId
+                    ? t('transactions:form.recurring.registeredHere', { name: item.name })
+                    : t('transactions:form.recurring.registered', { name: item.name })}
                 </option>
               ))}
             </optgroup>

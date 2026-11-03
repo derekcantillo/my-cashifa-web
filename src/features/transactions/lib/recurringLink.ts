@@ -65,6 +65,18 @@ export function differenceFromEstimate(
   return amount - estimatedAmount
 }
 
+/**
+ * The `recurringExpenseId` part of a PATCH: only sent when the user changed the link.
+ * `selected` is the form's value (`''` = none), so unlinking sends `null`.
+ */
+export function recurringLinkUpdate(
+  original: string | null,
+  selected: string,
+): { recurringExpenseId?: string | null } {
+  const next = selected === '' ? null : selected
+  return next === original ? {} : { recurringExpenseId: next }
+}
+
 export interface RecurringOptions {
   /** Active and with nothing registered in the period: linkable. */
   pending: RecurringExpense[]
