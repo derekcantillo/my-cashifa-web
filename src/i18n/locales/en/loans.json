@@ -68,7 +68,9 @@
     "showLess": "Show less",
     "loadError": "We couldn't load the repayments.",
     "delete": "Delete the {{amount}} repayment from {{date}}",
-    "deleteTitle": "Delete the {{amount}} repayment from {{date}}? That amount becomes pending again.",
+    "deleteTitle": "Delete repayment",
+    "deleteBody": "The {{amount}} repayment from {{date}} will be deleted, with its transaction. That amount becomes pending again.",
+    "deleteConfirm": "Delete repayment",
     "deleteError": "Couldn't delete the repayment. Try again."
   },
   "form": {

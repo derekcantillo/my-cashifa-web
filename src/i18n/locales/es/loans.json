@@ -68,7 +68,9 @@
     "showLess": "Ver menos",
     "loadError": "No pudimos cargar los abonos.",
     "delete": "Eliminar el abono de {{amount}} del {{date}}",
-    "deleteTitle": "¿Eliminar el abono de {{amount}} del {{date}}? Ese monto vuelve a quedar pendiente.",
+    "deleteTitle": "Eliminar abono",
+    "deleteBody": "Se eliminará el abono de {{amount}} del {{date}}, con su movimiento. Ese monto vuelve a quedar pendiente.",
+    "deleteConfirm": "Eliminar abono",
     "deleteError": "No se pudo eliminar el abono. Inténtalo de nuevo."
   },
   "form": {

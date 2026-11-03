@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import {
   Button,
   CardHeader,
-  DeleteConfirmation,
+  ConfirmDeleteDialog,
   EmptyState,
   IconButton,
   SectionError,
@@ -24,7 +24,7 @@ export function RepaymentHistory({ loanId }: { loanId: string }) {
   const { money, shortDate } = useFormatters()
   const { data, isPending, isError, refetch } = useLoan(loanId)
   const [expanded, setExpanded] = useState(false)
-  const [confirmingId, setConfirmingId] = useState<string | null>(null)
+  const [confirming, setConfirming] = useState<LoanRepayment | null>(null)
   const deleteRepayment = useDeleteLoanRepayment()
   const pushToast = useToastStore(state => state.push)
   const apiErrorMessages = useApiErrorMessages()
@@ -35,16 +35,20 @@ export function RepaymentHistory({ loanId }: { loanId: string }) {
   const repayments = data?.repayments ?? []
   const visible = expanded ? repayments : repayments.slice(0, VISIBLE)
 
-  const askToDelete = (id: string) => {
+  const labelsOf = (repayment: LoanRepayment) => ({
+    amount: money(repayment.amount),
+    date: shortDate(repayment.paidAt),
+  })
+  const askToDelete = (repayment: LoanRepayment) => {
     deleteRepayment.reset()
-    setConfirmingId(id)
+    setConfirming(repayment)
   }
   const confirmDelete = (repayment: LoanRepayment) => {
     deleteRepayment.mutate(
       { id: loanId, repaymentId: repayment.id },
       {
         onSuccess: () => {
-          setConfirmingId(null)
+          setConfirming(null)
           pushToast(t('toast.repaymentDeleted'))
         },
       },
@@ -80,7 +84,7 @@ export function RepaymentHistory({ loanId }: { loanId: string }) {
           {/* Newest first, as the API sends them. */}
           <ul className="divide-y divide-line">
             {visible.map(repayment => {
-              const labels = { amount: money(repayment.amount), date: shortDate(repayment.paidAt) }
+              const labels = labelsOf(repayment)
               return (
                 <li key={repayment.id} className="py-2">
                   <div className="flex min-h-10 items-center gap-4">
@@ -97,21 +101,11 @@ export function RepaymentHistory({ loanId }: { loanId: string }) {
                       size="sm"
                       icon={Trash2}
                       label={t('history.delete', labels)}
-                      onClick={() => askToDelete(repayment.id)}
+                      onClick={() => askToDelete(repayment)}
                       disabled={deleteRepayment.isPending}
                       className="-mr-2"
                     />
                   </div>
-                  {confirmingId === repayment.id && (
-                    <DeleteConfirmation
-                      className="mt-2"
-                      title={t('history.deleteTitle', labels)}
-                      isPending={deleteRepayment.isPending}
-                      error={deleteError}
-                      onConfirm={() => confirmDelete(repayment)}
-                      onCancel={() => setConfirmingId(null)}
-                    />
-                  )}
                 </li>
               )
             })}
@@ -130,6 +124,19 @@ export function RepaymentHistory({ loanId }: { loanId: string }) {
             </Button>
           )}
         </>
+      )}
+
+      {confirming && (
+        <ConfirmDeleteDialog
+          title={t('history.deleteTitle')}
+          confirmLabel={t('history.deleteConfirm')}
+          isPending={deleteRepayment.isPending}
+          error={deleteError}
+          onConfirm={() => confirmDelete(confirming)}
+          onCancel={() => setConfirming(null)}
+        >
+          <p>{t('history.deleteBody', labelsOf(confirming))}</p>
+        </ConfirmDeleteDialog>
       )}
     </section>
   )
