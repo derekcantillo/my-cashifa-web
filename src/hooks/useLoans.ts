@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 
 import { loansRepository } from '@/api/loans'
 import { queryKeys } from '@/lib/queryKeys'
@@ -49,15 +49,21 @@ export function useCreateLoanRepayment() {
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: CreateLoanRepaymentInput }) =>
       loansRepository.addRepayment(id, input),
-    onSuccess: loan => {
-      // The response is the updated loan with its repayments (maybe now PAID).
-      queryClient.setQueryData(queryKeys.loans.detail(loan.id), loan)
-      queryClient.setQueryData<Loan[]>(queryKeys.loans.all, loans =>
-        loans?.map(item => (item.id === loan.id ? { ...item, ...stripRepayments(loan) } : item)),
-      )
-      void invalidateQueries(queryClient, queryKeys.loans.all)
-      void invalidateFinancialState(queryClient)
-    },
+    // The response is the updated loan with its repayments (maybe now PAID).
+    onSuccess: loan => applyLoanDetail(queryClient, loan),
+  })
+}
+
+/**
+ * Undoing a repayment deletes its LOAN_REPAYMENT movement too, and the loan gets that
+ * amount back as pending (a PAID loan goes back to PARTIALLY_PAID or ACTIVE).
+ */
+export function useDeleteLoanRepayment() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, repaymentId }: { id: string; repaymentId: string }) =>
+      loansRepository.removeRepayment(id, repaymentId),
+    onSuccess: loan => applyLoanDetail(queryClient, loan),
   })
 }
 
@@ -95,6 +101,16 @@ export function useDeleteLoan() {
       void invalidateFinancialState(queryClient)
     },
   })
+}
+
+/** Writes a repayment's response (the loan with its repayments) and refreshes the rest. */
+function applyLoanDetail(queryClient: QueryClient, loan: LoanDetail): void {
+  queryClient.setQueryData(queryKeys.loans.detail(loan.id), loan)
+  queryClient.setQueryData<Loan[]>(queryKeys.loans.all, loans =>
+    loans?.map(item => (item.id === loan.id ? { ...item, ...stripRepayments(loan) } : item)),
+  )
+  void invalidateQueries(queryClient, queryKeys.loans.all)
+  void invalidateFinancialState(queryClient)
 }
 
 function stripRepayments(loan: LoanDetail): Loan {

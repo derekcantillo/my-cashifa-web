@@ -29,7 +29,7 @@ export interface LoanRepayment {
   createdAt: string
 }
 
-/** Returned by GET /loans/:id and POST /loans/:id/repayments. */
+/** Returned by GET /loans/:id, POST /loans/:id/repayments and DELETE …/repayments/:id. */
 export interface LoanDetail extends Loan {
   repayments: LoanRepayment[]
 }

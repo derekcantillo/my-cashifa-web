@@ -1,9 +1,19 @@
-import { HandCoins } from 'lucide-react'
+import { HandCoins, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button, CardHeader, EmptyState, SectionError, Skeleton } from '@/components/ui'
-import { useFormatters, useLoan } from '@/hooks'
+import {
+  Button,
+  CardHeader,
+  DeleteConfirmation,
+  EmptyState,
+  IconButton,
+  SectionError,
+  Skeleton,
+} from '@/components/ui'
+import { useDeleteLoanRepayment, useFormatters, useLoan } from '@/hooks'
+import { useToastStore } from '@/store/toastStore'
+import type { LoanRepayment } from '@/types'
 
 const VISIBLE = 8
 
@@ -13,8 +23,27 @@ export function RepaymentHistory({ loanId }: { loanId: string }) {
   const { money, shortDate } = useFormatters()
   const { data, isPending, isError, refetch } = useLoan(loanId)
   const [expanded, setExpanded] = useState(false)
+  const [confirmingId, setConfirmingId] = useState<string | null>(null)
+  const deleteRepayment = useDeleteLoanRepayment()
+  const pushToast = useToastStore(state => state.push)
   const repayments = data?.repayments ?? []
   const visible = expanded ? repayments : repayments.slice(0, VISIBLE)
+
+  const askToDelete = (id: string) => {
+    deleteRepayment.reset()
+    setConfirmingId(id)
+  }
+  const confirmDelete = (repayment: LoanRepayment) => {
+    deleteRepayment.mutate(
+      { id: loanId, repaymentId: repayment.id },
+      {
+        onSuccess: () => {
+          setConfirmingId(null)
+          pushToast(t('toast.repaymentDeleted'))
+        },
+      },
+    )
+  }
 
   return (
     <section aria-labelledby="repayments-title" className="space-y-2">
@@ -44,17 +73,42 @@ export function RepaymentHistory({ loanId }: { loanId: string }) {
         <>
           {/* Newest first, as the API sends them. */}
           <ul className="divide-y divide-line">
-            {visible.map(repayment => (
-              <li key={repayment.id} className="flex min-h-14 items-center gap-4 py-2">
-                <span className="w-24 shrink-0 text-body-sm text-ink-muted tabular-nums">
-                  {shortDate(repayment.paidAt)}
-                </span>
-                <span className="min-w-0 flex-1 truncate text-body text-ink">{repayment.note}</span>
-                <span className="shrink-0 text-body font-medium text-positive tabular-nums">
-                  +{money(repayment.amount)}
-                </span>
-              </li>
-            ))}
+            {visible.map(repayment => {
+              const labels = { amount: money(repayment.amount), date: shortDate(repayment.paidAt) }
+              return (
+                <li key={repayment.id} className="py-2">
+                  <div className="flex min-h-10 items-center gap-4">
+                    <span className="w-24 shrink-0 text-body-sm text-ink-muted tabular-nums">
+                      {labels.date}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-body text-ink">
+                      {repayment.note}
+                    </span>
+                    <span className="shrink-0 text-body font-medium text-positive tabular-nums">
+                      +{labels.amount}
+                    </span>
+                    <IconButton
+                      size="sm"
+                      icon={Trash2}
+                      label={t('history.delete', labels)}
+                      onClick={() => askToDelete(repayment.id)}
+                      disabled={deleteRepayment.isPending}
+                      className="-mr-2"
+                    />
+                  </div>
+                  {confirmingId === repayment.id && (
+                    <DeleteConfirmation
+                      className="mt-2"
+                      title={t('history.deleteTitle', labels)}
+                      isPending={deleteRepayment.isPending}
+                      error={deleteRepayment.isError ? t('history.deleteError') : null}
+                      onConfirm={() => confirmDelete(repayment)}
+                      onCancel={() => setConfirmingId(null)}
+                    />
+                  )}
+                </li>
+              )
+            })}
           </ul>
           {repayments.length > VISIBLE && (
             <Button

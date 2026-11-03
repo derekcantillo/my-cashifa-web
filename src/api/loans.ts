@@ -72,6 +72,7 @@ export interface LoansRepository {
   getById(id: string): Promise<LoanDetail>
   create(input: CreateLoanInput): Promise<Loan>
   addRepayment(id: string, input: CreateLoanRepaymentInput): Promise<LoanDetail>
+  removeRepayment(id: string, repaymentId: string): Promise<LoanDetail>
   update(id: string, input: UpdateLoanInput): Promise<Loan>
   remove(id: string): Promise<void>
 }
@@ -91,6 +92,10 @@ const httpLoansRepository: LoansRepository = {
   },
   async addRepayment(id, input) {
     const { data } = await apiClient.post<RawLoanDetail>(`/loans/${id}/repayments`, input)
+    return toLoanDetail(data)
+  },
+  async removeRepayment(id, repaymentId) {
+    const { data } = await apiClient.delete<RawLoanDetail>(`/loans/${id}/repayments/${repaymentId}`)
     return toLoanDetail(data)
   },
   async update(id, input) {
