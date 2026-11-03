@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { firstRepayment, loanAmountError, loanDateAfterFirstRepayment } from './loanEdit'
+import {
+  firstRepayment,
+  loanAmountError,
+  loanDateAfterFirstRepayment,
+  repaymentBeforeLoan,
+} from './loanEdit'
 
 vi.mock('@/i18n', () => ({ default: { resolvedLanguage: 'es' } }))
 
@@ -59,5 +64,24 @@ describe('loanDateAfterFirstRepayment', () => {
 
   it('allows any date without repayments', () => {
     expect(loanDateAfterFirstRepayment('2030-01-01', undefined)).toBe(false)
+  })
+})
+
+describe('repaymentBeforeLoan', () => {
+  // 10 Sep at noon in Bogotá.
+  const loanDate = '2026-09-10T17:00:00.000Z'
+
+  it('flags a repayment day before the loan day', () => {
+    expect(repaymentBeforeLoan('2026-09-09', loanDate)).toBe(true)
+  })
+
+  it('allows the loan day itself and later days', () => {
+    expect(repaymentBeforeLoan('2026-09-10', loanDate)).toBe(false)
+    expect(repaymentBeforeLoan('2026-09-11', loanDate)).toBe(false)
+  })
+
+  it('reads the loan date in Bogotá, not UTC', () => {
+    // 10 Sep, 11:00 p.m. in Bogotá is already 11 Sep in UTC.
+    expect(repaymentBeforeLoan('2026-09-10', '2026-09-11T04:00:00.000Z')).toBe(false)
   })
 })

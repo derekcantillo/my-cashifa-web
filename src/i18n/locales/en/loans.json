@@ -119,6 +119,7 @@
     "cancel": "Cancel",
     "save": "Save repayment",
     "saveError": "Couldn't save the repayment. Try again.",
+    "saveValidationError": "Check the details: the repayment date can't be before the loan date.",
     "errors": {
       "amountRequired": "Enter the amount",
       "amountInvalid": "Enter a valid amount, e.g. 200,000",
@@ -126,6 +127,7 @@
       "amountTooHigh": "Can't be more than what's left ({{max}})",
       "dateRequired": "Pick a date",
       "dateFuture": "The date can't be in the future",
+      "dateBeforeLoan": "It can't be before the loan date ({{date}})",
       "noteTooLong": "255 characters max"
     }
   },

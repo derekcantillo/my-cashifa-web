@@ -25,6 +25,14 @@ export function loanAmountError(amount: number, amountRepaid: number): LoanAmoun
 }
 
 /**
+ * Whether a repayment day (`YYYY-MM-DD`) falls before the loan's day (Bogotá), which
+ * POST /loans/:id/repayments rejects. The same day is fine whatever the times.
+ */
+export function repaymentBeforeLoan(paidDate: string, loanDate: string): boolean {
+  return paidDate < toDateInputValue(loanDate)
+}
+
+/**
  * Whether a loan date (`YYYY-MM-DD`) falls after the first repayment's day. Like the
  * backend, it compares Bogotá calendar days: a loan and a repayment on the same day
  * are fine whatever their times.

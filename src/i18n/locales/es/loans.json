@@ -119,6 +119,7 @@
     "cancel": "Cancelar",
     "save": "Guardar abono",
     "saveError": "No se pudo registrar el abono. Inténtalo de nuevo.",
+    "saveValidationError": "Revisa los datos: la fecha del abono no puede ser anterior a la del préstamo.",
     "errors": {
       "amountRequired": "Escribe el monto",
       "amountInvalid": "Escribe un monto válido, por ejemplo 200.000",
@@ -126,6 +127,7 @@
       "amountTooHigh": "No puede ser más de lo pendiente ({{max}})",
       "dateRequired": "Elige una fecha",
       "dateFuture": "La fecha no puede ser futura",
+      "dateBeforeLoan": "No puede ser anterior a la fecha del préstamo ({{date}})",
       "noteTooLong": "Máximo 255 caracteres"
     }
   },

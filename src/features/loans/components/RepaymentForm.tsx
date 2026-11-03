@@ -15,10 +15,13 @@ import {
   useModalClose,
   useModalUnsavedChanges,
 } from '@/components/ui'
-import { useCreateLoanRepayment, useFormatters } from '@/hooks'
+import { useApiErrorMessages, useCreateLoanRepayment, useFormatters } from '@/hooks'
+import { apiErrorMessage } from '@/lib/apiError'
 import { fromDateInputValue, parseAmountInput, toDateInputValue } from '@/lib/format'
 import { useToastStore } from '@/store/toastStore'
 import type { Loan } from '@/types'
+
+import { repaymentBeforeLoan } from '../lib/loanEdit'
 
 const FORM_ID = 'repayment-form'
 const NOTE_MAX_LENGTH = 255
@@ -30,14 +33,16 @@ type ErrorCode =
   | 'amountTooHigh'
   | 'dateRequired'
   | 'dateFuture'
+  | 'dateBeforeLoan'
   | 'noteTooLong'
 
 /**
  * POST /loans/:id/repayments takes `{amount, paidAt?, note?}` and does NOT check for
  * overpayment (the pending balance would go negative), so the amount is capped at
- * what's pending. `paidAt` follows the transaction convention (past day = noon Bogotá).
+ * what's pending. `paidAt` follows the transaction convention (past day = noon Bogotá)
+ * and can't be before the loan's day (400 otherwise).
  */
-function createSchema(locale: string, today: string, max: number) {
+function createSchema(locale: string, today: string, max: number, loanDate: string) {
   return z.object({
     amount: z
       .string()
@@ -49,7 +54,8 @@ function createSchema(locale: string, today: string, max: number) {
     date: z
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}$/, { error: 'dateRequired' })
-      .refine(value => value <= today, { error: 'dateFuture' }),
+      .refine(value => value <= today, { error: 'dateFuture' })
+      .refine(value => !repaymentBeforeLoan(value, loanDate), { error: 'dateBeforeLoan' }),
     note: z.string().trim().max(NOTE_MAX_LENGTH, { error: 'noteTooLong' }),
   })
 }
@@ -58,13 +64,18 @@ type FormValues = z.infer<ReturnType<typeof createSchema>>
 
 export function RepaymentForm({ loan, onDone }: { loan: Loan; onDone: () => void }) {
   const { t } = useTranslation('loans')
-  const { locale, money } = useFormatters()
+  const { locale, money, shortDate } = useFormatters()
   const repay = useCreateLoanRepayment()
   const pushToast = useToastStore(state => state.push)
   const requestClose = useModalClose()
+  const apiErrorMessages = useApiErrorMessages()
   const today = toDateInputValue()
   const max = loan.remainingAmount
-  const schema = useMemo(() => createSchema(locale, today, max), [locale, today, max])
+  const loanDate = loan.loanDate
+  const schema = useMemo(
+    () => createSchema(locale, today, max, loanDate),
+    [locale, today, max, loanDate],
+  )
 
   const {
     control,
@@ -99,10 +110,20 @@ export function RepaymentForm({ loan, onDone }: { loan: Loan; onDone: () => void
   }
 
   const errorText = (code: string | undefined) =>
-    code ? t(`repayment.errors.${code as ErrorCode}`, { max: money(max) }) : null
+    code
+      ? t(`repayment.errors.${code as ErrorCode}`, {
+          max: money(max),
+          date: shortDate(loan.loanDate),
+        })
+      : null
   const amountError = errorText(errors.amount?.message)
   const dateError = errorText(errors.date?.message)
   const noteError = errorText(errors.note?.message)
+  const saveError = apiErrorMessage(repay.error, {
+    ...apiErrorMessages,
+    validation: t('repayment.saveValidationError'),
+    unknown: t('repayment.saveError'),
+  })
 
   return (
     <>
@@ -153,6 +174,7 @@ export function RepaymentForm({ loan, onDone }: { loan: Loan; onDone: () => void
         <Field id="repayment-date" label={t('repayment.date')} error={dateError}>
           <DateInput
             id="repayment-date"
+            min={toDateInputValue(loan.loanDate)}
             max={today}
             invalid={Boolean(dateError)}
             {...errorProps('repayment-date', dateError)}
@@ -178,12 +200,12 @@ export function RepaymentForm({ loan, onDone }: { loan: Loan; onDone: () => void
 
         <p className="text-body-sm text-ink-muted">{t('repayment.help')}</p>
 
-        {repay.isError && (
+        {saveError && (
           <p
             role="alert"
             className="rounded-sm bg-negative-soft px-3 py-2.5 text-body-sm text-negative"
           >
-            {t('repayment.saveError')}
+            {saveError}
           </p>
         )}
       </form>
