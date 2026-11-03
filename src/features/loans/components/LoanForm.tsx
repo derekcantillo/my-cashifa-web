@@ -18,7 +18,15 @@ import {
   useModalClose,
   useModalUnsavedChanges,
 } from '@/components/ui'
-import { useAccounts, useCreateLoan, useFormatters, useLoan, useUpdateLoan } from '@/hooks'
+import {
+  useAccounts,
+  useApiErrorMessages,
+  useCreateLoan,
+  useFormatters,
+  useLoan,
+  useUpdateLoan,
+} from '@/hooks'
+import { apiErrorMessage } from '@/lib/apiError'
 import {
   formatAmountInput,
   fromDateInputValue,
@@ -122,6 +130,7 @@ export function LoanForm({ loan, onDone }: LoanFormProps) {
   const updateLoan = useUpdateLoan()
   const pushToast = useToastStore(state => state.push)
   const requestClose = useModalClose()
+  const apiErrorMessages = useApiErrorMessages()
   const navigate = useNavigate()
   const location = useLocation()
   const today = toDateInputValue()
@@ -199,6 +208,13 @@ export function LoanForm({ loan, onDone }: LoanFormProps) {
   const dueDateError = errorText(errors.dueDate?.message)
   const noteError = errorText(errors.note?.message)
   const mutation = loan ? updateLoan : createLoan
+  // A 400 means the backend's own checks failed (e.g. a repayment it knows about that
+  // this form hadn't loaded yet).
+  const saveError = apiErrorMessage(mutation.error, {
+    ...apiErrorMessages,
+    validation: t('form.saveValidationError'),
+    unknown: t('form.saveError'),
+  })
 
   return (
     <>
@@ -309,12 +325,12 @@ export function LoanForm({ loan, onDone }: LoanFormProps) {
 
         {!isEdit && <p className="text-body-sm text-ink-muted">{t('form.createHelp')}</p>}
 
-        {mutation.isError && (
+        {saveError && (
           <p
             role="alert"
             className="rounded-sm bg-negative-soft px-3 py-2.5 text-body-sm text-negative"
           >
-            {t('form.saveError')}
+            {saveError}
           </p>
         )}
       </form>

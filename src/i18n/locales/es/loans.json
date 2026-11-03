@@ -91,6 +91,7 @@
     "save": "Guardar",
     "loadError": "No pudimos cargar este préstamo.",
     "saveError": "No se pudo guardar. Revisa los datos e inténtalo de nuevo.",
+    "saveValidationError": "Revisa los datos: el monto no puede ser menor que lo ya abonado y la fecha del préstamo no puede ser posterior al primer abono.",
     "errors": {
       "borrowerRequired": "Escribe el nombre",
       "borrowerTooLong": "Máximo 120 caracteres",

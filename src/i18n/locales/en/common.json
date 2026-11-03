@@ -75,6 +75,12 @@
       "dateRequired": "Pick a date"
     }
   },
+  "apiErrors": {
+    "conflict": "This is a loan transaction: it's managed from Loans.",
+    "validation": "Check the details: they can't be saved like this.",
+    "notFound": "It no longer exists: it may have been deleted. Reload to see the latest.",
+    "unknown": "Something went wrong. Try again."
+  },
   "discard": {
     "title": "Discard changes?",
     "body": "What you entered hasn't been saved.",

@@ -11,7 +11,8 @@ import {
   SectionError,
   Skeleton,
 } from '@/components/ui'
-import { useDeleteLoanRepayment, useFormatters, useLoan } from '@/hooks'
+import { useApiErrorMessages, useDeleteLoanRepayment, useFormatters, useLoan } from '@/hooks'
+import { apiErrorMessage } from '@/lib/apiError'
 import { useToastStore } from '@/store/toastStore'
 import type { LoanRepayment } from '@/types'
 
@@ -26,6 +27,11 @@ export function RepaymentHistory({ loanId }: { loanId: string }) {
   const [confirmingId, setConfirmingId] = useState<string | null>(null)
   const deleteRepayment = useDeleteLoanRepayment()
   const pushToast = useToastStore(state => state.push)
+  const apiErrorMessages = useApiErrorMessages()
+  const deleteError = apiErrorMessage(deleteRepayment.error, {
+    ...apiErrorMessages,
+    unknown: t('history.deleteError'),
+  })
   const repayments = data?.repayments ?? []
   const visible = expanded ? repayments : repayments.slice(0, VISIBLE)
 
@@ -101,7 +107,7 @@ export function RepaymentHistory({ loanId }: { loanId: string }) {
                       className="mt-2"
                       title={t('history.deleteTitle', labels)}
                       isPending={deleteRepayment.isPending}
-                      error={deleteRepayment.isError ? t('history.deleteError') : null}
+                      error={deleteError}
                       onConfirm={() => confirmDelete(repayment)}
                       onCancel={() => setConfirmingId(null)}
                     />

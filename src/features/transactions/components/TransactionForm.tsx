@@ -22,11 +22,13 @@ import {
 } from '@/components/ui'
 import {
   useAccounts,
+  useApiErrorMessages,
   useCreateTransaction,
   useDeleteTransaction,
   useFormatters,
   useUpdateTransaction,
 } from '@/hooks'
+import { apiErrorMessage } from '@/lib/apiError'
 import { CATEGORY_META } from '@/lib/categoryMeta'
 import {
   formatAmountInput,
@@ -135,6 +137,7 @@ export function TransactionForm({
   const deleteTransaction = useDeleteTransaction()
   const pushToast = useToastStore(state => state.push)
   const requestClose = useModalClose()
+  const apiErrorMessages = useApiErrorMessages()
   const schema = useMemo(() => createSchema(locale), [locale])
 
   const isEdit = transaction !== undefined
@@ -300,7 +303,17 @@ export function TransactionForm({
   const categoryError = errorText(errors.category?.message)
   const dateError = errorText(errors.date?.message)
   const noteError = errorText(errors.description?.message)
-  const saveFailed = createTransaction.isError || updateTransaction.isError
+  // A 400 here is most likely a category that doesn't match the linked recurring
+  // expense; a 409, a loan movement opened from stale data.
+  const saveError = apiErrorMessage(createTransaction.error ?? updateTransaction.error, {
+    ...apiErrorMessages,
+    validation: t('transactions:form.saveValidationError'),
+    unknown: t('transactions:form.saveError'),
+  })
+  const deleteError = apiErrorMessage(deleteTransaction.error, {
+    ...apiErrorMessages,
+    unknown: t('transactions:form.deleteError'),
+  })
   const transactionName = transaction
     ? transaction.description || t(CATEGORY_META[transaction.category].translationKey)
     : ''
@@ -442,12 +455,12 @@ export function TransactionForm({
           </p>
         </Field>
 
-        {saveFailed && (
+        {saveError && (
           <p
             role="alert"
             className="rounded-sm bg-negative-soft px-3 py-2.5 text-body-sm text-negative"
           >
-            {t('transactions:form.saveError')}
+            {saveError}
           </p>
         )}
       </form>
@@ -477,7 +490,7 @@ export function TransactionForm({
           title={t('transactions:form.deleteTitle')}
           confirmLabel={t('transactions:form.confirmDelete')}
           isPending={deleteTransaction.isPending}
-          error={deleteTransaction.isError ? t('transactions:form.deleteError') : null}
+          error={deleteError}
           onConfirm={onDelete}
           onCancel={() => setConfirmingDelete(false)}
         >

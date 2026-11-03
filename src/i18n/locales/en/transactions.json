@@ -20,6 +20,7 @@
     "saving": "Saving…",
     "loadError": "We couldn't load this transaction.",
     "saveError": "Couldn't save. Check the details and try again.",
+    "saveValidationError": "Check the details. If it's matched with a recurring expense, the category has to be that expense's.",
     "errors": {
       "categoryRequired": "Pick a category",
       "amountRequired": "Enter the amount",

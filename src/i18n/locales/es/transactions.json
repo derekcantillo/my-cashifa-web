@@ -20,6 +20,7 @@
     "saving": "Guardando…",
     "loadError": "No pudimos cargar este movimiento.",
     "saveError": "No se pudo guardar. Revisa los datos e inténtalo de nuevo.",
+    "saveValidationError": "Revisa los datos. Si está cruzado con un gasto fijo, la categoría tiene que ser la del gasto fijo.",
     "errors": {
       "categoryRequired": "Elige una categoría",
       "amountRequired": "Escribe el monto",

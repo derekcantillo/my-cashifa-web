@@ -75,6 +75,12 @@
       "dateRequired": "Elige una fecha"
     }
   },
+  "apiErrors": {
+    "conflict": "Este movimiento es de un préstamo: se gestiona desde Préstamos.",
+    "validation": "Revisa los datos: así no se pueden guardar.",
+    "notFound": "Ya no existe: puede que se haya eliminado. Recarga para ver lo último.",
+    "unknown": "Algo salió mal. Inténtalo de nuevo."
+  },
   "discard": {
     "title": "¿Descartar los cambios?",
     "body": "Lo que escribiste no se ha guardado.",

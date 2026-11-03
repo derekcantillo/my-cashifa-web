@@ -91,6 +91,7 @@
     "save": "Save",
     "loadError": "We couldn't load this loan.",
     "saveError": "Couldn't save. Check the details and try again.",
+    "saveValidationError": "Check the details: the amount can't be less than what was already repaid, and the loan date can't be after the first repayment.",
     "errors": {
       "borrowerRequired": "Enter the name",
       "borrowerTooLong": "120 characters max",
