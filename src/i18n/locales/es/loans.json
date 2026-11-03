@@ -40,7 +40,7 @@
     "actions": "Más acciones",
     "edit": "Editar",
     "delete": "Eliminar",
-    "cantDelete": "No se puede eliminar: ya tiene abonos y se perdería su historial.",
+    "cantDelete": "No se puede eliminar porque tiene abonos. Si el préstamo fue un error, elimina primero sus abonos desde el historial.",
     "pending": "pendiente de {{lent}}",
     "lentOn": "Fecha del préstamo",
     "dueDate": "Fecha límite",

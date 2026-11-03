@@ -40,7 +40,7 @@
     "actions": "More actions",
     "edit": "Edit",
     "delete": "Delete",
-    "cantDelete": "Can't be deleted: it has repayments and their history would be lost.",
+    "cantDelete": "It can't be deleted because it has repayments. If the loan was a mistake, delete its repayments from the history first.",
     "pending": "left of {{lent}}",
     "lentOn": "Loan date",
     "dueDate": "Due date",
