@@ -74,7 +74,7 @@
     "borrower": "Who did you lend to?",
     "borrowerPlaceholder": "Name",
     "amount": "Amount lent",
-    "amountFixed": "The amount can't be changed after creation.",
+    "amountRepaidHelp": "{{amount}} already repaid: the amount can't go below that.",
     "loanDate": "Loan date",
     "dueDate": "Due date",
     "dueDateHelp": "Once set, it can be changed but not removed.",
@@ -82,6 +82,7 @@
     "optional": "optional",
     "account": "Account it came from",
     "noAccount": "No account",
+    "accountEditHelp": "Moves the loan transaction to this account. Repayments already logged stay in the account they went into.",
     "createHelp": "It's logged as a loan transaction: it comes out of the chosen account's balance, but it isn't spending and doesn't change your money available to spend.",
     "cancel": "Cancel",
     "save": "Save",
@@ -96,6 +97,8 @@
       "dateRequired": "Pick a date",
       "dateFuture": "The date can't be in the future",
       "dueBeforeLoan": "The due date can't be before the loan",
+      "amountBelowRepaid": "It can't be less than what was already repaid ({{amount}})",
+      "dateAfterRepayment": "It can't be after the first repayment ({{date}})",
       "noteTooLong": "255 characters max"
     }
   },

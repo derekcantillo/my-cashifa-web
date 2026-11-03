@@ -74,7 +74,7 @@
     "borrower": "¿A quién le prestaste?",
     "borrowerPlaceholder": "Nombre",
     "amount": "Monto prestado",
-    "amountFixed": "El monto no se puede cambiar después de creado.",
+    "amountRepaidHelp": "Ya te abonaron {{amount}}: el monto no puede quedar por debajo.",
     "loanDate": "Fecha del préstamo",
     "dueDate": "Fecha límite",
     "dueDateHelp": "Una vez puesta, se puede cambiar pero no quitar.",
@@ -82,6 +82,7 @@
     "optional": "opcional",
     "account": "Cuenta de la que salió",
     "noAccount": "Sin cuenta asignada",
+    "accountEditHelp": "Mueve el movimiento del préstamo a esta cuenta. Los abonos ya registrados se quedan en la cuenta donde entraron.",
     "createHelp": "Se registra como movimiento de préstamo: resta del saldo de la cuenta elegida, pero no es un gasto ni cambia tu disponible para gastar.",
     "cancel": "Cancelar",
     "save": "Guardar",
@@ -96,6 +97,8 @@
       "dateRequired": "Elige una fecha",
       "dateFuture": "La fecha no puede ser futura",
       "dueBeforeLoan": "La fecha límite no puede ser anterior al préstamo",
+      "amountBelowRepaid": "No puede ser menor que lo ya abonado ({{amount}})",
+      "dateAfterRepayment": "No puede ser posterior al primer abono ({{date}})",
       "noteTooLong": "Máximo 255 caracteres"
     }
   },

@@ -43,11 +43,18 @@ export interface CreateLoanInput {
   accountId?: string
 }
 
-/** The amount is not editable after creation. */
+/**
+ * Matches UpdateLoanDto. `amount` can't go below `amountRepaid` and `loanDate` can't be
+ * after the first repayment (400 otherwise); both also correct the LOAN_GIVEN movement.
+ * `accountId: null` unlinks the account. The due date can be changed but not cleared.
+ */
 export interface UpdateLoanInput {
   borrowerName?: string
+  amount?: number
+  loanDate?: string
   dueDate?: string
   note?: string
+  accountId?: string | null
 }
 
 export interface CreateLoanRepaymentInput {

@@ -61,14 +61,16 @@ export function useCreateLoanRepayment() {
   })
 }
 
-/** Only name, due date and note are editable — no balance effect. */
+/**
+ * Editing the amount, loan date or account also corrects the LOAN_GIVEN movement on the
+ * backend (and the status, from the new amount): loans, movements, account balances
+ * and net worth all refresh.
+ */
 export function useUpdateLoan() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateLoanInput }) =>
       loansRepository.update(id, input),
-    // No money moves on edit; the full set is refreshed anyway so every screen that
-    // names the loan (or its movements) stays in step.
     onSuccess: () => {
       void invalidateQueries(queryClient, queryKeys.loans.all)
       void invalidateFinancialState(queryClient)
