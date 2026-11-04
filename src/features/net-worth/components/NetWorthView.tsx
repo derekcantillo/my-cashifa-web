@@ -65,7 +65,7 @@ export function NetWorthView({ netWorth, accounts, loans, goals }: NetWorthViewP
           />
         </Enter>
         <Enter order={3} className="min-w-0 space-y-6 lg:col-span-4">
-          <LiabilitiesCard netWorth={netWorth.data} />
+          <LiabilitiesCard netWorth={netWorth.data} accounts={accounts} />
           <UnconfiguredCardsCard netWorth={netWorth.data} />
           <GoalsSetAsideCard netWorth={netWorth} goals={goals} />
         </Enter>

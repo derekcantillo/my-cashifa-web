@@ -1,11 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import { formatShare } from '@/lib/format'
+import type { Account } from '@/types'
 
 import {
   assetAccounts,
   buildAssetComposition,
   formatAsOfDate,
+  liabilityCards,
   reconcile,
   roundShares,
   shareForDisplay,
@@ -67,18 +69,42 @@ describe('asset composition', () => {
 })
 
 describe('asset accounts', () => {
-  it('leaves credit cards out, like the backend does with accountsBalance', () => {
-    const accounts = [
-      { id: 'a1', type: 'DEBIT_CARD' as const },
-      { id: 'a2', type: 'CREDIT_CARD' as const },
-      { id: 'a3', type: 'SAVINGS_ACCOUNT' as const },
-      { id: 'a4', type: 'CASH' as const },
-    ]
-    expect(assetAccounts(accounts).map(account => account.id)).toEqual(['a1', 'a3', 'a4'])
+  const card = (configured: boolean, debt: number | null) =>
+    ({ configured, debt }) as NonNullable<Account['creditCard']>
+  const ACCOUNTS = [
+    { id: 'a1', type: 'DEBIT_CARD' as const, currentBalance: 100, creditCard: null },
+    {
+      id: 'visa',
+      type: 'CREDIT_CARD' as const,
+      currentBalance: -4_539_024,
+      creditCard: card(true, 4_539_024),
+    },
+    { id: 'a3', type: 'SAVINGS_ACCOUNT' as const, currentBalance: 0, creditCard: null },
+    {
+      id: 'favor',
+      type: 'CREDIT_CARD' as const,
+      currentBalance: 50_000,
+      creditCard: card(true, 0),
+    },
+    {
+      id: 'raw',
+      type: 'CREDIT_CARD' as const,
+      currentBalance: 1_007_408,
+      creditCard: card(false, null),
+    },
+    { id: 'a4', type: 'CASH' as const, currentBalance: 0, creditCard: null },
+  ]
+
+  it('accounts plus configured cards with money in favour, like accountsBalance', () => {
+    expect(assetAccounts(ACCOUNTS).map(account => account.id)).toEqual(['a1', 'a3', 'favor', 'a4'])
   })
 
   it('keeps an empty list empty', () => {
     expect(assetAccounts([])).toEqual([])
+  })
+
+  it('liability cards: configured ones, most owed first; unconfigured ones stay out', () => {
+    expect(liabilityCards(ACCOUNTS).map(account => account.id)).toEqual(['visa', 'favor'])
   })
 })
 

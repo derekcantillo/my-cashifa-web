@@ -2,7 +2,7 @@
   "title": "Patrimonio neto",
   "asOf": "Al {{date}}",
   "heroLabel": "Patrimonio neto",
-  "liabilitiesPending": "Todavía no incluye deudas propias ni tarjetas de crédito.",
+  "liabilitiesPending": "Todavía no incluye deudas propias (las tarjetas sí).",
   "composition": {
     "label": "Composición de los activos",
     "item": "{{name}}, {{amount}}, {{percent}}"
@@ -36,15 +36,19 @@
   },
   "liabilities": {
     "title": "Pasivos",
-    "notTracked": "No registrados",
-    "body": "Las deudas propias y las tarjetas de crédito todavía no se registran en Cashifa, por eso no restan aquí.",
-    "debts": "Deudas",
-    "creditCards": "Tarjetas de crédito"
+    "noCards": "Ninguna tarjeta tiene cupo configurado. Configúralas en Ajustes para que su deuda cuente aquí.",
+    "available": "Disponible {{amount}}",
+    "overLimit": "Sobrecupo {{amount}}",
+    "availableInfo": "Disponible en tus tarjetas: {{amount}}. Es crédito, no dinero tuyo: no suma en tu patrimonio.",
+    "debtsBody": "Las deudas propias (préstamos que te hicieron) todavía no se registran en Cashifa, por eso no restan aquí.",
+    "pay": "Pagar",
+    "payLabel": "Pagar {{name}}"
   },
   "cards": {
     "title": "Tarjetas sin configurar",
     "notCounted": "No se cuentan",
-    "body": "Su saldo no se suma ni se resta en tu patrimonio porque todavía no dice cuánto debes. Se incluirán cuando puedas registrar su cupo.",
-    "storedBalance": "Saldo registrado"
+    "body": "Su saldo no se suma ni se resta en tu patrimonio porque todavía no dice cuánto debes. Ajústalas a su último extracto para que su deuda cuente.",
+    "storedBalance": "Saldo registrado",
+    "configure": "Configurar en Mis productos"
   }
 }

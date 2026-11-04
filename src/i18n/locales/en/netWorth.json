@@ -2,7 +2,7 @@
   "title": "Net worth",
   "asOf": "As of {{date}}",
   "heroLabel": "Net worth",
-  "liabilitiesPending": "Doesn't include your own debts or credit cards yet.",
+  "liabilitiesPending": "It doesn't include your own debts yet (cards are included).",
   "composition": {
     "label": "Asset breakdown",
     "item": "{{name}}, {{amount}}, {{percent}}"
@@ -36,15 +36,19 @@
   },
   "liabilities": {
     "title": "Liabilities",
-    "notTracked": "Not tracked",
-    "body": "Your own debts and credit cards aren't tracked in Cashifa yet, so nothing is subtracted here.",
-    "debts": "Debts",
-    "creditCards": "Credit cards"
+    "noCards": "No card has a limit set. Set them up in Settings so their debt counts here.",
+    "available": "Available {{amount}}",
+    "overLimit": "Over limit {{amount}}",
+    "availableInfo": "Available on your cards: {{amount}}. It's credit, not your money: it doesn't add to your net worth.",
+    "debtsBody": "Your own debts (loans you received) aren't tracked in Cashifa yet, so they don't subtract here.",
+    "pay": "Pay",
+    "payLabel": "Pay {{name}}"
   },
   "cards": {
     "title": "Cards not set up",
     "notCounted": "Not counted",
-    "body": "Their balance isn't added to or subtracted from your net worth because it doesn't say how much you owe yet. They'll count once you can enter their credit limit.",
-    "storedBalance": "Recorded balance"
+    "body": "Their balance isn't added or subtracted from your net worth because it doesn't say how much you owe yet. Match them to their last statement so their debt counts.",
+    "storedBalance": "Recorded balance",
+    "configure": "Set up in My products"
   }
 }

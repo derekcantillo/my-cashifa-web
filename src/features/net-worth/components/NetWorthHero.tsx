@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Amount, SectionError, Skeleton } from '@/components/ui'
 import type { NetWorth } from '@/types'
 
-import { LIABILITIES_IMPLEMENTED } from '../liabilitiesSupport'
+import { DEBTS_IMPLEMENTED } from '../liabilitiesSupport'
 import { buildAssetComposition, type AssetGroup } from '../lib/netWorthView'
 import type { QueryState } from '../lib/queryState'
 import { AssetComposition } from './AssetComposition'
@@ -37,7 +37,7 @@ export function NetWorthHero({ netWorth, onSelectGroup }: NetWorthHeroProps) {
             className={data.netWorth < 0 ? 'text-negative' : 'text-ink'}
           />
         )}
-        {!LIABILITIES_IMPLEMENTED && (
+        {!DEBTS_IMPLEMENTED && (
           <p className="text-body text-ink-muted">{t('liabilitiesPending')}</p>
         )}
       </div>

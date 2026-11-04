@@ -3,7 +3,7 @@ import type { Account, NetWorth } from '@/types'
 
 /**
  * The asset groups of GET /net-worth. Goals aren't one: their money already sits in the
- * accounts (an informative earmark), and credit cards stay out until their limit exists.
+ * accounts (an informative earmark). A card's debt is a liability, not a negative asset.
  */
 export const ASSET_GROUPS = ['accounts', 'receivables'] as const
 export type AssetGroup = (typeof ASSET_GROUPS)[number]
@@ -19,11 +19,27 @@ export function assetAmounts(assets: NetWorth['assets']): Record<AssetGroup, num
 }
 
 /**
- * The rows behind `accountsBalance`: every account except credit cards, which the backend
- * leaves out of the totals (listed apart in `info.unconfiguredCards`).
+ * The rows behind `accountsBalance`: every account except credit cards, plus a
+ * configured card with money in favour (a positive balance is an asset). Cards with
+ * debt are liabilities; cards without a limit stay out (`info.unconfiguredCards`).
  */
-export function assetAccounts<T extends Pick<Account, 'type'>>(accounts: readonly T[]): T[] {
-  return accounts.filter(account => account.type !== 'CREDIT_CARD')
+export function assetAccounts<T extends Pick<Account, 'type' | 'currentBalance' | 'creditCard'>>(
+  accounts: readonly T[],
+): T[] {
+  return accounts.filter(
+    account =>
+      account.type !== 'CREDIT_CARD' ||
+      (account.creditCard?.configured === true && account.currentBalance > 0),
+  )
+}
+
+/** Configured cards, the rows behind `liabilities.creditCardsDebt`; most owed first. */
+export function liabilityCards<T extends Pick<Account, 'type' | 'creditCard'>>(
+  accounts: readonly T[],
+): T[] {
+  return accounts
+    .filter(account => account.type === 'CREDIT_CARD' && account.creditCard?.configured === true)
+    .sort((a, b) => (b.creditCard?.debt ?? 0) - (a.creditCard?.debt ?? 0))
 }
 
 export interface CompositionItem {

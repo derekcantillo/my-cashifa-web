@@ -2,21 +2,21 @@
 // `netWorth = totals.assets − totals.liabilities`; nothing in `info` adds up.
 export interface NetWorth {
   assets: {
-    /** Sum of `currentBalance` of every account that isn't a credit card. */
+    /** Accounts that aren't credit cards, plus configured cards with money in favour. */
     accountsBalance: number
     /** Still owed on unpaid loans. */
     receivables: number
   }
   liabilities: {
-    /** Placeholder on the backend (always 0 for now). */
+    /** Own debts: placeholder on the backend (always 0 until the Debt model exists). */
     debts: number
-    /** Placeholder on the backend (always 0 for now). */
+    /** What's owed on cards with a configured limit. */
     creditCardsDebt: number
   }
   info: {
     /** Sum of `Goal.currentAmount`: money set aside inside the accounts, not an extra asset. */
     goalsSavings: number
-    /** Placeholder on the backend (always 0 for now). */
+    /** Available credit on configured cards. Not an asset. */
     creditCardsAvailable: number
     /** Credit cards without a configured limit: their balance stays out of the totals. */
     unconfiguredCards: UnconfiguredCard[]
