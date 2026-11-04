@@ -16,7 +16,7 @@ import {
   productKind,
   type ProductKind,
 } from '../lib/products'
-import { InitialBalanceForm } from './InitialBalanceForm'
+import { StatementAnchorModal } from './StatementAnchorModal'
 
 const ICONS: Record<ProductKind, LucideIcon> = {
   account: Landmark,
@@ -35,7 +35,7 @@ export function ProductRow({ account }: { account: Account }) {
   const { money, locale } = useFormatters()
   const openAccount = useAccountModalStore(state => state.open)
   const openTransfer = useTransactionModalStore(state => state.openTransfer)
-  const [editingBalance, setEditingBalance] = useState(false)
+  const [anchoring, setAnchoring] = useState(false)
   const kind = productKind(account.type)
   const Icon = ICONS[kind]
   const card = account.creditCard
@@ -95,17 +95,34 @@ export function ProductRow({ account }: { account: Account }) {
       <div className="flex flex-wrap gap-2 pl-8">
         {kind === 'card' ? (
           <>
-            <Button size="sm" variant="secondary" onClick={payCard}>
-              {t('products.payCard')}
-            </Button>
+            {summary ? (
+              <Button size="sm" variant="secondary" onClick={payCard}>
+                {t('products.payCard')}
+              </Button>
+            ) : (
+              // Without a limit, the statement is what configures it (limit and debt).
+              <Button size="sm" variant="secondary" onClick={() => setAnchoring(true)}>
+                {t('products.configureCard')}
+              </Button>
+            )}
+            {summary && (
+              <Button size="sm" variant="ghost" onClick={() => setAnchoring(true)}>
+                {t('products.matchStatement')}
+              </Button>
+            )}
+            {!summary && (
+              <Button size="sm" variant="ghost" onClick={payCard}>
+                {t('products.payCard')}
+              </Button>
+            )}
             <Button size="sm" variant="ghost" onClick={() => openAccount(account.id)}>
-              {summary ? t('products.configure') : t('products.configureCard')}
+              {t('products.configure')}
             </Button>
           </>
         ) : (
           <>
-            <Button size="sm" variant="ghost" onClick={() => setEditingBalance(value => !value)}>
-              {t('accounts.newInitialBalance')}
+            <Button size="sm" variant="ghost" onClick={() => setAnchoring(true)}>
+              {t('products.matchBank')}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => openAccount(account.id)}>
               {t('products.edit')}
@@ -113,9 +130,7 @@ export function ProductRow({ account }: { account: Account }) {
           </>
         )}
       </div>
-      {editingBalance && (
-        <InitialBalanceForm accountId={account.id} onDone={() => setEditingBalance(false)} />
-      )}
+      {anchoring && <StatementAnchorModal account={account} onClose={() => setAnchoring(false)} />}
     </li>
   )
 }
