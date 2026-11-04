@@ -58,7 +58,10 @@
     },
     "loanTitle": "Loan transaction",
     "loanReadOnly": "This transaction comes from a loan. To change it, do it from Loans.",
-    "viewLoan": "View loan"
+    "viewLoan": "View loan",
+    "transferTitle": "New transfer",
+    "cardPaymentTitle": "Pay card",
+    "editTransferTitle": "Edit transfer"
   },
   "types": {
     "EXPENSE": "Expense",
@@ -71,7 +74,8 @@
   },
   "toast": {
     "saved": "Transaction saved",
-    "deleted": "Transaction deleted"
+    "deleted": "Transaction deleted",
+    "transferSaved": "Transfer saved"
   },
   "page": {
     "add": "Add transaction",
@@ -101,7 +105,9 @@
     "noResultsTitle": "No results",
     "noResultsBody": "No transaction matches the search or filters.",
     "clearFilters": "Clear filters",
-    "searchPlaceholder": "Search…"
+    "searchPlaceholder": "Search…",
+    "addTransfer": "Transfer",
+    "payCard": "Pay card"
   },
   "row": {
     "recurring": "Recurring: {{name}}"
@@ -122,6 +128,24 @@
   "transfer": {
     "label": "Transfer",
     "cardPayment": "Card payment",
-    "missingAccount": "Deleted account"
+    "missingAccount": "Deleted account",
+    "explanation": "Moves money between your accounts, like paying your card. It doesn't count as spending or income.",
+    "origin": "From",
+    "destination": "To",
+    "pickAccount": "Pick an account",
+    "notePlaceholder": "E.g. October statement payment",
+    "needsTwoAccounts": "You need at least two accounts to make a transfer.",
+    "goToSettings": "Create an account in Settings",
+    "deleteTitle": "Delete transfer",
+    "errors": {
+      "originRequired": "Pick the account it comes from",
+      "destinationRequired": "Pick the account it goes to",
+      "sameAccount": "The destination must be a different account from the origin",
+      "amountRequired": "Enter the amount",
+      "amountInvalid": "Enter a valid amount, e.g. 48,000",
+      "amountPositive": "The amount must be greater than zero",
+      "dateRequired": "Pick a date",
+      "noteTooLong": "255 characters max"
+    }
   }
 }

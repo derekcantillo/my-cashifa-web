@@ -58,7 +58,10 @@
     },
     "loanTitle": "Movimiento de préstamo",
     "loanReadOnly": "Este movimiento lo genera un préstamo. Para cambiarlo, hazlo desde Préstamos.",
-    "viewLoan": "Ver préstamo"
+    "viewLoan": "Ver préstamo",
+    "transferTitle": "Nueva transferencia",
+    "cardPaymentTitle": "Pagar tarjeta",
+    "editTransferTitle": "Editar transferencia"
   },
   "types": {
     "EXPENSE": "Gasto",
@@ -71,7 +74,8 @@
   },
   "toast": {
     "saved": "Movimiento guardado",
-    "deleted": "Movimiento eliminado"
+    "deleted": "Movimiento eliminado",
+    "transferSaved": "Transferencia guardada"
   },
   "page": {
     "add": "Registrar movimiento",
@@ -101,7 +105,9 @@
     "noResultsTitle": "Sin resultados",
     "noResultsBody": "Ningún movimiento coincide con la búsqueda o los filtros.",
     "clearFilters": "Limpiar filtros",
-    "searchPlaceholder": "Buscar…"
+    "searchPlaceholder": "Buscar…",
+    "addTransfer": "Transferir",
+    "payCard": "Pagar tarjeta"
   },
   "row": {
     "recurring": "Fijo: {{name}}"
@@ -122,6 +128,24 @@
   "transfer": {
     "label": "Transferencia",
     "cardPayment": "Pago de tarjeta",
-    "missingAccount": "Cuenta eliminada"
+    "missingAccount": "Cuenta eliminada",
+    "explanation": "Mueve plata entre tus cuentas, por ejemplo pagar la tarjeta. No cuenta como gasto ni como ingreso.",
+    "origin": "Desde",
+    "destination": "Hacia",
+    "pickAccount": "Elige una cuenta",
+    "notePlaceholder": "Ej. pago del extracto de octubre",
+    "needsTwoAccounts": "Para transferir necesitas al menos dos cuentas.",
+    "goToSettings": "Crear una cuenta en Ajustes",
+    "deleteTitle": "Eliminar transferencia",
+    "errors": {
+      "originRequired": "Elige la cuenta de origen",
+      "destinationRequired": "Elige la cuenta de destino",
+      "sameAccount": "El destino tiene que ser una cuenta distinta del origen",
+      "amountRequired": "Escribe el monto",
+      "amountInvalid": "Escribe un monto válido, por ejemplo 48.000",
+      "amountPositive": "El monto debe ser mayor que cero",
+      "dateRequired": "Elige una fecha",
+      "noteTooLong": "Máximo 255 caracteres"
+    }
   }
 }

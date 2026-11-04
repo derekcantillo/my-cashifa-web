@@ -1,4 +1,4 @@
-import { Plus, Receipt, SearchX } from 'lucide-react'
+import { ArrowLeftRight, CreditCard, Plus, Receipt, SearchX } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
@@ -17,6 +17,7 @@ import {
   type SegmentedOption,
 } from '@/components/ui'
 import {
+  useAccounts,
   useDebouncedValue,
   usePeriodLabel,
   useRecurringExpenses,
@@ -57,6 +58,10 @@ export function TransactionsPage() {
   const { data, isPending, isError, refetch } = useTransactions(periodId)
   const { data: recurringExpenses } = useRecurringExpenses()
   const openModal = useTransactionModalStore(state => state.open)
+  const openTransfer = useTransactionModalStore(state => state.openTransfer)
+  // "Pagar tarjeta" only makes sense once there's a credit card to pay.
+  const { data: accounts } = useAccounts()
+  const hasCard = (accounts ?? []).some(account => account.type === 'CREDIT_CARD')
   const openForEdit = useCallback(({ id }: { id: string }) => openModal('edit', id), [openModal])
 
   // The category filter lives in the URL (`?category=`), so Reportes can link to it.
@@ -142,9 +147,23 @@ export function TransactionsPage() {
           title={t('common:nav.transactions')}
           actions={
             // Secondary: the topbar's "Registrar gasto" stays the one primary action.
-            <Button variant="secondary" icon={Plus} onClick={() => openModal('create')}>
-              {t('transactions:page.add')}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              {hasCard && (
+                <Button
+                  variant="ghost"
+                  icon={CreditCard}
+                  onClick={() => openTransfer({ cardPayment: true })}
+                >
+                  {t('transactions:page.payCard')}
+                </Button>
+              )}
+              <Button variant="ghost" icon={ArrowLeftRight} onClick={() => openTransfer()}>
+                {t('transactions:page.addTransfer')}
+              </Button>
+              <Button variant="secondary" icon={Plus} onClick={() => openModal('create')}>
+                {t('transactions:page.add')}
+              </Button>
+            </div>
           }
         />
       </Enter>
