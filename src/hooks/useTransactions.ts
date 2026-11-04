@@ -23,6 +23,8 @@ export function useTransaction(id: string | undefined) {
 
 // Every transaction write cascades on the backend (periods, ledger, budgets, alerts,
 // balances, reports, net worth, pending recurring expenses) — see invalidateFinancialState.
+// Transfers go through these same mutations: they change two account balances (and net
+// worth) but never the ledger or budgets, which the same invalidation covers.
 // The refetch isn't awaited: the mutation resolves as soon as the write succeeds, so
 // the modal closes right away and the screens refresh in the background.
 
