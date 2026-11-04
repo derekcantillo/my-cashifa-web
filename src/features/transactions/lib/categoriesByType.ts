@@ -27,6 +27,24 @@ export const INCOME_CATEGORIES: readonly Category[] = ['SALARY', 'OTHER']
 export const FORM_TYPES = ['EXPENSE', 'INCOME'] as const
 export type FormType = (typeof FORM_TYPES)[number]
 
+/** "Transferencia" in the type switch: it opens the transfer form instead (no category). */
+export type TypeChoice = FormType | 'TRANSFER'
+
+/**
+ * What the type switch offers. Only a new, free movement can turn into a transfer: an
+ * existing one can't change kind (the backend rejects it) and one started from a
+ * recurring expense is an expense.
+ */
+export function typeChoices({
+  isNew,
+  fromRecurring,
+}: {
+  isNew: boolean
+  fromRecurring: boolean
+}): readonly TypeChoice[] {
+  return isNew && !fromRecurring ? [...FORM_TYPES, 'TRANSFER'] : FORM_TYPES
+}
+
 export function isFormType(type: TransactionType): type is FormType {
   return (FORM_TYPES as readonly string[]).includes(type)
 }

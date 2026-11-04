@@ -3,7 +3,7 @@ import { getTransactionDirection } from '@/lib/transactionDirection'
 import { isTransfer } from '@/lib/transfers'
 import type { Category, Transaction } from '@/types'
 
-export type DirectionFilter = 'all' | 'income' | 'expense'
+export type DirectionFilter = 'all' | 'income' | 'expense' | 'transfer'
 
 export interface ListFilters {
   direction: DirectionFilter
@@ -28,6 +28,7 @@ const MATCHES_DIRECTION: Record<DirectionFilter, (transaction: Transaction) => b
   all: () => true,
   income: transaction => getTransactionDirection(transaction.type) === 'in',
   expense: transaction => getTransactionDirection(transaction.type) === 'out',
+  transfer: isTransfer,
 }
 
 /**
@@ -74,6 +75,7 @@ export function countByDirection(
     all: transactions.length,
     income: transactions.filter(MATCHES_DIRECTION.income).length,
     expense: transactions.filter(MATCHES_DIRECTION.expense).length,
+    transfer: transactions.filter(MATCHES_DIRECTION.transfer).length,
   }
 }
 

@@ -137,6 +137,16 @@ export function TransactionsPage() {
     { value: 'all', label: t('transactions:page.all'), count: counts.all },
     { value: 'income', label: t('transactions:page.income'), count: counts.income },
     { value: 'expense', label: t('transactions:page.expense'), count: counts.expense },
+    // Only once the period has a transfer (or it's the active filter).
+    ...(counts.transfer > 0 || filters.direction === 'transfer'
+      ? [
+          {
+            value: 'transfer' as const,
+            label: t('transactions:page.transfers'),
+            count: counts.transfer,
+          },
+        ]
+      : []),
   ]
 
   return (

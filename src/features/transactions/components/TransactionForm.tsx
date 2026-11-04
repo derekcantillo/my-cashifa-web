@@ -37,6 +37,7 @@ import {
   toDateInputValue,
 } from '@/lib/format'
 import { useToastStore } from '@/store/toastStore'
+import { useTransactionModalStore } from '@/store/transactionModalStore'
 import {
   CATEGORIES,
   MOVEMENT_TYPES,
@@ -48,7 +49,13 @@ import {
   type UpdateTransactionInput,
 } from '@/types'
 
-import { categoriesForType, FORM_TYPES, isFormType, type FormType } from '../lib/categoriesByType'
+import {
+  categoriesForType,
+  isFormType,
+  typeChoices,
+  type FormType,
+  type TypeChoice,
+} from '../lib/categoriesByType'
 import { applyRecurringLink, keepsLink, recurringLinkUpdate } from '../lib/recurringLink'
 import { RecurringLinkField, type LinkNotice } from './RecurringLinkField'
 
@@ -73,6 +80,12 @@ function focusFirstError(form: HTMLFormElement): void {
 
 /** Same limit as the backend DTO (`@MaxLength(255)` on `description`). */
 const NOTE_MAX_LENGTH = 255
+
+const TYPE_LABELS = {
+  EXPENSE: 'transactions:form.expense',
+  INCOME: 'transactions:form.income',
+  TRANSFER: 'transactions:form.transfer',
+} as const satisfies Record<TypeChoice, string>
 
 type ErrorCode =
   | 'categoryRequired'
@@ -137,6 +150,7 @@ export function TransactionForm({
   const updateTransaction = useUpdateTransaction()
   const deleteTransaction = useDeleteTransaction()
   const pushToast = useToastStore(state => state.push)
+  const openTransfer = useTransactionModalStore(state => state.openTransfer)
   const requestClose = useModalClose()
   const apiErrorMessages = useApiErrorMessages()
   const schema = useMemo(() => createSchema(locale), [locale])
@@ -339,13 +353,15 @@ export function TransactionForm({
           <SegmentedControl
             label={t('transactions:form.type')}
             value={isFormType(type) ? type : 'EXPENSE'}
-            onChange={changeType}
-            options={FORM_TYPES.map(value => ({
+            onChange={(next: TypeChoice) =>
+              next === 'TRANSFER' ? openTransfer() : changeType(next)
+            }
+            options={typeChoices({
+              isNew: !transaction,
+              fromRecurring: Boolean(recurringExpense),
+            }).map(value => ({
               value,
-              label:
-                value === 'EXPENSE'
-                  ? t('transactions:form.expense')
-                  : t('transactions:form.income'),
+              label: t(TYPE_LABELS[value]),
             }))}
           />
         ) : (

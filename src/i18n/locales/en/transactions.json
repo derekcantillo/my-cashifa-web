@@ -61,7 +61,8 @@
     "viewLoan": "View loan",
     "transferTitle": "New transfer",
     "cardPaymentTitle": "Pay card",
-    "editTransferTitle": "Edit transfer"
+    "editTransferTitle": "Edit transfer",
+    "transfer": "Transfer"
   },
   "types": {
     "EXPENSE": "Expense",
@@ -107,7 +108,8 @@
     "clearFilters": "Clear filters",
     "searchPlaceholder": "Search…",
     "addTransfer": "Transfer",
-    "payCard": "Pay card"
+    "payCard": "Pay card",
+    "transfers": "Transfers"
   },
   "row": {
     "recurring": "Recurring: {{name}}"

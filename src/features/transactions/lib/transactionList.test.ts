@@ -61,12 +61,14 @@ describe('transfers in the movements list', () => {
     expect(groupByDay(DAY)).toMatchObject([{ spent: 104_900, earned: 500_000 }])
   })
 
-  it('only show under "all", never under income or expense', () => {
-    expect(countByDirection(DAY)).toEqual({ all: 3, income: 1, expense: 1 })
+  it('show under "all" and "transfers", never under income or expense', () => {
+    expect(countByDirection(DAY)).toEqual({ all: 3, income: 1, expense: 1, transfer: 1 })
     const transfer = DAY[2]
     expect(matchesDirection(transfer, 'all')).toBe(true)
+    expect(matchesDirection(transfer, 'transfer')).toBe(true)
     expect(matchesDirection(transfer, 'income')).toBe(false)
     expect(matchesDirection(transfer, 'expense')).toBe(false)
+    expect(DAY.filter(item => matchesDirection(item, 'transfer'))).toEqual([transfer])
   })
 })
 

@@ -61,7 +61,8 @@
     "viewLoan": "Ver préstamo",
     "transferTitle": "Nueva transferencia",
     "cardPaymentTitle": "Pagar tarjeta",
-    "editTransferTitle": "Editar transferencia"
+    "editTransferTitle": "Editar transferencia",
+    "transfer": "Transferencia"
   },
   "types": {
     "EXPENSE": "Gasto",
@@ -107,7 +108,8 @@
     "clearFilters": "Limpiar filtros",
     "searchPlaceholder": "Buscar…",
     "addTransfer": "Transferir",
-    "payCard": "Pagar tarjeta"
+    "payCard": "Pagar tarjeta",
+    "transfers": "Transferencias"
   },
   "row": {
     "recurring": "Fijo: {{name}}"
