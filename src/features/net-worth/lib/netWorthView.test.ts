@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { formatShare } from '@/lib/format'
 
 import {
+  assetAccounts,
   buildAssetComposition,
   formatAsOfDate,
   reconcile,
@@ -12,43 +13,45 @@ import {
 
 vi.mock('@/i18n', () => ({ default: { resolvedLanguage: 'es' } }))
 
-const assets = (accountsBalance: number, receivables: number, goalsSavings: number) => ({
+const assets = (accountsBalance: number, receivables: number) => ({
   accountsBalance,
   receivables,
-  goalsSavings,
-  creditCardsAvailable: 0,
 })
 
 describe('asset composition', () => {
   it('ranks groups by amount and colors them by rank', () => {
-    const { items, total, showBar } = buildAssetComposition(assets(1_000, 3_000, 2_000))
+    const { items, total, showBar } = buildAssetComposition(assets(1_000, 3_000))
     expect(showBar).toBe(true)
-    expect(total).toBe(6_000)
+    expect(total).toBe(4_000)
     expect(items.map(item => [item.group, item.rank, item.fillClass])).toEqual([
       ['receivables', 1, 'bg-chart-1'],
-      ['goals', 2, 'bg-chart-2'],
-      ['accounts', 3, 'bg-chart-3'],
+      ['accounts', 2, 'bg-chart-2'],
     ])
   })
 
   it('keeps the backend order on ties', () => {
-    const { items } = buildAssetComposition(assets(500, 500, 500))
-    expect(items.map(item => item.group)).toEqual(['accounts', 'receivables', 'goals'])
+    const { items } = buildAssetComposition(assets(500, 500))
+    expect(items.map(item => item.group)).toEqual(['accounts', 'receivables'])
+  })
+
+  it('has no goals group: goal money is already inside the accounts', () => {
+    const { items } = buildAssetComposition(assets(5_000_000, 0))
+    expect(items.map(item => [item.group, item.amount])).toEqual([['accounts', 5_000_000]])
   })
 
   it('drops zero groups from the bar and the legend', () => {
-    const { items, showBar } = buildAssetComposition(assets(15_819_839.56, 0, 0))
+    const { items, showBar } = buildAssetComposition(assets(14_812_431.56, 0))
     expect(showBar).toBe(true)
     expect(items).toHaveLength(1)
     expect(items[0]).toMatchObject({ group: 'accounts', percent: 100, displayPercent: 100 })
   })
 
   it('shows no bar when assets add up to 0', () => {
-    expect(buildAssetComposition(assets(0, 0, 0))).toEqual({ items: [], total: 0, showBar: false })
+    expect(buildAssetComposition(assets(0, 0))).toEqual({ items: [], total: 0, showBar: false })
   })
 
   it('shows no bar (nor shares or colors) when a group is negative', () => {
-    const { items, showBar } = buildAssetComposition(assets(-200_000, 500_000, 0))
+    const { items, showBar } = buildAssetComposition(assets(-200_000, 500_000))
     expect(showBar).toBe(false)
     expect(items.map(item => [item.group, item.percent, item.fillClass])).toEqual([
       ['receivables', null, null],
@@ -57,9 +60,25 @@ describe('asset composition', () => {
   })
 
   it('reads "<1%" for a real but tiny share', () => {
-    const { items } = buildAssetComposition(assets(9_960_000, 40_000, 0))
+    const { items } = buildAssetComposition(assets(9_960_000, 40_000))
     expect(items.map(item => item.displayPercent)).toEqual([100, 0])
     expect(items.map(item => formatShare(shareForDisplay(item), 'es-CO'))).toEqual(['100%', '<1%'])
+  })
+})
+
+describe('asset accounts', () => {
+  it('leaves credit cards out, like the backend does with accountsBalance', () => {
+    const accounts = [
+      { id: 'a1', type: 'DEBIT_CARD' as const },
+      { id: 'a2', type: 'CREDIT_CARD' as const },
+      { id: 'a3', type: 'SAVINGS_ACCOUNT' as const },
+      { id: 'a4', type: 'CASH' as const },
+    ]
+    expect(assetAccounts(accounts).map(account => account.id)).toEqual(['a1', 'a3', 'a4'])
+  })
+
+  it('keeps an empty list empty', () => {
+    expect(assetAccounts([])).toEqual([])
   })
 })
 
@@ -74,7 +93,7 @@ describe('rounded shares', () => {
 
 describe('reconciliation', () => {
   it('matches when rows add up to the subtotal, ignoring float noise', () => {
-    expect(reconcile(15_819_839.56, [14_810_463.22, 1_007_408, 1_968.34, 0]).matches).toBe(true)
+    expect(reconcile(14_812_431.56, [14_810_463.22, 1_968.34, 0]).matches).toBe(true)
     expect(reconcile(0.3, [0.1, 0.2]).matches).toBe(true)
   })
 

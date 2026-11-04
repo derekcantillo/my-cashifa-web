@@ -1,31 +1,22 @@
-import { ArrowRight, Wallet } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { Wallet } from 'lucide-react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import {
-  Amount,
-  buttonClassName,
-  Card,
-  CardHeader,
-  EmptyState,
-  SectionError,
-  Skeleton,
-} from '@/components/ui'
+import { Amount, buttonClassName, Card, CardHeader, EmptyState, Skeleton } from '@/components/ui'
 import { useFormatters } from '@/hooks'
 import { cn } from '@/lib/cn'
 import { isOpenLoan } from '@/lib/loanMath'
-import { goalPath, loanPath, ROUTES } from '@/lib/routes'
-import type { Account, Goal, Loan, NetWorth } from '@/types'
+import { loanPath, ROUTES } from '@/lib/routes'
+import type { Account, Loan, NetWorth } from '@/types'
 
-import { totalAssets, type AssetGroup } from '../lib/netWorthView'
+import { assetAccounts, type AssetGroup } from '../lib/netWorthView'
 import type { QueryState } from '../lib/queryState'
+import { AssetSection, EmptyRow, linkRowClassName, rowClassName, SectionLink } from './sections'
 
 interface AssetsCardProps {
   netWorth: QueryState<NetWorth>
   accounts: QueryState<Account[]>
   loans: QueryState<Loan[]>
-  goals: QueryState<Goal[]>
   /** Id of each group's section heading (the hero bar scrolls to them). */
   headingIds: Record<AssetGroup, string>
 }
@@ -35,10 +26,11 @@ interface AssetsCardProps {
  * come from the cached lists. Either can fail alone: without /net-worth the rows stay,
  * without a list its subtotal stays.
  */
-export function AssetsCard({ netWorth, accounts, loans, goals, headingIds }: AssetsCardProps) {
+export function AssetsCard({ netWorth, accounts, loans, headingIds }: AssetsCardProps) {
   const { t } = useTranslation('netWorth')
   const { money } = useFormatters()
   const assets = netWorth.data?.assets
+  const totals = netWorth.data?.totals
 
   return (
     <Card as="section" aria-labelledby={`${headingIds.accounts}-card`} padding="md">
@@ -46,9 +38,9 @@ export function AssetsCard({ netWorth, accounts, loans, goals, headingIds }: Ass
         title={t('assets.title')}
         titleId={`${headingIds.accounts}-card`}
         action={
-          assets ? (
+          totals ? (
             <span className="text-body font-medium text-ink tabular-nums">
-              {money(totalAssets(assets))}
+              {money(totals.assets)}
             </span>
           ) : (
             netWorth.isPending && <Skeleton className="h-4 w-28" />
@@ -65,7 +57,7 @@ export function AssetsCard({ netWorth, accounts, loans, goals, headingIds }: Ass
           list={accounts}
           footer={<SectionLink to={ROUTES.settings}>{t('accounts.manage')}</SectionLink>}
         >
-          {data => <AccountRows accounts={data} />}
+          {data => <AccountRows accounts={assetAccounts(data)} />}
         </AssetSection>
 
         <AssetSection
@@ -78,84 +70,15 @@ export function AssetsCard({ netWorth, accounts, loans, goals, headingIds }: Ass
         >
           {data => <ReceivableRows loans={data} />}
         </AssetSection>
-
-        <AssetSection
-          headingId={headingIds.goals}
-          title={t('groups.goals')}
-          subtotal={assets?.goalsSavings}
-          subtotalPending={netWorth.isPending}
-          list={goals}
-          footer={<SectionLink to={ROUTES.goals}>{t('goals.see')}</SectionLink>}
-        >
-          {data => <GoalRows goals={data} />}
-        </AssetSection>
       </div>
     </Card>
   )
 }
 
-interface AssetSectionProps<T> {
-  headingId: string
-  title: string
-  subtotal: number | undefined
-  subtotalPending: boolean
-  list: QueryState<T>
-  footer: ReactNode
-  children: (data: T) => ReactNode
-}
-
-function AssetSection<T>({
-  headingId,
-  title,
-  subtotal,
-  subtotalPending,
-  list,
-  footer,
-  children,
-}: AssetSectionProps<T>) {
-  return (
-    <section aria-labelledby={headingId} className="py-5 last:pb-0">
-      <div className="flex items-baseline justify-between gap-4">
-        {/* Focus target of the hero bar's segments. */}
-        <h3
-          id={headingId}
-          tabIndex={-1}
-          className="scroll-mt-24 text-body-sm font-semibold text-ink focus:outline-none"
-        >
-          {title}
-        </h3>
-        {subtotal !== undefined ? (
-          <Amount
-            value={subtotal}
-            className={cn('text-body font-medium', subtotal < 0 ? 'text-negative' : 'text-ink')}
-          />
-        ) : (
-          subtotalPending && <Skeleton className="h-4 w-24" />
-        )}
-      </div>
-
-      <div className="mt-2">
-        {list.isError ? (
-          <SectionError onRetry={() => void list.refetch()} className="my-2" />
-        ) : list.isPending || list.data === undefined ? (
-          <div aria-busy className="space-y-3 py-2">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-4/5" />
-          </div>
-        ) : (
-          children(list.data)
-        )}
-      </div>
-
-      {!list.isError && <div className="mt-2">{footer}</div>}
-    </section>
-  )
-}
-
-const rowClassName = '-mx-3 flex min-h-12 items-center gap-4 rounded-md px-3 py-2'
-const linkRowClassName = cn(rowClassName, 'transition-tactile hover:bg-surface-sunken/70')
-
-/** Biggest balance first. Every account counts: the model has no archived state. */
+/**
+ * Biggest balance first. Every account counts (the model has no archived state) except
+ * credit cards, which the backend keeps out of `accountsBalance`.
+ */
 function AccountRows({ accounts }: { accounts: readonly Account[] }) {
   const { t } = useTranslation(['netWorth', 'settings'])
 
@@ -242,40 +165,5 @@ function ReceivableRows({ loans }: { loans: readonly Loan[] }) {
         </li>
       ))}
     </ul>
-  )
-}
-
-/** Goals holding money (any status: the backend sums every goal), biggest first. */
-function GoalRows({ goals }: { goals: readonly Goal[] }) {
-  const { t } = useTranslation('netWorth')
-  const saving = goals
-    .filter(goal => goal.currentAmount > 0)
-    .sort((a, b) => b.currentAmount - a.currentAmount)
-
-  if (saving.length === 0) return <EmptyRow>{t('goals.empty')}</EmptyRow>
-  return (
-    <ul>
-      {saving.map(goal => (
-        <li key={goal.id}>
-          <Link to={goalPath(goal.id)} className={linkRowClassName}>
-            <span className="min-w-0 flex-1 truncate text-body text-ink">{goal.name}</span>
-            <Amount value={goal.currentAmount} className="text-body font-medium text-ink" />
-          </Link>
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-function EmptyRow({ children }: { children: ReactNode }) {
-  return <p className="flex min-h-12 items-center text-body text-ink-muted">{children}</p>
-}
-
-function SectionLink({ to, children }: { to: string; children: ReactNode }) {
-  return (
-    <Link to={to} className={buttonClassName({ variant: 'link', size: 'sm' })}>
-      {children}
-      <ArrowRight aria-hidden className="size-3.5" />
-    </Link>
   )
 }

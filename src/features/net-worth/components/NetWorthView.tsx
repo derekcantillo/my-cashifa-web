@@ -8,8 +8,10 @@ import type { Account, Goal, Loan, NetWorth } from '@/types'
 import { formatAsOfDate, type AssetGroup } from '../lib/netWorthView'
 import type { QueryState } from '../lib/queryState'
 import { AssetsCard } from './AssetsCard'
+import { GoalsSetAsideCard } from './GoalsSetAsideCard'
 import { LiabilitiesCard } from './LiabilitiesCard'
 import { NetWorthHero } from './NetWorthHero'
+import { UnconfiguredCardsCard } from './UnconfiguredCardsCard'
 
 export interface NetWorthViewProps {
   netWorth: QueryState<NetWorth>
@@ -29,7 +31,6 @@ export function NetWorthView({ netWorth, accounts, loans, goals }: NetWorthViewP
   const headingIds: Record<AssetGroup, string> = {
     accounts: `${id}-accounts`,
     receivables: `${id}-receivables`,
-    goals: `${id}-goals`,
   }
 
   /** A bar segment brings its section into view and moves focus to its heading. */
@@ -60,12 +61,13 @@ export function NetWorthView({ netWorth, accounts, loans, goals }: NetWorthViewP
             netWorth={netWorth}
             accounts={accounts}
             loans={loans}
-            goals={goals}
             headingIds={headingIds}
           />
         </Enter>
-        <Enter order={3} className="min-w-0 lg:col-span-4">
+        <Enter order={3} className="min-w-0 space-y-6 lg:col-span-4">
           <LiabilitiesCard netWorth={netWorth.data} />
+          <UnconfiguredCardsCard netWorth={netWorth.data} />
+          <GoalsSetAsideCard netWorth={netWorth} goals={goals} />
         </Enter>
       </div>
     </div>

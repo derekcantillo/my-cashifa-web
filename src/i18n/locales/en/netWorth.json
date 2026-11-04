@@ -9,8 +9,7 @@
   },
   "groups": {
     "accounts": "Accounts",
-    "receivables": "Owed to you",
-    "goals": "Saved in goals"
+    "receivables": "Owed to you"
   },
   "assets": {
     "title": "Assets"
@@ -30,6 +29,8 @@
     "see": "See loans"
   },
   "goals": {
+    "title": "Set aside for goals",
+    "body": "This money is already in your accounts: it's shown here so you know how much is reserved, but it isn't added to your net worth again.",
     "empty": "No savings in goals yet",
     "see": "See goals"
   },
@@ -39,5 +40,11 @@
     "body": "Your own debts and credit cards aren't tracked in Cashifa yet, so nothing is subtracted here.",
     "debts": "Debts",
     "creditCards": "Credit cards"
+  },
+  "cards": {
+    "title": "Cards not set up",
+    "notCounted": "Not counted",
+    "body": "Their balance isn't added to or subtracted from your net worth because it doesn't say how much you owe yet. They'll count once you can enter their credit limit.",
+    "storedBalance": "Recorded balance"
   }
 }

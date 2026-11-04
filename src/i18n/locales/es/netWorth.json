@@ -9,8 +9,7 @@
   },
   "groups": {
     "accounts": "Cuentas",
-    "receivables": "Por cobrar",
-    "goals": "Ahorro en metas"
+    "receivables": "Por cobrar"
   },
   "assets": {
     "title": "Activos"
@@ -30,6 +29,8 @@
     "see": "Ver préstamos"
   },
   "goals": {
+    "title": "Apartado para metas",
+    "body": "Es dinero que ya está en tus cuentas: lo ves aquí para saber cuánto tienes reservado, pero no se suma otra vez a tu patrimonio.",
     "empty": "Sin ahorro en metas todavía",
     "see": "Ver metas"
   },
@@ -39,5 +40,11 @@
     "body": "Las deudas propias y las tarjetas de crédito todavía no se registran en Cashifa, por eso no restan aquí.",
     "debts": "Deudas",
     "creditCards": "Tarjetas de crédito"
+  },
+  "cards": {
+    "title": "Tarjetas sin configurar",
+    "notCounted": "No se cuentan",
+    "body": "Su saldo no se suma ni se resta en tu patrimonio porque todavía no dice cuánto debes. Se incluirán cuando puedas registrar su cupo.",
+    "storedBalance": "Saldo registrado"
   }
 }

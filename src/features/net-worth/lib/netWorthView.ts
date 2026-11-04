@@ -1,26 +1,29 @@
 import { formatDate } from '@/lib/format'
-import type { NetWorth } from '@/types'
+import type { Account, NetWorth } from '@/types'
 
-/** The asset groups of GET /net-worth that hold real data (credit cards are a 0 placeholder). */
-export const ASSET_GROUPS = ['accounts', 'receivables', 'goals'] as const
+/**
+ * The asset groups of GET /net-worth. Goals aren't one: their money already sits in the
+ * accounts (an informative earmark), and credit cards stay out until their limit exists.
+ */
+export const ASSET_GROUPS = ['accounts', 'receivables'] as const
 export type AssetGroup = (typeof ASSET_GROUPS)[number]
 
 /** Background class per rank (1-based) — literal strings so Tailwind sees them. */
-const RANK_FILL = ['bg-chart-1', 'bg-chart-2', 'bg-chart-3'] as const
+const RANK_FILL = ['bg-chart-1', 'bg-chart-2'] as const
 
 export function assetAmounts(assets: NetWorth['assets']): Record<AssetGroup, number> {
   return {
     accounts: assets.accountsBalance,
     receivables: assets.receivables,
-    goals: assets.goalsSavings,
   }
 }
 
-/** Total assets with the backend's formula (`creditCardsAvailable` is 0 there for now). */
-export function totalAssets(assets: NetWorth['assets']): number {
-  return (
-    assets.accountsBalance + assets.receivables + assets.goalsSavings + assets.creditCardsAvailable
-  )
+/**
+ * The rows behind `accountsBalance`: every account except credit cards, which the backend
+ * leaves out of the totals (listed apart in `info.unconfiguredCards`).
+ */
+export function assetAccounts<T extends Pick<Account, 'type'>>(accounts: readonly T[]): T[] {
+  return accounts.filter(account => account.type !== 'CREDIT_CARD')
 }
 
 export interface CompositionItem {

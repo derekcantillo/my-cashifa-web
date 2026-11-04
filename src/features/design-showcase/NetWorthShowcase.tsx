@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { Button } from '@/components/ui'
 import { NetWorthView, type NetWorthViewProps } from '@/features/net-worth'
+import { assetAccounts } from '@/features/net-worth/lib/netWorthView'
 import type { Account, AccountType, Goal, Loan, NetWorth } from '@/types'
 
 const STAMP = '2026-09-18T10:00:00.000Z'
@@ -61,15 +62,29 @@ function goal(id: string, name: string, currentAmount: number): Goal {
 
 /** /net-worth computed from the rows with the backend's formulas, so subtotals reconcile. */
 function netWorthOf(accounts: Account[], loans: Loan[], goals: Goal[]): NetWorth {
-  const accountsBalance = accounts.reduce((sum, item) => sum + item.currentBalance, 0)
+  const cards = accounts.filter(item => item.type === 'CREDIT_CARD')
+  const accountsBalance = assetAccounts(accounts).reduce(
+    (sum, item) => sum + item.currentBalance,
+    0,
+  )
   const receivables = loans
     .filter(item => item.status !== 'PAID')
     .reduce((sum, item) => sum + item.remainingAmount, 0)
   const goalsSavings = goals.reduce((sum, item) => sum + item.currentAmount, 0)
   return {
-    assets: { accountsBalance, receivables, goalsSavings, creditCardsAvailable: 0 },
+    assets: { accountsBalance, receivables },
     liabilities: { debts: 0, creditCardsDebt: 0 },
-    netWorth: accountsBalance + receivables + goalsSavings,
+    info: {
+      goalsSavings,
+      creditCardsAvailable: 0,
+      unconfiguredCards: cards.map(({ id, name, currentBalance }) => ({
+        id,
+        name,
+        currentBalance,
+      })),
+    },
+    totals: { assets: accountsBalance + receivables, liabilities: 0 },
+    netWorth: accountsBalance + receivables,
   }
 }
 
