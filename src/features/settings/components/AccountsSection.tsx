@@ -19,7 +19,7 @@ export function AccountsSection() {
     <SettingsSection
       id="accounts-title"
       title={t('accounts.title')}
-      action={<AddButton label={t('accounts.add')} onClick={openModal} />}
+      action={<AddButton label={t('accounts.add')} onClick={() => openModal()} />}
     >
       {isError ? (
         <div className="py-4">

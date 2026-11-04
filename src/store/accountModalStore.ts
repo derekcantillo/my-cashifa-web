@@ -1,14 +1,16 @@
 import { create } from 'zustand'
 
-/** Create-only: the backend has no endpoint to edit or delete an account. */
+/** Create, or edit (`accountId`) an account of "Mis productos". */
 interface AccountModalState {
   isOpen: boolean
-  open: () => void
+  accountId?: string
+  open: (accountId?: string) => void
   close: () => void
 }
 
 export const useAccountModalStore = create<AccountModalState>()(set => ({
   isOpen: false,
-  open: () => set({ isOpen: true }),
-  close: () => set({ isOpen: false }),
+  accountId: undefined,
+  open: accountId => set({ isOpen: true, accountId }),
+  close: () => set({ isOpen: false, accountId: undefined }),
 }))
