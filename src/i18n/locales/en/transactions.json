@@ -146,6 +146,8 @@
       "amountPositive": "The amount must be greater than zero",
       "dateRequired": "Pick a date",
       "noteTooLong": "255 characters max"
-    }
+    },
+    "saveValidationError": "Couldn't save it: check that both accounts still exist and are different. A transfer can't be turned into spending or income.",
+    "saveError": "Couldn't save the transfer. Try again."
   }
 }

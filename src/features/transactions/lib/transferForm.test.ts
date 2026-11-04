@@ -1,10 +1,14 @@
+import { AxiosError, AxiosHeaders } from 'axios'
 import { describe, expect, it, vi } from 'vitest'
+
+import { apiErrorMessage } from '@/lib/apiError'
 
 import {
   createTransferSchema,
   toCreateTransferInput,
   toUpdateTransferInput,
   transferDefaults,
+  transferSaveErrorMessages,
   type TransferFormValues,
 } from './transferForm'
 
@@ -121,5 +125,32 @@ describe('transfer requests', () => {
       'es-CO',
     )
     expect(input).toEqual({ toAccountId: 'nequi', amount: 1_033_737 })
+  })
+})
+
+describe('transfer save errors', () => {
+  const httpError = (status: number) => {
+    const config = { headers: new AxiosHeaders() }
+    return new AxiosError('Request failed', 'ERR_BAD_REQUEST', config, null, {
+      status,
+      statusText: '',
+      headers: {},
+      config,
+      data: { success: false, statusCode: status },
+    })
+  }
+  const messages = transferSaveErrorMessages(
+    { conflict: 'conflict', validation: 'generic 400', notFound: 'gone', unknown: 'generic' },
+    { validation: 'check the accounts', unknown: 'transfer failed' },
+  )
+
+  it('explains a 400 in terms of the two accounts', () => {
+    expect(apiErrorMessage(httpError(400), messages)).toBe('check the accounts')
+  })
+
+  it('keeps the generic message for a deleted transfer and its own for the rest', () => {
+    expect(apiErrorMessage(httpError(404), messages)).toBe('gone')
+    expect(apiErrorMessage(httpError(500), messages)).toBe('transfer failed')
+    expect(apiErrorMessage(null, messages)).toBeNull()
   })
 })

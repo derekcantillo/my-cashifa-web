@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import type { ApiErrorMessages } from '@/lib/apiError'
 import { fromDateInputValue, parseAmountInput, toDateInputValue } from '@/lib/format'
 import type {
   AccountSummary,
@@ -124,4 +125,17 @@ export function transferValuesOf(
     date: toDateInputValue(transaction.transactionDate),
     description: transaction.description ?? '',
   }
+}
+
+/**
+ * Save errors of a transfer, by status code. The form already checks the two accounts
+ * are picked and different, so a 400 from the backend means an account that no longer
+ * exists (or a stale tab trying to turn it into another type); 404 and the rest keep the
+ * generic messages.
+ */
+export function transferSaveErrorMessages(
+  generic: ApiErrorMessages,
+  own: Pick<ApiErrorMessages, 'validation' | 'unknown'>,
+): ApiErrorMessages {
+  return { ...generic, ...own }
 }

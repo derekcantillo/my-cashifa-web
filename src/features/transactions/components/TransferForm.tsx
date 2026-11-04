@@ -41,6 +41,7 @@ import {
   toUpdateTransferInput,
   TRANSFER_NOTE_MAX_LENGTH,
   transferDefaults,
+  transferSaveErrorMessages,
   transferValuesOf,
   type TransferErrorCode,
   type TransferFormValues,
@@ -168,10 +169,13 @@ function TransferFormFields({
   const amountError = errorText(errors.amount?.message)
   const dateError = errorText(errors.date?.message)
   const noteError = errorText(errors.description?.message)
-  const saveError = apiErrorMessage(createTransaction.error ?? updateTransaction.error, {
-    ...apiErrorMessages,
-    unknown: t('form.saveError'),
-  })
+  const saveError = apiErrorMessage(
+    createTransaction.error ?? updateTransaction.error,
+    transferSaveErrorMessages(apiErrorMessages, {
+      validation: t('transfer.saveValidationError'),
+      unknown: t('transfer.saveError'),
+    }),
+  )
   const deleteError = apiErrorMessage(deleteTransaction.error, {
     ...apiErrorMessages,
     unknown: t('form.deleteError'),
