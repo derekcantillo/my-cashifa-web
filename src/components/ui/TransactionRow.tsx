@@ -1,3 +1,4 @@
+import { ArrowLeftRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { useFormatters } from '@/hooks'
@@ -5,6 +6,7 @@ import { cn } from '@/lib/cn'
 import { CATEGORY_META } from '@/lib/categoryMeta'
 import { formatTime, hasClockTime } from '@/lib/format'
 import { getTransactionDirection } from '@/lib/transactionDirection'
+import { isCardPayment, isTransfer, transferRoute } from '@/lib/transfers'
 import type { Transaction } from '@/types'
 
 import { Skeleton } from './Skeleton'
@@ -27,7 +29,8 @@ const ROW = 'flex min-h-14 items-center gap-3.5 py-2'
 /**
  * Renders the contents of an `<li>`: plain category icon (no colored chip), title,
  * "Category · relative date" and the signed amount. Separators come from the list
- * (`divide-y divide-line`), so there's none after the last row.
+ * (`divide-y divide-line`), so there's none after the last row. A transfer has no
+ * category: it shows "Origin → Destination", a neutral amount and no sign.
  */
 export function TransactionRow({
   transaction,
@@ -38,12 +41,24 @@ export function TransactionRow({
 }: TransactionRowProps) {
   const { t } = useTranslation(['categories', 'transactions'])
   const { locale, money, relativeDay } = useFormatters()
+  const transfer = isTransfer(transaction)
   const meta = CATEGORY_META[transaction.category]
-  const Icon = meta.icon
-  const category = t(meta.translationKey)
+  const Icon = transfer ? ArrowLeftRight : meta.icon
+  // What names the movement when it has no note: its category, or the kind of transfer.
+  const label = transfer
+    ? t(
+        isCardPayment(transaction)
+          ? 'transactions:transfer.cardPayment'
+          : 'transactions:transfer.label',
+      )
+    : t(meta.translationKey)
   const direction = getTransactionDirection(transaction.type)
   const secondary = [
-    transaction.description ? category : null,
+    transfer
+      ? transferRoute(transaction, t('transactions:transfer.missingAccount'))
+      : transaction.description
+        ? label
+        : null,
     showDate ? relativeDay(transaction.transactionDate) : null,
     showTime && hasClockTime(transaction.transactionDate)
       ? formatTime(transaction.transactionDate, locale)
@@ -58,7 +73,7 @@ export function TransactionRow({
       <Icon aria-hidden className="size-[18px] shrink-0 text-ink-muted" />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-body font-medium text-ink">
-          {transaction.description || category}
+          {transaction.description || label}
         </span>
         {secondary && (
           <span className="block truncate text-body-sm text-ink-muted">{secondary}</span>
@@ -72,7 +87,7 @@ export function TransactionRow({
           direction === 'moved' && 'text-ink',
         )}
       >
-        {direction === 'in' ? '+' : '−'}
+        {transfer ? '' : direction === 'in' ? '+' : '−'}
         {money(transaction.amount)}
       </span>
     </>

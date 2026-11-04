@@ -90,7 +90,7 @@
       "income": "Income this period",
       "count": "Transactions"
     },
-    "search": "Search by note or category",
+    "search": "Search by note, category or account",
     "clearSearch": "Clear search",
     "categoryFilter": "Filter by category",
     "categoryAll": "Category: All",
@@ -118,5 +118,10 @@
     "others": "Others",
     "empty": "No spending this period.",
     "share": "{{percentage}} of spending"
+  },
+  "transfer": {
+    "label": "Transfer",
+    "cardPayment": "Card payment",
+    "missingAccount": "Deleted account"
   }
 }

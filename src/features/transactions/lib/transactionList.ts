@@ -1,5 +1,6 @@
 import { toDateInputValue } from '@/lib/format'
 import { getTransactionDirection } from '@/lib/transactionDirection'
+import { isTransfer } from '@/lib/transfers'
 import type { Category, Transaction } from '@/types'
 
 export type DirectionFilter = 'all' | 'income' | 'expense'
@@ -29,18 +30,41 @@ const MATCHES_DIRECTION: Record<DirectionFilter, (transaction: Transaction) => b
   expense: transaction => getTransactionDirection(transaction.type) === 'out',
 }
 
-/** Search + category, i.e. everything but the direction (the segmented control counts by it). */
+/**
+ * Search + category, i.e. everything but the direction (the segmented control counts by
+ * it). A transfer has no real category (the backend stores OTHER): it never matches a
+ * category filter, and the search looks at its label ("Transferencia") and account names.
+ */
 export function matchesSearchAndCategory(
   transaction: Transaction,
   filters: Pick<ListFilters, 'query' | 'category'>,
   categoryLabel: (category: Category) => string,
+  transferLabel = '',
 ): boolean {
-  if (filters.category && transaction.category !== filters.category) return false
+  const transfer = isTransfer(transaction)
+  if (filters.category && (transfer || transaction.category !== filters.category)) return false
   const query = normalizeForSearch(filters.query)
   if (!query) return true
-  return [transaction.description ?? '', categoryLabel(transaction.category)].some(text =>
-    normalizeForSearch(text).includes(query),
-  )
+  const texts = transfer
+    ? [
+        transaction.description ?? '',
+        transferLabel,
+        transaction.account?.name ?? '',
+        transaction.toAccount?.name ?? '',
+      ]
+    : [transaction.description ?? '', categoryLabel(transaction.category)]
+  return texts.some(text => normalizeForSearch(text).includes(query))
+}
+
+/** Categories the period's movements use, for the category filter (transfers have none). */
+export function categoriesOf(transactions: readonly Transaction[]): Category[] {
+  return [
+    ...new Set(
+      transactions
+        .filter(transaction => !isTransfer(transaction))
+        .map(transaction => transaction.category),
+    ),
+  ]
 }
 
 export function countByDirection(

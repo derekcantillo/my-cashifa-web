@@ -90,7 +90,7 @@
       "income": "Ingresos del periodo",
       "count": "Movimientos"
     },
-    "search": "Buscar por nota o categoría",
+    "search": "Buscar por nota, categoría o cuenta",
     "clearSearch": "Borrar búsqueda",
     "categoryFilter": "Filtrar por categoría",
     "categoryAll": "Categoría: Todas",
@@ -118,5 +118,10 @@
     "others": "Otras",
     "empty": "Sin gastos en este periodo.",
     "share": "{{percentage}} del gasto"
+  },
+  "transfer": {
+    "label": "Transferencia",
+    "cardPayment": "Pago de tarjeta",
+    "missingAccount": "Cuenta eliminada"
   }
 }

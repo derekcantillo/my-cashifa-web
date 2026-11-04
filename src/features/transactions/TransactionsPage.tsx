@@ -33,6 +33,7 @@ import { PendingRecurringCard } from './components/PendingRecurringCard'
 import { TransactionDayList } from './components/TransactionDayList'
 import { TransactionsSummary } from './components/TransactionsSummary'
 import {
+  categoriesOf,
   countByDirection,
   groupByDay,
   matchesDirection,
@@ -94,9 +95,14 @@ export function TransactionsPage() {
   const searched = useMemo(
     () =>
       transactions.filter(transaction =>
-        matchesSearchAndCategory(transaction, { query, category }, categoryLabel),
+        matchesSearchAndCategory(
+          transaction,
+          { query, category },
+          categoryLabel,
+          t('transactions:types.TRANSFER'),
+        ),
       ),
-    [transactions, query, category, categoryLabel],
+    [transactions, query, category, categoryLabel, t],
   )
   const counts = useMemo(() => countByDirection(searched), [searched])
   const groups = useMemo(
@@ -112,10 +118,7 @@ export function TransactionsPage() {
   // Only categories that appear in the period, alphabetical in the active language.
   // The URL's category stays selectable even if the period has no movement in it.
   const categoriesInPeriod = [
-    ...new Set([
-      ...transactions.map(transaction => transaction.category),
-      ...(category ? [category] : []),
-    ]),
+    ...new Set([...categoriesOf(transactions), ...(category ? [category] : [])]),
   ]
     .map(category => ({ category, label: categoryLabel(category) }))
     .sort((a, b) => a.label.localeCompare(b.label))
