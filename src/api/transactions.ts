@@ -19,6 +19,8 @@ interface RawTransaction {
   tags: string[]
   accountId: string | null
   account: RawAccountSummary | null
+  toAccountId: string | null
+  toAccount: RawAccountSummary | null
   recurringExpenseId: string | null
   loanId: string | null
   transactionDate: string
@@ -39,6 +41,8 @@ function toTransaction(raw: RawTransaction): Transaction {
     tags: raw.tags,
     accountId: raw.accountId,
     account: raw.account,
+    toAccountId: raw.toAccountId,
+    toAccount: raw.toAccount,
     recurringExpenseId: raw.recurringExpenseId,
     loanId: raw.loanId,
     periodId: raw.periodId,

@@ -39,9 +39,10 @@ import {
 import { useToastStore } from '@/store/toastStore'
 import {
   CATEGORIES,
-  TRANSACTION_TYPES,
+  MOVEMENT_TYPES,
   type Category,
   type CreateTransactionInput,
+  type MovementType,
   type RecurringExpense,
   type Transaction,
   type UpdateTransactionInput,
@@ -83,7 +84,7 @@ type ErrorCode =
 
 function createSchema(locale: string) {
   return z.object({
-    type: z.enum(TRANSACTION_TYPES),
+    type: z.enum(MOVEMENT_TYPES),
     amount: z
       .string()
       .trim()
@@ -164,7 +165,8 @@ export function TransactionForm({
     shouldFocusError: false,
     defaultValues: transaction
       ? {
-          type: transaction.type,
+          // TransactionFormModal sends transfers to TransferForm, never here.
+          type: transaction.type as MovementType,
           amount: formatAmountInput(transaction.amount, locale),
           category: transaction.category,
           recurringExpenseId: transaction.recurringExpenseId ?? '',

@@ -40,6 +40,19 @@ describe('daily spending in Bogotá time', () => {
     expect(byDay.get('2026-09-29')).toBe(10)
   })
 
+  it('never counts a transfer (a card payment) as spending', () => {
+    const byDay = spendingByDay([
+      tx('TRANSFER', 838_675, '2026-10-04T17:00:00.000Z'),
+      tx('EXPENSE', 104_900, '2026-10-04T17:00:00.000Z'),
+    ])
+    expect(byDay.get('2026-10-04')).toBe(104_900)
+    expect(splitFixedSpending([tx('TRANSFER', 4_539_024, '2026-11-17T17:00:00.000Z')])).toEqual({
+      fixed: 0,
+      variable: 0,
+      total: 0,
+    })
+  })
+
   it('fills every day of the period with zeros', () => {
     const series = dailySpendingSeries([tx('EXPENSE', 10, '2026-09-30T17:00:00.000Z')], {
       startKey: '2026-09-29',

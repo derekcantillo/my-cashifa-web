@@ -66,7 +66,8 @@
     "SAVING": "Savings",
     "DEBT_PAYMENT": "Debt payment",
     "LOAN_GIVEN": "Loan",
-    "LOAN_REPAYMENT": "Loan repayment"
+    "LOAN_REPAYMENT": "Loan repayment",
+    "TRANSFER": "Transfer"
   },
   "toast": {
     "saved": "Transaction saved",

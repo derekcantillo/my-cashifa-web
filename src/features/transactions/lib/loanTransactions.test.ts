@@ -12,7 +12,7 @@ describe('loan movements in Gastos', () => {
 
   it('every other type keeps edit and delete', () => {
     const others = TRANSACTION_TYPES.filter(t => t !== 'LOAN_GIVEN' && t !== 'LOAN_REPAYMENT')
-    expect(others).toEqual(['EXPENSE', 'INCOME', 'SAVING', 'DEBT_PAYMENT'])
+    expect(others).toEqual(['EXPENSE', 'INCOME', 'SAVING', 'DEBT_PAYMENT', 'TRANSFER'])
     for (const type of others) expect(isLoanMovement({ type })).toBe(false)
   })
 
