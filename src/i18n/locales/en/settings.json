@@ -9,10 +9,12 @@
     "namePlaceholder": "e.g. Nu, Cash",
     "type": "Type",
     "types": {
-      "DEBIT_CARD": "Debit card",
-      "CREDIT_CARD": "Credit card",
+      "SAVINGS_ACCOUNT": "Savings account",
+      "CHECKING_ACCOUNT": "Checking account",
+      "DIGITAL_WALLET": "Digital wallet",
       "CASH": "Cash",
-      "SAVINGS_ACCOUNT": "Savings account"
+      "CREDIT_CARD": "Credit card",
+      "DEBIT_CARD": "Debit card (old type)"
     },
     "initialBalance": "Starting balance",
     "newInitialBalance": "New starting balance",

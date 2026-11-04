@@ -9,10 +9,12 @@
     "namePlaceholder": "Ej. Nu, Efectivo",
     "type": "Tipo",
     "types": {
-      "DEBIT_CARD": "Tarjeta débito",
-      "CREDIT_CARD": "Tarjeta de crédito",
+      "SAVINGS_ACCOUNT": "Cuenta de ahorros",
+      "CHECKING_ACCOUNT": "Cuenta corriente",
+      "DIGITAL_WALLET": "Billetera digital",
       "CASH": "Efectivo",
-      "SAVINGS_ACCOUNT": "Cuenta de ahorros"
+      "CREDIT_CARD": "Tarjeta de crédito",
+      "DEBIT_CARD": "Tarjeta débito (tipo antiguo)"
     },
     "initialBalance": "Saldo inicial",
     "newInitialBalance": "Nuevo saldo inicial",

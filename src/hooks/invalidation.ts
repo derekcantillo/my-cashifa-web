@@ -36,3 +36,16 @@ export function invalidateQueries(
 ): Promise<void> {
   return invalidateAll(queryClient, keys)
 }
+
+/**
+ * After an account changes: its balance and anchor feed net worth; its name, type and
+ * institution show in each transaction and in the institution counts.
+ */
+export function invalidateAccountState(queryClient: QueryClient): Promise<void> {
+  return invalidateAll(queryClient, [
+    queryKeys.accounts.all,
+    queryKeys.institutions.all,
+    queryKeys.netWorth,
+    queryKeys.transactions.all,
+  ])
+}

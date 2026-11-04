@@ -23,6 +23,10 @@ function account(
     initialBalance: withInitialBalance ? currentBalance : 0,
     initialBalanceDate: withInitialBalance ? STAMP : null,
     currentBalance,
+    institution: null,
+    hasDebitCard: false,
+    cardLast4: null,
+    creditCard: null,
   }
 }
 
@@ -104,7 +108,7 @@ function scenario(accounts: Account[], loans: Loan[], goals: Goal[]): NetWorthVi
 
 const TYPICAL = scenario(
   [
-    account('a1', 'Ahorros Bancolombia', 'DEBIT_CARD', 14_810_463.22),
+    account('a1', 'Ahorros Bancolombia', 'SAVINGS_ACCOUNT', 14_810_463.22),
     account('a2', 'Nequi', 'SAVINGS_ACCOUNT', 1_968.34),
     account('a3', 'Efectivo', 'CASH', 0),
   ],
@@ -114,7 +118,7 @@ const TYPICAL = scenario(
 
 const MANY = scenario(
   [
-    account('m1', 'Ahorros Bancolombia', 'DEBIT_CARD', 6_400_000),
+    account('m1', 'Ahorros Bancolombia', 'SAVINGS_ACCOUNT', 6_400_000),
     account(
       'm2',
       'Cuenta de ahorros Davivienda con un nombre bastante largo',
@@ -134,7 +138,7 @@ const MANY = scenario(
 
 const NEGATIVE = scenario(
   [
-    account('x1', 'Ahorros Bancolombia', 'DEBIT_CARD', -1_850_000),
+    account('x1', 'Ahorros Bancolombia', 'SAVINGS_ACCOUNT', -1_850_000),
     account('x2', 'Efectivo', 'CASH', 120_000, false),
   ],
   [loan('y1', 'Yeison Soto', 400_000, 100_000)],

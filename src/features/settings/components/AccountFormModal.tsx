@@ -9,14 +9,7 @@ import { useCreateAccount, useFormatters, useSetInitialBalance } from '@/hooks'
 import { parseSignedAmountInput } from '@/lib/format'
 import { useAccountModalStore } from '@/store/accountModalStore'
 import { useToastStore } from '@/store/toastStore'
-import type { AccountType } from '@/types'
-
-const ACCOUNT_TYPES = [
-  'DEBIT_CARD',
-  'SAVINGS_ACCOUNT',
-  'CASH',
-  'CREDIT_CARD',
-] as const satisfies readonly AccountType[]
+import { SELECTABLE_ACCOUNT_TYPES as ACCOUNT_TYPES } from '@/types'
 
 type ErrorCode = 'nameRequired' | 'nameTooLong' | 'amountRequired' | 'amountInvalid'
 
@@ -53,7 +46,7 @@ export function AccountFormModal() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { name: '', type: 'DEBIT_CARD', initialBalance: '0' },
+    defaultValues: { name: '', type: 'SAVINGS_ACCOUNT', initialBalance: '0' },
   })
 
   const onSubmit = async (values: FormValues) => {

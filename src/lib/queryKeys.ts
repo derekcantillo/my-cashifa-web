@@ -13,6 +13,11 @@ export const queryKeys = {
   },
   accounts: {
     all: ['accounts'] as const,
+    /** Under `accounts`: anything that moves an anchor refreshes the history too. */
+    adjustments: (accountId: string | undefined) => ['accounts', 'adjustments', accountId] as const,
+  },
+  institutions: {
+    all: ['institutions'] as const,
   },
   transactions: {
     all: ['transactions'] as const,
